@@ -1,51 +1,92 @@
-# Welcome to your Expo app 👋
+#  Mandaca App - React Native + Expo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Este é um aplicativo desenvolvido em **React Native utilizando Expo**.  
+Siga os passos abaixo para configurar o ambiente e rodar o projeto localmente.
 
-## Get started
+---
 
-1. Install dependencies
+#  Pré-requisitos
 
-   ```bash
-   npm install
-   ```
+Antes de começar, você precisa ter instalado na sua máquina:
 
-2. Start the app
+- **Node.js** (versão recomendada: LTS)
+- **Git**
+- **Expo Go** no celular
 
-   ```bash
-   npx expo start
-   ```
+### Links para instalação
 
-In the output, you'll find options to open the app in a
+- Node.js: https://nodejs.org  
+- Git: https://git-scm.com  
+- Expo Go  
+  - Android: https://play.google.com/store/apps/details?id=host.exp.exponent  
+  - iOS: https://apps.apple.com/app/expo-go/id982107779  
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+#  Clonar o projeto
 
-## Get a fresh project
+#### Clone o repositório:
 
-When you're ready, run:
+git clone https://github.com/DanielSantana47/mandaca-app.git
 
-```bash
-npm run reset-project
-```
+#### Entre na pasta do projeto:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+cd nome-do-projeto
+Instalar as dependências
 
-## Learn more
+#### Execute o comando:
 
-To learn more about developing your project with Expo, look at the following resources:
+npm install
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+#### Para iniciar o projeto execute:
 
-## Join the community
+npx expo start
 
-Join our community of developers creating universal apps.
+Isso abrirá o Expo Developer Tools no navegador.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-"# mandaca-frontend" 
+#  Rodar no celular
+
+Instale o Expo Go no seu celular
+
+Certifique-se de que o celular e o computador estão na mesma rede Wi-Fi
+
+Abra o Expo Go
+
+Escaneie o QR Code que aparece no terminal ou no navegador
+
+O aplicativo será aberto automaticamente no celular.
+
+#  Rodar no emulador
+Android Studio
+
+Se você tiver o Android Studio instalado:
+
+Abra um emulador Android
+
+Execute no terminal:
+
+npx expo start
+
+Pressione A no terminal para abrir no Android.
+
+#  Tecnologias utilizadas
+
+React Native
+
+Expo
+
+TypeScript
+
+Node.js
+
+Nativewind
+
+#  Problemas comuns
+Erro de dependências
+
+Tente apagar as dependências e instalar novamente:
+
+rm -rf node_modules
+npm install
+Limpar cache do Expo
+npx expo start -c"# mandaca-app" 
