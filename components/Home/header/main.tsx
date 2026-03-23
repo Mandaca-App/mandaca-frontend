@@ -3,6 +3,9 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export const Header = ()=> {
+    
+    const userName = "Maria da Silva" // requisição para receber nome do usuário
+
     return(
         <View className="flex flex-row justify-between">
             <Pressable 
@@ -20,7 +23,7 @@ export const Header = ()=> {
                     Bem-vinda de volta,
                 </Text>
                 <Text className="font-semibold text-center text-lg">
-                    Maria da Silva
+                    {userName}
                 </Text>
             </View>
 
