@@ -27,12 +27,13 @@ export const Header = ()=> {
                 </Text>
             </View>
 
-            <View 
+            <Pressable
                 className="h-10 w-10 bg-light rounded-full justify-center items-center"
-                style={style.cardShadow}    
+                style={style.cardShadow}
+                onPress={()=> router.navigate("/notifications")}
             >
                 <Ionicons name="notifications" size={24} color="#2C2C2C" />
-            </View>
+            </Pressable>
         </View>
     )
 }
