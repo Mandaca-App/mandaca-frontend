@@ -13,6 +13,11 @@ export default function RootLayout() {
       <Stack screenOptions={{headerShown: false}}>
         <Stack.Screen name="index"/>
         <Stack.Screen name="home"/>
+        <Stack.Screen name="myBusiness"/>
+        <Stack.Screen name="report"/>
+        <Stack.Screen name="settings"/>
+        <Stack.Screen name="help"/>
+        <Stack.Screen name="profile"/>
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
