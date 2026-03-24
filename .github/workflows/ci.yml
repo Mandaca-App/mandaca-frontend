@@ -51,7 +51,7 @@ jobs:
             ! -path "*/dist/*" \
             ! -path "*/build/*" \
             ! -path "*/scripts/*" \
-            ! -path "*/constants/theme.ts/* \
+            ! -path "*/constants/theme.ts" \
             -print0)
           if [ "$FAILED" -eq 1 ]; then
             echo "Lint failed: one or more lines exceed 100 characters."
