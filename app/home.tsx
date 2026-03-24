@@ -7,7 +7,7 @@ export default function Home () {
     return(
         <Container>
             <Header/>
-            <CompleteProfile/>
+            <CompleteProfile prifileProgress={200}/>
             <RouteGrid/>
         </Container>
     )

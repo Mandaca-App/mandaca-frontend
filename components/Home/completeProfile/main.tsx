@@ -1,9 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { useSharedValue } from "react-native-reanimated";
 
-export const CompleteProfile = ()=> {
 
-    const profileProgress = useSharedValue(200)
+type Props = {
+    prifileProgress: number
+}
+
+export const CompleteProfile = ({prifileProgress}: Props)=> {
+
+    const profileProgress = useSharedValue(prifileProgress)
 
     return(
         <View 
