@@ -24,16 +24,9 @@ export const CompleteProfile = ()=> {
             </Text>
 
             <View className="w-full h-2 bg-black/10 rounded-full">
-                <Animated.View
-                    style={
-                        {
-                            
-                            height:'100%',
-                            width: profileProgress,
-                            backgroundColor: '#C34342',
-                            borderRadius: 999,
-                        }
-                    }
+                <Animated.View 
+                    className="h-full bg-primary rounded-full"
+                    style={{width: profileProgress,}}
                 >
 
                 </Animated.View>
