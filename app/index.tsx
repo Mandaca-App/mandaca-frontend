@@ -1,5 +1,6 @@
-import { Text, View } from "react-native";
-import "../global.css";
+import { Text, View } from 'react-native';
+import '../global.css';
+import { Pressable } from 'react-native';
  
 export default function App() {
 
