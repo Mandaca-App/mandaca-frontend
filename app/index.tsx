@@ -1,6 +1,6 @@
-import { router } from "expo-router";
-import { Pressable, Text, View } from "react-native";
-import "../global.css";
+import { router } from 'expo-router';
+import { Pressable, Text, View } from 'react-native';
+import '../global.css';
  
 export default function App() {
 

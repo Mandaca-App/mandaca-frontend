@@ -1,5 +1,5 @@
-import Ionicons from "@expo/vector-icons/Ionicons"
-import { Pressable, StyleSheet, Text } from "react-native"
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
 type Props = {
     icon: any,
@@ -23,12 +23,12 @@ export const GridBox = ({icon, title, description, route}: Props)=> {
                 {description}
             </Text>
         </Pressable>
-    )
-}
+    );
+};
 
 const style = StyleSheet.create({
     cardShadow: {
-        shadowColor: "#000",
+        shadowColor: '#000',
                 shadowOffset: {
                     width: 0,
                     height: 2,
@@ -37,5 +37,5 @@ const style = StyleSheet.create({
                 shadowRadius: 3.80,
 
                 elevation: 5,
-    }
-})
+    },
+});

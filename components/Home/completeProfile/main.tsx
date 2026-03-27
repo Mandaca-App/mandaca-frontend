@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import Animated, { useSharedValue } from "react-native-reanimated";
+import { StyleSheet, Text, View } from 'react-native';
+import Animated, { useSharedValue } from 'react-native-reanimated';
 
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export const CompleteProfile = ({prifileProgress}: Props)=> {
 
-    const profileProgress = useSharedValue(prifileProgress)
+    const profileProgress = useSharedValue(prifileProgress);
 
     return(
         <View 
@@ -31,19 +31,19 @@ export const CompleteProfile = ({prifileProgress}: Props)=> {
             <View className="w-full h-2 bg-black/10 rounded-full">
                 <Animated.View 
                     className="h-full bg-primary rounded-full"
-                    style={{width: profileProgress,}}
+                    style={{width: profileProgress}}
                 >
 
                 </Animated.View>
             </View>
         </View>
-    )
-}
+    );
+};
 
 
 const style = StyleSheet.create({
     cardShadow: {
-        shadowColor: "#000",
+        shadowColor: '#000',
                 shadowOffset: {
                     width: 0,
                     height: 2,
@@ -52,5 +52,5 @@ const style = StyleSheet.create({
                 shadowRadius: 3.80,
 
                 elevation: 5,
-    }
-})
+    },
+});
