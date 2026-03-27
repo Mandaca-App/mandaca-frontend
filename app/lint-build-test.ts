@@ -1,3 +1,3 @@
-const value: number = "texto";
+const value: number = 'texto';
 
 export const buildTest = (): number => value;
