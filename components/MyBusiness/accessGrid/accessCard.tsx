@@ -11,19 +11,16 @@ type Props = {
 export const AccessCard = ({ icon, title, hasNotification = false, onPress }: Props) => {
     return (
         <Pressable
-            className="bg-light rounded-2xl w-full flex-row h-20 relative"
+            className="bg-light rounded-2xl w-full flex-row h-20 items-center px-6 gap-4"
             style={style.cardShadow}
             onPress={onPress}
         >
             {/* Ícone */}
-            <View className="absolute left-8 h-full justify-center">
+            <View className="flex-shrink-0">
                 <Ionicons name={icon} size={40} color="#C34342" />
             </View>
 
-            {/* Slot esquerdo para manter centralização do título */}
-            <View style={style.sideSlot} />
-
-            {/* Título */}
+            {/* Título - ocupa espaço disponível */}
             <View className="flex-1 justify-center items-center">
                 <Text className="text-xl font-medium text-center" style={{ lineHeight: 26 }}>
                     {title}
@@ -31,21 +28,16 @@ export const AccessCard = ({ icon, title, hasNotification = false, onPress }: Pr
             </View>
 
             {/* Notificação */}
-            {hasNotification ? (
-                <View style={style.sideSlot} className="justify-center items-center right-3">
+            <View className="flex-shrink-0">
+                {hasNotification ? (
                     <Ionicons name="information-circle" size={32} color="#C34342" />
-                </View>
-            ) : (
-                <View style={style.sideSlot} />
-            )}
+                ) : null}
+            </View>
         </Pressable>
     )
 }
 
 const style = StyleSheet.create({
-    sideSlot: {
-        width: 44,
-    },
     cardShadow: {
         shadowColor: "#000000",
         shadowOffset: {

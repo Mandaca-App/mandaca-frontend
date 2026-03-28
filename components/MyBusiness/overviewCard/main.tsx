@@ -11,49 +11,35 @@ export const OverviewCard = ({ imageUrl, onPress }: Props) => {
 
     return (
         <Pressable
-            className="p-4 gap-0 bg-light rounded-3xl"
+            className="p-4 bg-light rounded-3xl flex-row gap-6"
             style={style.cardShadow}
             onPress={onPress}
         >
-            <View className="flex-row gap-6">
-                {/* Imagem */}
-                {imageUrl ? (
-                    <Image
-                        source={{ uri: imageUrl }}
-                        style={{
-                            width: 121,
-                            height: 121,
-                            borderRadius: 10,
-                        }}
-                    />
-                ) : (
-                    <View
-                        style={{
-                            width: 121,
-                            height: 121,
-                            borderRadius: 10,
-                            backgroundColor: "#f0f0f0",
-                        }}
-                        className="justify-center items-center"
-                    >
-                        <Ionicons name="image-outline" size={40} color="#ccc" />
-                        <Text className="text-xs text-gray-400 text-center mt-2">
-                            Sem imagem
-                        </Text>
-                    </View>
-                )}
-
-                {/* Conteúdo textos */}
-                <View className="flex-1 justify-center gap-5">
-                    <View className="justify-center items-center">
-                        <Text className="text-base font-bold leading-6 text-center">
-                            Visão geral
-                        </Text>
-                    </View>
-                    <Text className="text-xs font-semibold px-5">
-                        Personalize o jeito como o seu restaurante é visto; história, endereço, fotos
+            {/* Imagem */}
+            {imageUrl ? (
+                <Image
+                    source={{ uri: imageUrl }}
+                    className="w-[121px] h-[121px] rounded-[10px]"
+                />
+            ) : (
+                <View className="w-[121px] h-[121px] rounded-[10px] bg-gray-100 justify-center items-center">
+                    <Ionicons name="image-outline" size={40} color="#ccc" />
+                    <Text className="text-xs text-gray-400 text-center mt-2">
+                        Sem imagem
                     </Text>
                 </View>
+            )}
+
+            {/* Conteúdo textos */}
+            <View className="flex-1 justify-center gap-5">
+                <View className="justify-center items-center">
+                    <Text className="text-base font-bold leading-6 text-center">
+                        Visão geral
+                    </Text>
+                </View>
+                <Text className="text-xs font-semibold px-5 text-center">
+                    Personalize o jeito como o seu restaurante é visto; história, endereço, fotos
+                </Text>
             </View>
         </Pressable>
     )
