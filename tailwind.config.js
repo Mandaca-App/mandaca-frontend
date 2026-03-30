@@ -10,7 +10,7 @@ module.exports = {
         secondary: '#EAEAEA',
         light: '#FFFFFF',
         dark: '#2C2C2C',
-        background: '#F5F5F5',
+        background: '#F8F7FA',
       }
     },
   },

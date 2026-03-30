@@ -19,6 +19,7 @@ export default function RootLayout() {
         <Stack.Screen name="help"/>
         <Stack.Screen name="profile"/>
         <Stack.Screen name="notifications"/>
+        <Stack.Screen name="overview"/>
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
