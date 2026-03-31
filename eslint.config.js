@@ -34,7 +34,6 @@ module.exports = defineConfig([
       'no-console': 'warn',
       'no-debugger': 'error',
       eqeqeq: ['error', 'always'],
-      semi: ['error', 'never'],
       quotes: ['error', 'single'],
       'comma-dangle': ['error', 'always-multiline'],
     },
