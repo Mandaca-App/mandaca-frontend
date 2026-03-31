@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type Props = {
     title: string;
@@ -15,11 +15,12 @@ export const Header = ({
     showBackButton = false,
     showNotificationButton = true,
     onBackPress,
-    onNotificationPress
+    onNotificationPress,
 }: Props) => {
 
     const handleBack = onBackPress ? onBackPress : () => router.back();
-    const handleNotification = onNotificationPress ? onNotificationPress : () => router.navigate("/notifications");
+    const handleNotification = onNotificationPress ? onNotificationPress :
+        () => router.navigate('/notifications');
 
     return (
         <View className="flex flex-row justify-between items-center">
@@ -51,12 +52,12 @@ export const Header = ({
                 <View className="h-10 w-10" />
             )}
         </View>
-    )
-}
+    );
+};
 
 const style = StyleSheet.create({
     cardShadow: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -64,5 +65,5 @@ const style = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 3.80,
         elevation: 5,
-    }
-})
+    },
+});

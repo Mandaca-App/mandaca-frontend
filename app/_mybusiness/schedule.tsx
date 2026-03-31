@@ -1,5 +1,5 @@
-import { Container } from "@/components/general/container";
-import { Text, View } from "react-native";
+import { Container } from '@/components/general/container';
+import { Text, View } from 'react-native';
 
 export default function Schedule() {
     return (
@@ -10,5 +10,5 @@ export default function Schedule() {
                 </Text>
             </View>
         </Container>
-    )
+    );
 }

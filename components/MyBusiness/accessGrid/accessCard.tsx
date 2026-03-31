@@ -1,8 +1,9 @@
-import Ionicons from "@expo/vector-icons/Ionicons"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ComponentProps } from 'react';
 
 type Props = {
-    icon: any,
+    icon: ComponentProps<typeof Ionicons>['name'],
     title: string,
     hasNotification?: boolean,
     onPress: () => void
@@ -34,12 +35,12 @@ export const AccessCard = ({ icon, title, hasNotification = false, onPress }: Pr
                 ) : null}
             </View>
         </Pressable>
-    )
-}
+    );
+};
 
 const style = StyleSheet.create({
     cardShadow: {
-        shadowColor: "#000000",
+        shadowColor: '#000000',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -47,5 +48,5 @@ const style = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 3.80,
         elevation: 5,
-    }
-})
+    },
+});

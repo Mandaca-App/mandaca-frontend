@@ -1,6 +1,6 @@
-import { router } from "expo-router"
-import { View } from "react-native"
-import { AccessCard } from "./accessCard"
+import { router } from 'expo-router';
+import { View } from 'react-native';
+import { AccessCard } from './accessCard';
 
 type AccessGridProps = {
     notifications?: {
@@ -42,5 +42,5 @@ export const AccessGrid = ({ notifications = {} }: AccessGridProps) => {
                 onPress={() => router.navigate('/schedule')}
             />
         </View>
-    )
-}
+    );
+};

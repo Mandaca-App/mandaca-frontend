@@ -1,5 +1,5 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Props = {
     imageUrl?: string,
@@ -22,7 +22,8 @@ export const OverviewCard = ({ imageUrl, onPress }: Props) => {
                     className="w-[121px] h-[121px] rounded-[10px]"
                 />
             ) : (
-                <View className="w-[121px] h-[121px] rounded-[10px] bg-gray-100 justify-center items-center">
+                <View className="w-[121px] h-[121px] rounded-[10px] bg-gray-100 
+                justify-center items-center">
                     <Ionicons name="image-outline" size={40} color="#ccc" />
                     <Text className="text-xs text-gray-400 text-center mt-2">
                         Sem imagem
@@ -42,12 +43,12 @@ export const OverviewCard = ({ imageUrl, onPress }: Props) => {
                 </Text>
             </View>
         </Pressable>
-    )
-}
+    );
+};
 
 const style = StyleSheet.create({
     cardShadow: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -55,5 +56,5 @@ const style = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 3.80,
         elevation: 5,
-    }
-})
+    },
+});
