@@ -1,16 +1,17 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text } from 'react-native';
+import { ComponentProps } from 'react';
 
 type Props = {
-    icon: any,
+    icon: ComponentProps<typeof Ionicons>['name'],
     title: string,
     description: string,
-    route: ()=> void
+    route: () => void
 }
 
-export const GridBox = ({icon, title, description, route}: Props)=> {
-    return(
-        <Pressable 
+export const GridBox = ({ icon, title, description, route }: Props) => {
+    return (
+        <Pressable
             className="bg-light px-4 py-6 justify-center items-center rounded-2xl"
             style={style.cardShadow}
             onPress={route}
@@ -29,13 +30,13 @@ export const GridBox = ({icon, title, description, route}: Props)=> {
 const style = StyleSheet.create({
     cardShadow: {
         shadowColor: '#000',
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 1,
-                shadowRadius: 3.80,
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 1,
+        shadowRadius: 3.80,
 
-                elevation: 5,
+        elevation: 5,
     },
 });

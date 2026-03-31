@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 export default function MyBusiness() {
-    // requisição para buscar dados do backend: 
+    // requisição para buscar dados do backend:
     // imagem e notificações (menu, reservations, reviews, schedule)
 
     return (
