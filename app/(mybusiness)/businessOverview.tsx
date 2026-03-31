@@ -1,4 +1,5 @@
 import { Container } from '@/components/general/container';
+import { Header } from '@/components/general/header';
 import Address from '@/components/overview/address';
 import EditButton from '@/components/overview/editButton';
 import Journey from '@/components/overview/journey';
@@ -9,6 +10,7 @@ export default function Overview () {
     const address = 'Rua Parnaíba, 23. João Pessoa, Paraíba.'
     return(
         <Container>
+            <Header title="Visão geral" showBackButton showNotificationButton />
             <Journey story={story}/>
             <Address address={address}/>
             <EditButton/>
