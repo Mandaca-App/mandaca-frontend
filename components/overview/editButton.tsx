@@ -1,41 +1,35 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export default function EditButton () {
-
-    const handleEditButton = ()=> {
-
-    }
-    return(
-        <View 
-            style={style.cardShadow}
-            className="w-full p-6 rounded-xl bg-light"
-        >
-            <Pressable
-                onPress={()=> handleEditButton}
-                className="flex-row justify-between items-center"
-                >
-                <Ionicons name="brush" size={30} color="#C34342" />
-                <View>
-                    <Text className="text-xl font-semibold">Editar</Text>
-                    <Text>Atualize sua jornada, fotos e endereço</Text>
-                </View>
-                <Ionicons name="arrow-forward" size={25} color="#2C2C2C" />
-            </Pressable>
+export default function EditButton() {
+  const handleEditButton = () => {};
+  return (
+    <View style={style.cardShadow} className="w-full p-6 rounded-xl bg-light">
+      <Pressable
+        onPress={() => handleEditButton}
+        className="flex-row justify-between items-center"
+      >
+        <Ionicons name="brush" size={30} color="#C34342" />
+        <View>
+          <Text className="text-xl font-semibold">Editar</Text>
+          <Text>Atualize sua jornada, fotos e endereço</Text>
         </View>
-    )
+        <Ionicons name="arrow-forward" size={25} color="#2C2C2C" />
+      </Pressable>
+    </View>
+  );
 }
 
 const style = StyleSheet.create({
-    cardShadow: {
-        shadowColor: '#000',
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 1,
-                shadowRadius: 3.80,
-
-                elevation: 2,
+  cardShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
+    shadowOpacity: 1,
+    shadowRadius: 3.8,
+
+    elevation: 2,
+  },
 });

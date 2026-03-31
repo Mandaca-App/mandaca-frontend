@@ -1,9 +1,9 @@
 import { Header } from '@/components/general/header';
 
 type Props = {
-    title?: string;
-}
+  title?: string;
+};
 
 export const MyBusinessHeader = ({ title = 'Minha Empresa' }: Props) => {
-    return <Header title={title} showBackButton showNotificationButton />;
+  return <Header title={title} showBackButton showNotificationButton />;
 };
