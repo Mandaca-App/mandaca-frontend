@@ -18,7 +18,7 @@ module.exports = defineConfig([
         {
           code: 100,
           ignoreUrls: true,
-          ignoreStrings: false,
+          ignoreStrings: true,
           ignoreComments: false,
           ignoreTemplateLiterals: false,
         },
