@@ -1,6 +1,6 @@
-import React from "react"
-import { ScrollView, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import React from 'react';
+import { ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Props = {
     children: React.ReactNode
@@ -15,5 +15,5 @@ export const Container = ({children}: Props)=> {
                 </View>
             </ScrollView>
         </SafeAreaView>
-    )
-}
+    );
+};

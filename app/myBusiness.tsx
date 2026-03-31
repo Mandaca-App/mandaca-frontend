@@ -1,9 +1,9 @@
-import { Container } from "@/components/general/container";
+import { Container } from '@/components/general/container';
 import { Header } from "@/components/general/header";
 import { OverviewCard } from "@/components/MyBusiness/overviewCard/main";
 import { AccessGrid } from "@/components/MyBusiness/accessGrid/main";
 import { router } from "expo-router";
-import { View } from "react-native";
+import { View } from 'react-native';
 
 export default function MyBusiness() {
     // requisição para buscar dados do backend: imagem e notificações (menu, reservations, reviews, schedule)
@@ -24,5 +24,5 @@ export default function MyBusiness() {
                 }} />
             </View>
         </Container>
-    )
+    );
 }
