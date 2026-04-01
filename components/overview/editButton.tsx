@@ -6,7 +6,7 @@ export default function EditButton() {
   return (
     <View style={style.cardShadow} className="w-full p-6 rounded-xl bg-light">
       <Pressable
-        onPress={() => handleEditButton}
+        onPress={handleEditButton}
         className="flex-row justify-between items-center"
       >
         <Ionicons name="brush" size={30} color="#C34342" />
