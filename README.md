@@ -1,11 +1,11 @@
-#  Mandaca App - React Native + Expo
+# Mandaca App - React Native + Expo
 
 Este é um aplicativo desenvolvido em **React Native utilizando Expo**.  
 Siga os passos abaixo para configurar o ambiente e rodar o projeto localmente.
 
 ---
 
-#  Pré-requisitos
+# Pré-requisitos
 
 Antes de começar, você precisa ter instalado na sua máquina:
 
@@ -15,15 +15,15 @@ Antes de começar, você precisa ter instalado na sua máquina:
 
 ### Links para instalação
 
-- Node.js: https://nodejs.org  
-- Git: https://git-scm.com  
-- Expo Go  
-  - Android: https://play.google.com/store/apps/details?id=host.exp.exponent  
-  - iOS: https://apps.apple.com/app/expo-go/id982107779  
+- Node.js: https://nodejs.org
+- Git: https://git-scm.com
+- Expo Go
+  - Android: https://play.google.com/store/apps/details?id=host.exp.exponent
+  - iOS: https://apps.apple.com/app/expo-go/id982107779
 
 ---
 
-#  Clonar o projeto
+# Clonar o projeto
 
 #### Clone o repositório:
 
@@ -44,7 +44,7 @@ npx expo start
 
 Isso abrirá o Expo Developer Tools no navegador.
 
-#  Rodar no celular
+# Rodar no celular
 
 Instale o Expo Go no seu celular
 
@@ -56,7 +56,8 @@ Escaneie o QR Code que aparece no terminal ou no navegador
 
 O aplicativo será aberto automaticamente no celular.
 
-#  Rodar no emulador
+# Rodar no emulador
+
 Android Studio
 
 Se você tiver o Android Studio instalado:
@@ -69,7 +70,7 @@ npx expo start
 
 Pressione A no terminal para abrir no Android.
 
-#  Tecnologias utilizadas
+# Tecnologias utilizadas
 
 React Native
 
@@ -81,7 +82,8 @@ Node.js
 
 Nativewind
 
-#  Problemas comuns
+# Problemas comuns
+
 Erro de dependências
 
 Tente apagar as dependências e instalar novamente:
@@ -89,4 +91,4 @@ Tente apagar as dependências e instalar novamente:
 rm -rf node_modules
 npm install
 Limpar cache do Expo
-npx expo start -c"# mandaca-app" 
+npx expo start -c"# mandaca-app"

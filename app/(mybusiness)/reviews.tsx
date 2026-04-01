@@ -1,11 +1,11 @@
 import { Container } from '@/components/general/container';
 import { Text, View } from 'react-native';
 
-export default function Help() {
+export default function Reviews() {
   return (
     <Container>
       <View>
-        <Text>Ajuda</Text>
+        <Text>Avaliações</Text>
       </View>
     </Container>
   );

@@ -3,40 +3,36 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { ComponentProps } from 'react';
 
 type Props = {
-    icon: ComponentProps<typeof Ionicons>['name'],
-    title: string,
-    description: string,
-    route: () => void
-}
+  icon: ComponentProps<typeof Ionicons>['name'];
+  title: string;
+  description: string;
+  route: () => void;
+};
 
 export const GridBox = ({ icon, title, description, route }: Props) => {
-    return (
-        <Pressable
-            className="bg-light px-4 py-6 justify-center items-center rounded-2xl"
-            style={style.cardShadow}
-            onPress={route}
-        >
-            <Ionicons name={icon} size={30} color="#C34342" />
-            <Text className="text-xl font-semibold text-center">
-                {title}
-            </Text>
-            <Text className="text-lg font-semibold text-center">
-                {description}
-            </Text>
-        </Pressable>
-    );
+  return (
+    <Pressable
+      className="bg-light px-4 py-6 justify-center items-center rounded-2xl"
+      style={style.cardShadow}
+      onPress={route}
+    >
+      <Ionicons name={icon} size={30} color="#C34342" />
+      <Text className="text-xl font-semibold text-center">{title}</Text>
+      <Text className="text-lg font-semibold text-center">{description}</Text>
+    </Pressable>
+  );
 };
 
 const style = StyleSheet.create({
-    cardShadow: {
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 1,
-        shadowRadius: 3.80,
-
-        elevation: 5,
+  cardShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
+    shadowOpacity: 1,
+    shadowRadius: 3.8,
+
+    elevation: 5,
+  },
 });
