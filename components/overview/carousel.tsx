@@ -36,7 +36,7 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
         const backgroundColor = interpolateColor(
             animationProgress.value,
             [0, 1],
-            [DOT_INACTIVE_COLOR, DOT_ACTIVE_COLOR]
+            [DOT_INACTIVE_COLOR, DOT_ACTIVE_COLOR],
         );
 
         const scale = withTiming(active ? 1.2 : 1.0, { duration: 300 });
