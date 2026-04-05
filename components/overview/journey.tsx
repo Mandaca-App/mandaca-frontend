@@ -12,7 +12,7 @@ export default function Journey({ story }: Props) {
       className="bg-light rounded-xl items-center justify-center p-4 gap-8"
     >
       <Text className="text-lg font-semibold">Nossa jornada gastronômica</Text>
-      <Carousel/>
+      <Carousel />
       <Text>{story}</Text>
     </View>
   );

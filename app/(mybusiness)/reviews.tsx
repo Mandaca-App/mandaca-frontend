@@ -46,9 +46,7 @@ export default function Reviews() {
           </View>
         ) : (
           <View className="items-center justify-center py-12">
-            <Text
-              className="text-dark text-center text-sm"
-            >
+            <Text className="text-dark text-center text-sm">
               Nenhuma avaliação encontrada nesta categoria.
             </Text>
           </View>
