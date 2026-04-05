@@ -1,7 +1,7 @@
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
-import { OverviewCard } from '@/components/MyBusiness/overviewCard/main';
 import { AccessGrid } from '@/components/MyBusiness/accessGrid/main';
+import { OverviewCard } from '@/components/MyBusiness/overviewCard/main';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 

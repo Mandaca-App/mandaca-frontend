@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import Carousel from './carousel';
 
 type Props = {
   story: string;
@@ -11,7 +12,7 @@ export default function Journey({ story }: Props) {
       className="bg-light rounded-xl items-center justify-center p-4 gap-8"
     >
       <Text className="text-lg font-semibold">Nossa jornada gastronômica</Text>
-      <View className="w-full h-60 bg-primary rounded-xl"></View>
+      <Carousel/>
       <Text>{story}</Text>
     </View>
   );
