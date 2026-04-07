@@ -14,6 +14,9 @@ type Props = {
 
 export default function AudioBox({ audio, setAudio }: Props) {
 
+    audio
+    setAudio
+
     const scale = useSharedValue(1)
 
     const animatedStyle = useAnimatedStyle(() => {
