@@ -1,11 +1,11 @@
-import Ionicons from "@expo/vector-icons/Ionicons"
-import { Pressable, Text, View } from "react-native"
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Pressable, Text, View } from 'react-native'
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
-    withTiming
-} from "react-native-reanimated"
+    withTiming,
+} from 'react-native-reanimated'
 
 type Props = {
     audio: string
@@ -18,7 +18,7 @@ export default function AudioBox({ audio, setAudio }: Props) {
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ scale: scale.value }]
+            transform: [{ scale: scale.value }],
         }
     })
 
@@ -26,7 +26,7 @@ export default function AudioBox({ audio, setAudio }: Props) {
         scale.value = withRepeat(
             withTiming(1.2, { duration: 600 }),
             -1,
-            true
+            true,
         )
     }
 

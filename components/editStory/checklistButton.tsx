@@ -1,11 +1,11 @@
-import { useEffect } from "react"
-import { Pressable, Text } from "react-native"
+import { useEffect } from 'react'
+import { Pressable, Text } from 'react-native'
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
     useSharedValue,
-    withTiming
-} from "react-native-reanimated"
+    withTiming,
+} from 'react-native-reanimated'
 
 type Props = {
     text: string
@@ -25,13 +25,13 @@ export default function ChecklistButton({ text, check }: Props) {
             backgroundColor: interpolateColor(
                 progress.value,
                 [0, 1],
-                ['transparent', '#C34342'] // verde
+                ['transparent', '#C34342'], // verde
             ),
             borderColor: interpolateColor(
                 progress.value,
                 [0, 1],
-                ['#000', '#C34342']
-            )
+                ['#000', '#C34342'],
+            ),
         }
     })
 

@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { TextInput, View } from "react-native"
+import { useState } from 'react'
+import { TextInput, View } from 'react-native'
 
 type Props = {
     text: string,

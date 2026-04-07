@@ -1,5 +1,5 @@
-import { View } from "react-native";
-import ToggleWriteButton from "./toggleWriteButton";
+import { View } from 'react-native';
+import ToggleWriteButton from './toggleWriteButton';
 
 type Props = {
     toggle: 'WRITE' | 'AUDIO'
@@ -18,7 +18,7 @@ export default function ToggleWrite ({toggle, setToggle}: Props) {
                 text='Gravar Áudio'
                 tag='AUDIO' 
                 toggle={toggle} 
-                handlePress={()=> setToggle("AUDIO")}
+                handlePress={()=> setToggle('AUDIO')}
             />
         </View>
     )

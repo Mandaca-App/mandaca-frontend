@@ -1,8 +1,8 @@
-import { Pressable, Text } from "react-native"
+import { Pressable, Text } from 'react-native'
 import Animated, {
     useAnimatedStyle,
-    withTiming
-} from "react-native-reanimated"
+    withTiming,
+} from 'react-native-reanimated'
 
 type Props = {
     text: string
@@ -15,7 +15,7 @@ export default function ToggleWriteButton({
     text,
     handlePress,
     toggle,
-    tag
+    tag,
 }: Props) {
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -24,8 +24,8 @@ export default function ToggleWriteButton({
         return {
             backgroundColor: withTiming(
                 isActive ? '#ffffff' : 'transparent',
-                { duration: 300 }
-            )
+                { duration: 300 },
+            ),
         }
     })
 
