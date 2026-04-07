@@ -1,0 +1,17 @@
+import { Container } from '@/components/general/container';
+import { Header } from '@/components/general/header';
+import FileUpload from '@/components/manageImages/fileUpload';
+import ImagesList from '@/components/manageImages/imagesList';
+import { View } from 'react-native';
+
+export default function ManageImages () {
+    return(
+        <Container>
+            <View className="gap-6">
+                <Header title="Editar Imagens" showBackButton showNotificationButton />
+                <FileUpload/>
+                <ImagesList/>
+            </View>
+        </Container>
+    )
+}

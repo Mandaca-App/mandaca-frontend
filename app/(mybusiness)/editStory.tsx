@@ -3,7 +3,9 @@ import Checklist from '@/components/editStory/checklist';
 import InputBox from '@/components/editStory/inputBox';
 import ToggleWrite from '@/components/editStory/toggleWrite';
 import { Container } from '@/components/general/container';
+import GeneralButton from '@/components/general/generalButton';
 import { Header } from '@/components/general/header';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -12,6 +14,10 @@ export default function EditStory() {
     const [text, setText] = useState('')
     const [audio, setAudio] = useState('')
     
+    const handlePress = ()=> {
+        router.navigate('/(mybusiness)/manageImages')
+    }
+
     return (
         <Container>
             <View className='gap-6'>
@@ -26,6 +32,7 @@ export default function EditStory() {
                         <AudioBox audio={audio} setAudio={setAudio}/>
                 }
                 <Checklist/>
+                <GeneralButton text='Salvar' handlePress={handlePress}/>
             </View>
         </Container>
   );
