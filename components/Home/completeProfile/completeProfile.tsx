@@ -7,25 +7,31 @@ export const CompleteProfile = () => {
     const [enterprise, setEnterprise] = useState<Enterprise | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        let isMounted = true;
-        
-        const getEnterprise = async () => {
-            try {
-                const enterpriseId = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
-                const response = await axios.get(
-                    `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`,
-                );
-                if (isMounted) setEnterprise(response.data);
-            } catch (error) {
-                console.error('Erro ao buscar empresa:', error);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
+     const getEnterprise = async () => {
+        try {
+            const enterpriseId =
+                'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
+            const response = await axios.get(
+                `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`
+            );
+
+            // 🔥 validação extra (evita crash)
+            if (response.data && typeof response.data.porcentagem === 'number') {
+                setEnterprise(response.data);
+            } else {
+                console.warn('Resposta inesperada:', response.data);
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar empresa:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         getEnterprise();
-        return () => { isMounted = false; }; // Limpa o efeito para evitar erros de memória
     }, []);
 
     if (loading) {
@@ -61,7 +67,7 @@ const style = StyleSheet.create({
         padding: 24,
         backgroundColor: '#FFF', // Substitua 'light' pela cor real para testar
         borderRadius: 24,
-        gap: 16,
+        gap: 16
     },
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     title: { fontWeight: 'bold', fontSize: 24 },
