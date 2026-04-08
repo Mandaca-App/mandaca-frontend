@@ -52,3 +52,21 @@ export const Fonts = Platform.select({
     mono: 'SFMono-Regular, Menlo, Monaco, Consolas, \'Liberation Mono\', \'Courier New\', monospace',
   },
 });
+
+export const SENTIMENT_CONFIG = {
+  elogios: {
+    label: 'Elogio',
+    bgColor: '#F4EBE8',
+    textColor: '#AD3C00',
+  },
+  dicas: {
+    label: 'Dicas',
+    bgColor: '#F9F3E9',
+    textColor: '#D19E49',
+  },
+  duvidas: {
+    label: 'Dúvidas',
+    bgColor: '#DBEAFE',
+    textColor: '#004BDA',
+  },
+};
