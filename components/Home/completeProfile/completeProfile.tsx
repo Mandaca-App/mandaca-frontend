@@ -13,7 +13,7 @@ export const CompleteProfile = () => {
                 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
             const response = await axios.get(
-                `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`
+                `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`,
             );
 
             // 🔥 validação extra (evita crash)
@@ -67,7 +67,7 @@ const style = StyleSheet.create({
         padding: 24,
         backgroundColor: '#FFF', // Substitua 'light' pela cor real para testar
         borderRadius: 24,
-        gap: 16
+        gap: 16,
     },
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     title: { fontWeight: 'bold', fontSize: 24 },
