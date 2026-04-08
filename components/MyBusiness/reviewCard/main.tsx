@@ -1,30 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
-
-export type ReviewSentiment = 'elogios' | 'dicas' | 'duvidas';
+import { ReviewSentiment } from '../../../types';
+import { SENTIMENT_CONFIG } from '../../../constants/theme';
 
 interface ReviewCardProps {
   name: string;
   sentiment: ReviewSentiment;
   comment: string;
 }
-
-const SENTIMENT_CONFIG = {
-  elogios: {
-    label: 'Elogio',
-    bgClass: 'bg-orange-50',
-    textClass: 'text-orange-700',
-  },
-  dicas: {
-    label: 'Dicas',
-    bgClass: 'bg-amber-50',
-    textClass: 'text-amber-600',
-  },
-  duvidas: {
-    label: 'Dúvidas',
-    bgClass: 'bg-blue-50',
-    textClass: 'text-blue-700',
-  },
-};
 
 const getSimpleName = (fullName: string): string => {
   const parts = fullName.trim().split(' ');
@@ -66,10 +48,12 @@ export const ReviewCard = ({ name, sentiment, comment }: ReviewCardProps) => {
         </Text>
 
         <View
-          className={`${config.bgClass} rounded-full justify-center items-center w-20 h-6`}
+          className="rounded-full justify-center items-center w-20 h-6"
+          style={{ backgroundColor: config.bgColor }}
         >
           <Text
-            className={`${config.textClass} font-medium leading-4 text-sm`}
+            className="font-medium leading-4 text-sm"
+            style={{ color: config.textColor }}
             numberOfLines={1}
           >
             {config.label}

@@ -1,4 +1,4 @@
-import { ReviewSentiment } from './main';
+import { ReviewSentiment } from '../../../types';
 
 export interface Review {
   id: number;
