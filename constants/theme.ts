@@ -45,9 +45,28 @@ export const Fonts = Platform.select({
     mono: 'monospace',
   },
   web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    sans: 'system-ui, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif',
+    serif: 'Georgia, \'Times New Roman\', serif',
+    rounded:
+      '\'SF Pro Rounded\', \'Hiragino Maru Gothic ProN\', Meiryo, \'MS PGothic\', sans-serif',
+    mono: 'SFMono-Regular, Menlo, Monaco, Consolas, \'Liberation Mono\', \'Courier New\', monospace',
   },
 });
+
+export const SENTIMENT_CONFIG = {
+  elogios: {
+    label: 'Elogio',
+    bgColor: '#F4EBE8',
+    textColor: '#AD3C00',
+  },
+  dicas: {
+    label: 'Dicas',
+    bgColor: '#F9F3E9',
+    textColor: '#D19E49',
+  },
+  duvidas: {
+    label: 'Dúvidas',
+    bgColor: '#DBEAFE',
+    textColor: '#004BDA',
+  },
+};
