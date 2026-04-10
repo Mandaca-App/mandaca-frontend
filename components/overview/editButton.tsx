@@ -1,12 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function EditButton() {
-  const handleEditButton = () => {};
   return (
     <View style={style.cardShadow} className="w-full p-6 rounded-xl bg-light">
       <Pressable
-        onPress={handleEditButton}
+        onPress={()=> router.navigate('/(mybusiness)/editStory')}
         className="flex-row justify-between items-center"
       >
         <Ionicons name="brush" size={30} color="#C34342" />

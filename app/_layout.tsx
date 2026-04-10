@@ -15,6 +15,8 @@ export default function RootLayout() {
         <Stack.Screen name="(mybusiness)/reviews" />
         <Stack.Screen name="(mybusiness)/schedule" />
         <Stack.Screen name="(mybusiness)/businessOverview" />
+        <Stack.Screen name="(mybusiness)/editStory" />
+        <Stack.Screen name="(mybusiness)/manageImages" />
         <Stack.Screen name="report" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="help" />
