@@ -9,7 +9,6 @@ import { Alert, View } from 'react-native';
 
 export default function MyBusiness() {
   const [enterprise, setEnterprise] = useState<EnterpriseOverview | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const getEnterpriseOverview = async () => {
     try {
@@ -32,11 +31,10 @@ export default function MyBusiness() {
       if (data && data.id_empresa) {
         setEnterprise(data);
       }
-    } catch (error) {
-      console.error('Erro ao buscar empresa:', error);
+    } catch {
       Alert.alert('Erro', 'Não foi possível carregar os dados');
     } finally {
-      setLoading(false);
+      // setLoading(false) - não precisa pois Loading não é mais usado
     }
   };
 

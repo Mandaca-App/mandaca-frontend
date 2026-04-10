@@ -10,30 +10,28 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 export default function EditStory() {
-    const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE')
-    const [text, setText] = useState('')
-    const [audio, setAudio] = useState('')
-    
-    const handlePress = ()=> {
-        router.navigate('/(mybusiness)/manageImages')
-    }
+  const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE');
+  const [text, setText] = useState('');
+  const [audio, setAudio] = useState('');
 
-    return (
-        <Container>
-            <View className='gap-6'>
-                <Header title="Editar História" showBackButton showNotificationButton />
-                <Text className='pt-8 text-center text-lg font-semibold'>Conte sua história para nosso assistente, que vai resumir de uma forma objetiva e original.</Text>
-                <ToggleWrite toggle={toggle} setToggle={setToggle}/>
-                {toggle === 'WRITE' && 
-                    <InputBox text={text} setText={setText}/>
-                }
-                {
-                    toggle === 'AUDIO' &&
-                        <AudioBox audio={audio} setAudio={setAudio}/>
-                }
-                <Checklist/>
-                <GeneralButton text='Salvar' handlePress={handlePress}/>
-            </View>
-        </Container>
+  const handlePress = () => {
+    router.navigate('/(mybusiness)/manageImages');
+  };
+
+  return (
+    <Container>
+      <View className="gap-6">
+        <Header title="Editar História" showBackButton showNotificationButton />
+        <Text className="pt-8 text-center text-lg font-semibold">
+          Conte sua história para nosso assistente, que vai resumir de uma forma
+          objetiva e original.
+        </Text>
+        <ToggleWrite toggle={toggle} setToggle={setToggle} />
+        {toggle === 'WRITE' && <InputBox text={text} setText={setText} />}
+        {toggle === 'AUDIO' && <AudioBox audio={audio} setAudio={setAudio} />}
+        <Checklist />
+        <GeneralButton text="Salvar" handlePress={handlePress} />
+      </View>
+    </Container>
   );
 }

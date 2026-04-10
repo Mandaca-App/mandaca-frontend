@@ -7,6 +7,7 @@ type State = {
     image: string | null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export default class FileUpload extends Component<{}, State> {
     state: State = {
         image: null,
@@ -35,12 +36,9 @@ export default class FileUpload extends Component<{}, State> {
 
         return (
             <Pressable onPress={this.pickImage}>
-                <Text className="font-semibold text-lg mb-4">
-                    Imagens ou mídias
-                </Text>
+                <Text className="font-semibold text-lg mb-4">Imagens ou mídias</Text>
 
                 <View className="w-full h-60 gap-4 rounded-xl border border-dark/15 justify-center items-center overflow-hidden">
-                    
                     {image ? (
                         <Image
                             source={{ uri: image }}
@@ -55,7 +53,6 @@ export default class FileUpload extends Component<{}, State> {
                             </Text>
                         </>
                     )}
-
                 </View>
             </Pressable>
         );
