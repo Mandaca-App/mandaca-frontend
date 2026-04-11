@@ -1,5 +1,5 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type Props = {
   imageUrl?: string;
@@ -7,7 +7,6 @@ type Props = {
 };
 
 export const OverviewCard = ({ imageUrl, onPress }: Props) => {
-  // requisição para receber imagem do estabelecimento
 
   return (
     <Pressable
@@ -33,7 +32,6 @@ export const OverviewCard = ({ imageUrl, onPress }: Props) => {
         </View>
       )}
 
-      {/* Conteúdo textos */}
       <View className="flex-1 justify-center gap-5">
         <View className="justify-center items-center">
           <Text className="text-base font-bold leading-6 text-center">

@@ -1,6 +1,7 @@
-import { getImagesEnterprise } from '@/services/getImagesEnterprise';
+import { getImagesByEnterprise } from '@/services/imagesEnterprise';
 import { ImageEnterprise } from '@/types/imageEnterprise';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
 import {
     Dimensions,
     Image,
@@ -9,13 +10,13 @@ import {
     ScrollView,
     View,
 } from 'react-native';
+
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated';
-
 
 const { width } = Dimensions.get('window');
 
@@ -29,7 +30,7 @@ interface PaginationDotProps {
 const PaginationDot = ({ active }: PaginationDotProps) => {
     const animationProgress = useSharedValue(active ? 1 : 0);
 
-    useEffect(() => {
+    React.useEffect(() => {
         animationProgress.value = withTiming(active ? 1 : 0, { duration: 300 });
     }, [active]);
 
@@ -62,18 +63,20 @@ export default function Carousel() {
 
     const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
-    useEffect(() => {
-        const loadImages = async () => {
-            try {
-                const data = await getImagesEnterprise(ENTERPRISE_ID);
-                setImages(data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    const loadImages = async () => {
+        try {
+            const data = await getImagesByEnterprise(ENTERPRISE_ID);
+            setImages(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-        loadImages();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadImages();
+        }, []),
+    );
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollOffset = event.nativeEvent.contentOffset.x;
