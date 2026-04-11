@@ -16,7 +16,6 @@ export const CompleteProfile = () => {
                 `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`,
             );
 
-            // 🔥 validação extra (evita crash)
             if (response.data && typeof response.data.porcentagem === 'number') {
                 setEnterprise(response.data);
             } else {
@@ -65,7 +64,7 @@ export const CompleteProfile = () => {
 const style = StyleSheet.create({
     card: {
         padding: 24,
-        backgroundColor: '#FFF', // Substitua 'light' pela cor real para testar
+        backgroundColor: '#FFF',
         borderRadius: 24,
         gap: 16,
     },
