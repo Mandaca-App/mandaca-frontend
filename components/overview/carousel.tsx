@@ -1,11 +1,12 @@
+import { getImagesEnterprise } from '@/services/getImagesEnterprise';
+import { ImageEnterprise } from '@/types/imageEnterprise';
 import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
-    Image, // Importe isso
+    Image,
     NativeScrollEvent,
     NativeSyntheticEvent,
     ScrollView,
-    StyleSheet,
     View,
 } from 'react-native';
 import Animated, {
@@ -15,12 +16,12 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
+
 const { width } = Dimensions.get('window');
 
 const DOT_ACTIVE_COLOR = '#C34342';
 const DOT_INACTIVE_COLOR = '#C7C7CC';
 
-// 1. Tipagem para as Props da bolinha
 interface PaginationDotProps {
     active: boolean;
 }
@@ -47,34 +48,44 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
         };
     });
 
-    return <Animated.View style={[styles.dot, animatedStyle]} />;
+    return (
+        <Animated.View className="w-2.5 h-2.5 rounded-full mx-1" style={animatedStyle} />
+    );
 };
 
 export default function Carousel() {
     const ITEM_WIDTH = width * 0.8;
-    const SPACING = 1;
+    const SPACING = 8;
+
     const [activeIndex, setActiveIndex] = useState(0);
+    const [images, setImages] = useState<ImageEnterprise[]>([]);
 
-    const images = [
-        'https://picsum.photos/id/1018/800/400',
-        'https://picsum.photos/id/1015/800/400',
-        'https://picsum.photos/id/1019/800/400',
-        'https://picsum.photos/id/1020/800/400',
-        'https://picsum.photos/id/1024/800/400',
-    ];
+    const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
-    // 2. Tipagem do evento de Scroll
+    useEffect(() => {
+        const loadImages = async () => {
+            try {
+                const data = await getImagesEnterprise(ENTERPRISE_ID);
+                setImages(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        loadImages();
+    }, []);
+
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollOffset = event.nativeEvent.contentOffset.x;
         const index = Math.round(scrollOffset / (ITEM_WIDTH + SPACING));
-        
+
         if (index !== activeIndex && index >= 0 && index < images.length) {
             setActiveIndex(index);
         }
     };
 
     return (
-        <View style={styles.container}>
+        <View className="flex-1 items-center justify-center">
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -83,63 +94,28 @@ export default function Carousel() {
                 onMomentumScrollEnd={handleScroll}
                 scrollEventThrottle={16}
             >
-                {images.map((uri, index) => (
+                {images.map((item) => (
                     <View
-                        key={index}
-                        style={[
-                            styles.card,
-                            {
-                                width: ITEM_WIDTH,
-                                marginRight: SPACING,
-                            },
-                        ]}
+                        key={item.id_foto}
+                        style={{ width: ITEM_WIDTH, marginRight: SPACING }}
+                        className="h-[200px] rounded-2xl overflow-hidden"
                     >
                         <Image
-                            source={{ uri }}
-                            style={styles.image}
+                            source={{ uri: item.url_foto_empresa }}
+                            className="w-full h-full"
                         />
                     </View>
                 ))}
             </ScrollView>
 
-            <View style={styles.paginationContainer}>
+            <View className="flex-row mt-4 items-center justify-center">
                 {images.map((_, index) => (
-                    <PaginationDot 
-                        key={index} 
-                        active={index === activeIndex} 
+                    <PaginationDot
+                        key={index}
+                        active={index === activeIndex}
                     />
                 ))}
             </View>
         </View>
     );
 }
-
-// ... estilos permanecem os mesmos
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    card: {
-        height: 200,
-        borderRadius: 16,
-        overflow: 'hidden',
-    },
-    image: {
-        width: '100%',
-        height: '100%',
-    },
-    paginationContainer: {
-        flexDirection: 'row',
-        marginTop: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    dot: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginHorizontal: 4,
-    },
-});
