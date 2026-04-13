@@ -3,6 +3,7 @@ import { ImageEnterprise } from '@/types/imageEnterprise';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
+    ActivityIndicator,
     Dimensions,
     Image,
     NativeScrollEvent,
@@ -60,12 +61,20 @@ export default function Carousel() {
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [images, setImages] = useState<ImageEnterprise[]>([]);
+    const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>({});
 
     const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
     const loadImages = async () => {
         try {
             const data = await getImagesByEnterprise(ENTERPRISE_ID);
+
+            const initialLoadingState: Record<string, boolean> = {};
+            data.forEach(item => {
+                initialLoadingState[item.id_foto] = true;
+            });
+
+            setLoadingImages(initialLoadingState);
             setImages(data);
         } catch (error) {
             console.error(error);
@@ -87,6 +96,13 @@ export default function Carousel() {
         }
     };
 
+    const handleImageLoad = (id: string) => {
+        setLoadingImages(prev => ({
+            ...prev,
+            [id]: false,
+        }));
+    };
+
     return (
         <View className="flex-1 items-center justify-center">
             <ScrollView
@@ -103,9 +119,17 @@ export default function Carousel() {
                         style={{ width: ITEM_WIDTH, marginRight: SPACING }}
                         className="h-[200px] rounded-2xl overflow-hidden"
                     >
+                        {/* 🔥 Placeholder */}
+                        {loadingImages[item.id_foto] && (
+                            <View className="absolute w-full h-full justify-center items-center bg-gray-200">
+                                <ActivityIndicator />
+                            </View>
+                        )}
+
                         <Image
                             source={{ uri: item.url_foto_empresa }}
                             className="w-full h-full"
+                            onLoad={() => handleImageLoad(item.id_foto)}
                         />
                     </View>
                 ))}
