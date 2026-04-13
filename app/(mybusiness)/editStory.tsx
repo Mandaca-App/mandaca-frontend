@@ -66,7 +66,12 @@ export default function EditStory() {
                 )}
 
                 {toggle === 'AUDIO' && (
-                    <AudioBox audio={audio} setAudio={setAudio} />
+                    <AudioBox
+                        audio={audio}
+                        setAudio={setAudio}
+                        setText={setText}
+                        setToggle={setToggle}
+                    />
                 )}
 
                 <Checklist />
