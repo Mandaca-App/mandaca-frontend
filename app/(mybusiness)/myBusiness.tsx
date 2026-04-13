@@ -33,7 +33,7 @@ export default function MyBusiness() {
     useFocusEffect(
         useCallback(() => {
             loadImages()
-        }, [loadImages])
+        }, [loadImages]),
     )
 
     return (
