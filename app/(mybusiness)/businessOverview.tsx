@@ -25,7 +25,7 @@ export default function Overview () {
                 `${BASE_URL}/enterprises/overview`,
                 {
                     params: { enterprise_id: ENTERPRISE_ID },
-                }
+                },
             );
 
             setStory(response.data.historia ?? '');
@@ -51,7 +51,7 @@ export default function Overview () {
 
             {loading ? (
                 <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator color={"#C34342"}/>
+                    <ActivityIndicator color={'#C34342'}/>
                 </View>
             ) : (
                 <>

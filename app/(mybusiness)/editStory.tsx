@@ -56,7 +56,7 @@ export default function EditStory() {
                 <Header title="Editar História" showBackButton showNotificationButton />
 
                 <Text className='pt-8 text-center text-lg font-semibold'>
-                    Conte sua história para nosso assistente, que vai resumir de uma forma objetiva e original.
+                    Conte história do seu restaurante.
                 </Text>
 
                 <ToggleWrite toggle={toggle} setToggle={setToggle} />
