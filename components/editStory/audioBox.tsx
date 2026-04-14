@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons'
-import axios from 'axios'
+import * as FileSystem from 'expo-file-system/legacy'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import Animated, {
@@ -23,7 +23,7 @@ type Props = {
 }
 
 const BASE_URL = 'https://mandaca-backend.onrender.com'
-const USER_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2'
+const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041'
 
 export default function AudioBox({ audio, setAudio, setText, setToggle }: Props) {
 
@@ -72,36 +72,33 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
 
             if (!uri) return
 
-            const formData = new FormData()
-
-            formData.append('audio', {
-                uri,
-                name: 'audio.m4a',
-                type: 'audio/m4a',
-            } as any)
-
-            formData.append('usuario_id', USER_ID)
-
-            const response = await axios.post(
+            const result = await FileSystem.uploadAsync(
                 `${BASE_URL}/transcriptions`,
-                formData,
+                uri,
                 {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
+                    httpMethod: 'POST',
+                    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                    fieldName: 'audio',
+                    mimeType: 'audio/m4a',
+                    parameters: {
+                        usuario_id: USER_ID,
                     },
-                }
+                },
             )
 
-            const texto = response.data?.historia || ''
+            if (result.status < 200 || result.status >= 300) {
+                throw new Error(`HTTP ${result.status}: ${result.body}`)
+            }
 
-            setAudio(texto)
+            const data = JSON.parse(result.body)
+            const texto = data?.historia || ''
+
             setText(texto)
-            setToggle('WRITE')
             setAudio(texto)
+            setToggle('WRITE')
 
-
-        } catch (error) {
-            console.error('Erro ao enviar áudio:', error)
+        } catch (error: any) {
+            console.error('Erro ao enviar áudio:', error?.message)
         } finally {
             setLoading(false)
         }
