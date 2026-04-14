@@ -52,7 +52,7 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
             scale.value = withRepeat(
                 withTiming(1.2, { duration: 600 }),
                 -1,
-                true
+                true,
             )
 
         } catch (error) {
