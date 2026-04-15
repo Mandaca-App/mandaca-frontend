@@ -10,7 +10,7 @@ export const CardList = ()=> {
         router.navigate('/(report)/negativePoints')
     }
     const handlePresRecomendation = ()=> {
-        router.navigate('/(report)/recomandations')
+        router.navigate('/(report)/recomendations')
     }
     return(
         <View className="mt-10 gap-8">
