@@ -1,6 +1,6 @@
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
-import { CardList } from '@/components/report/cardList';
+import { CardList } from '@/components/report/CardList';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
 import { ChatButton } from '@/components/report/chatButton';
 import { useState } from 'react';

@@ -1,6 +1,6 @@
 import { router } from 'expo-router'
 import { View } from 'react-native'
-import { CardItem } from './cardItem'
+import { CardItem } from './CardItem'
 
 export const CardList = ()=> {
     const handlePresPositive = ()=> {
