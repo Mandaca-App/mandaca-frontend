@@ -46,11 +46,11 @@ const FaqDetailScreen: React.FC = () => {
         {/* Content Section: Focused on Readability (lineHeight: 26) */}
         <View style={styles.contentSection}>
           <Text style={styles.bodyText}>
-            Para cadastrar seu negócio no Mandacá e começar a atrair turistas da região, siga este guia passo a passo:{"\n\n"}
-            1. Na sua tela inicial, navegue até a seção de ferramentas e clique no card <Text style={styles.boldText}>"Minha Empresa"</Text>.{"\n\n"}
-            2. Toque no botão de adição ou editar. Preencha todas as informações básicas: nome do local, descrição detalhada e o tipo de serviço que você oferece (ex: Gastronomia, Artesanato).{"\n\n"}
-            3. <Text style={styles.boldText}>Fotos são fundamentais!</Text> Adicione imagens bem iluminadas da fachada e do interior para gerar confiança nos visitantes.{"\n\n"}
-            4. Localização: Verifique se o ponto no mapa está correto para que o GPS leve os turistas exatamente até a sua porta.{"\n\n"}
+            Para cadastrar seu negócio no Mandacá e começar a atrair turistas da região, siga este guia passo a passo:{'\n\n'}
+            1. Na sua tela inicial, navegue até a seção de ferramentas e clique no card <Text style={styles.boldText}>"Minha Empresa"</Text>.{'\n\n'}
+            2. Toque no botão de adição ou editar. Preencha todas as informações básicas: nome do local, descrição detalhada e o tipo de serviço que você oferece (ex: Gastronomia, Artesanato).{'\n\n'}
+            3. <Text style={styles.boldText}>Fotos são fundamentais!</Text> Adicione imagens bem iluminadas da fachada e do interior para gerar confiança nos visitantes.{'\n\n'}
+            4. Localização: Verifique se o ponto no mapa está correto para que o GPS leve os turistas exatamente até a sua porta.{'\n\n'}
             5. Finalize clicando em <Text style={styles.boldText}>"Salvar"</Text>. Nossa equipe analisará os dados em no máximo 24 horas para garantir a qualidade da plataforma.
           </Text>
         </View>

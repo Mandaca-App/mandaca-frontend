@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Define types for our FAQ items
+
 type FAQItem = {
   id: number;
   title: string;
@@ -33,7 +33,7 @@ const HelpScreen: React.FC = () => {
     { id: 4, title: 'Formas de pagamento', icon: 'credit-card' },
   ];
 
-  // Handle email support
+
   const handleSendEmail = async () => {
     const email = 'suporte@mandaca.com.br';
     const subject = encodeURIComponent('Suporte - Central de Ajuda Mandacá');
@@ -46,7 +46,7 @@ const HelpScreen: React.FC = () => {
       } else {
         Alert.alert('Erro', 'Não foi possível abrir o aplicativo de e-mail.');
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o e-mail.');
     }
   };
@@ -62,7 +62,7 @@ const HelpScreen: React.FC = () => {
       } else {
         Alert.alert('Erro', 'Não foi possível realizar a chamada.');
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Ocorreu um erro ao tentar ligar para o suporte.');
     }
   };
@@ -71,9 +71,9 @@ const HelpScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       {/* Standard Fixed Header - Adjusted padding */}
       <View style={styles.headerWrapper}>
-        <Header 
-          title="Central de Ajuda" 
-          showBackButton 
+        <Header
+          title="Central de Ajuda"
+          showBackButton
           showNotificationButton={false}
           onBackPress={() => router.back()}
         />
@@ -105,18 +105,18 @@ const HelpScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Contato</Text>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.8}
-              onPress={handleSendEmail} 
+              onPress={handleSendEmail}
               style={styles.emailButton}
             >
               <MaterialIcons name="email" size={24} color="#fff" />
               <Text style={styles.contactButtonText}>Enviar E-mail</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               activeOpacity={0.8}
-              onPress={handleCallSupport} 
+              onPress={handleCallSupport}
               style={styles.phoneButton}
             >
               <MaterialIcons name="phone" size={24} color="#fff" />
