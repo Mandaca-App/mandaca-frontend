@@ -1,13 +1,6 @@
+import { FeedbackItem } from '@/types/FeedbackItem'
 import { View } from 'react-native'
 import { CardItemFeedback } from './CardItemFeedback'
-
-type FeedbackItem = {
-    id: string
-    text: string
-    changes: string
-    automaticChanges: boolean
-}
-
 export const PositiveFeedbackList = ({ handlePress }: { handlePress: () => void }) => {
 
     const feedbacks: FeedbackItem[] = [
