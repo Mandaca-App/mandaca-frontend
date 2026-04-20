@@ -6,7 +6,7 @@ import { ChatButton } from '@/components/report/chatButton';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-export default function Profile() {
+export default function Report() {
     const [loading, setLoading] = useState(false)
 
     const handlePress = ()=> {
