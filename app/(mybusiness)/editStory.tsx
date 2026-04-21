@@ -10,7 +10,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-const BASE_URL = 'https://mandaca-backend.onrender.com';
+import { API_URL } from '@/constants/api';
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function EditStory() {
@@ -33,7 +33,7 @@ export default function EditStory() {
 
             setSaving(true);
 
-            await axios.put(`${BASE_URL}/enterprises/${ENTERPRISE_ID}`, {
+            await axios.put(`${API_URL}/enterprises/${ENTERPRISE_ID}`, {
                 historia: toggle === 'WRITE' ? text.trim() : audio,
             });
 

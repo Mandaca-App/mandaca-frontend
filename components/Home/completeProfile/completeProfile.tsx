@@ -1,3 +1,4 @@
+import { API_URL } from '@/constants/api';
 import { Enterprise } from '@/types/enterprise';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ export const CompleteProfile = () => {
                 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
             const response = await axios.get(
-                `https://mandaca-backend.onrender.com/enterprises/percentage/${enterpriseId}`,
+                `${API_URL}/enterprises/percentage/${enterpriseId}`,
             );
 
             if (response.data && typeof response.data.porcentagem === 'number') {
