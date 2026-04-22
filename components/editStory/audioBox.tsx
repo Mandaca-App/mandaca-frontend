@@ -86,7 +86,7 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
             console.log('[AudioBox] URI gravada:', uri, '| MIME:', mimeType)
 
             const result = await FileSystem.uploadAsync(
-                `${API_URL}/transcriptions`,
+                `${API_URL}/transcriptions/`,
                 uri,
                 {
                     httpMethod: 'POST',
