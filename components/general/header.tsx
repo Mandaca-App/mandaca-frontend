@@ -1,6 +1,9 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
+import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
 type Props = {
   title: string;
@@ -8,7 +11,7 @@ type Props = {
   showNotificationButton?: boolean;
   onBackPress?: () => void;
   onNotificationPress?: () => void;
-  rightButtonIcon?: string;
+  rightButtonIcon?: IoniconName;
   rightButtonColor?: string;
   rightButtonBgColor?: string;
   backButtonColor?: string;
