@@ -4,11 +4,12 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    types: [labeled]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.label.name == 'build-android'
     permissions:
       pull-requests: write
     steps:
