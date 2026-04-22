@@ -8,6 +8,12 @@ type Props = {
   showNotificationButton?: boolean;
   onBackPress?: () => void;
   onNotificationPress?: () => void;
+  rightButtonIcon?: string;
+  rightButtonColor?: string;
+  rightButtonBgColor?: string;
+  backButtonColor?: string;
+  backButtonBgColor?: string;
+  backButtonSize?: number;
 };
 
 export const Header = ({
@@ -16,6 +22,12 @@ export const Header = ({
   showNotificationButton = true,
   onBackPress,
   onNotificationPress,
+  rightButtonIcon,
+  rightButtonColor = '#2C2C2C',
+  rightButtonBgColor = '#FFFFFF',
+  backButtonColor = '#2C2C2C',
+  backButtonBgColor = '#FFFFFF',
+  backButtonSize = 10,
 }: Props) => {
   const handleBack = onBackPress ? onBackPress : () => router.back();
   const handleNotification = onNotificationPress
@@ -23,28 +35,38 @@ export const Header = ({
     : () => router.navigate('/notifications');
 
   return (
-    <View className="flex flex-row justify-between items-center">
+    <View className="flex flex-row justify-between items-center gap-2">
       {showBackButton ? (
         <Pressable
-          className="h-10 w-10 bg-light rounded-full justify-center items-center"
-          style={style.cardShadow}
+          className="h-8 w-8 rounded-full justify-center items-center"
+          style={[
+            style.cardShadow,
+            { backgroundColor: backButtonBgColor, marginRight: 12 },
+          ]}
           onPress={handleBack}
         >
-          <Ionicons name="arrow-back" size={24} color="#2C2C2C" />
+          <Ionicons name="arrow-back" size={backButtonSize} color={backButtonColor} />
         </Pressable>
       ) : (
-        <View className="h-10 w-10" />
+        <View className="h-8 w-8" />
       )}
 
       <Text className="text-lg font-semibold flex-1 text-center">{title}</Text>
 
       {showNotificationButton ? (
         <Pressable
-          className="h-10 w-10 bg-light rounded-full justify-center items-center"
-          style={style.cardShadow}
+          className="h-10 w-10 rounded-full justify-center items-center"
+          style={[
+            style.cardShadow,
+            { backgroundColor: rightButtonBgColor || '#FFFFFF' },
+          ]}
           onPress={handleNotification}
         >
-          <Ionicons name="notifications" size={24} color="#2C2C2C" />
+          <Ionicons
+            name={rightButtonIcon || 'notifications'}
+            size={24}
+            color={rightButtonColor}
+          />
         </Pressable>
       ) : (
         <View className="h-10 w-10" />
