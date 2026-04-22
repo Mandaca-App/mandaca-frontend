@@ -30,7 +30,7 @@ jobs:
       - name: Build Android APK
         id: eas-build
         run: |
-          OUTPUT=$(npx eas build --platform android --profile preview --non-interactive --json 2>/dev/null)
+          OUTPUT=$(npx eas build --platform android --profile preview --non-interactive --no-wait --json 2>/dev/null)
           BUILD_ID=$(echo "$OUTPUT" | jq -r '.[0].id')
           echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
 
