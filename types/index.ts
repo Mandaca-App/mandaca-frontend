@@ -5,5 +5,5 @@ export type ChatMessage = {
     type: 'user' | 'bot';
     content: string;
     timestamp: Date;
-    contentType?: 'text' | 'audio'; // Para futuras integrações com áudio
+    contentType?: 'text' | 'audio';
 };
