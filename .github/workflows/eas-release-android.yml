@@ -135,37 +135,50 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Setup EAS CLI
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
       - name: Aguardar build e baixar APK
         env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           BUILD_ID: ${{ needs.create-release.outputs.build_id }}
         run: |
+          set +e
           echo "Aguardando conclusao do build ${BUILD_ID}..."
-          while true; do
-            RESPONSE=$(eas build:view "$BUILD_ID" --json 2>/dev/null)
-            STATUS=$(echo "$RESPONSE" | jq -r '.status' 2>/dev/null || echo "UNKNOWN")
-            if [ "$STATUS" = "FINISHED" ]; then
-              APK_URL=$(echo "$RESPONSE" | jq -r '.artifacts.applicationArchiveUrl')
-              echo "Build concluido. Baixando APK..."
-              curl -L "$APK_URL" -o mandaca-preview.apk
-              break
-            elif [ "$STATUS" = "ERRORED" ] || [ "$STATUS" = "CANCELLED" ]; then
-              echo "Build falhou com status: ${STATUS}"
-              exit 1
+          QUERY='{"query":"query($id:ID!){builds{byId(buildId:$id){id status artifacts{applicationArchiveUrl}}}}","variables":{"id":"'"${BUILD_ID}"'"}}'
+
+          for attempt in $(seq 1 60); do
+            RESPONSE=$(curl -s -X POST \
+              -H "Authorization: Bearer ${EXPO_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${QUERY}" \
+              https://api.expo.dev/graphql)
+            STATUS=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.status // empty' 2>/dev/null)
+
+            if [ -z "${STATUS}" ]; then
+              echo "Tentativa ${attempt}: resposta inesperada. Preview: $(echo "${RESPONSE}" | head -c 300)"
+              sleep 30
+              continue
             fi
-            echo "Status: ${STATUS}. Aguardando 30s..."
-            sleep 30
+
+            case "${STATUS}" in
+              FINISHED)
+                APK_URL=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.artifacts.applicationArchiveUrl')
+                echo "Build concluido. Baixando APK de ${APK_URL}..."
+                curl -L -o mandaca-preview.apk "${APK_URL}"
+                ls -lh mandaca-preview.apk
+                exit 0
+                ;;
+              ERRORED|CANCELED|CANCELLED)
+                echo "Build falhou com status: ${STATUS}"
+                exit 1
+                ;;
+              *)
+                echo "Status: ${STATUS}. Aguardando 30s (tentativa ${attempt}/60)..."
+                sleep 30
+                ;;
+            esac
           done
+
+          echo "Timeout apos 30 minutos aguardando o build"
+          exit 1
 
       - name: Anexar APK ao release existente
         env:
