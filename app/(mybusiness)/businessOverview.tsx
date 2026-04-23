@@ -9,7 +9,7 @@ import Address from '@/components/overview/address';
 import EditButton from '@/components/overview/editButton';
 import Journey from '@/components/overview/journey';
 
-const BASE_URL = 'https://mandaca-backend.onrender.com';
+import { API_URL } from '@/constants/api';
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Overview () {
@@ -22,7 +22,7 @@ export default function Overview () {
             setLoading(true);
 
             const response = await axios.get(
-                `${BASE_URL}/enterprises/overview`,
+                `${API_URL}/enterprises/overview`,
                 {
                     params: { enterprise_id: ENTERPRISE_ID },
                 },

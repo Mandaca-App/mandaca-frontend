@@ -1,3 +1,4 @@
+import { API_URL } from '@/constants/api'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import * as FileSystem from 'expo-file-system/legacy'
 import { useState } from 'react'
@@ -22,7 +23,6 @@ type Props = {
     setToggle: (t: 'WRITE' | 'AUDIO') => void
 }
 
-const BASE_URL = 'https://mandaca-backend.onrender.com'
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041'
 
 export default function AudioBox({ audio, setAudio, setText, setToggle }: Props) {
@@ -72,14 +72,27 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
 
             if (!uri) return
 
+            const extension = uri.split('.').pop()?.toLowerCase() ?? 'm4a'
+            const mimeTypeMap: Record<string, string> = {
+                'm4a': 'audio/mp4',
+                'mp4': 'audio/mp4',
+                'mp3': 'audio/mpeg',
+                '3gp': 'audio/3gpp',
+                'aac': 'audio/aac',
+                'wav': 'audio/wav',
+            }
+            const mimeType = mimeTypeMap[extension] ?? 'audio/mp4'
+
+            console.log('[AudioBox] URI gravada:', uri, '| MIME:', mimeType)
+
             const result = await FileSystem.uploadAsync(
-                `${BASE_URL}/transcriptions`,
+                `${API_URL}/transcriptions/`,
                 uri,
                 {
                     httpMethod: 'POST',
                     uploadType: FileSystem.FileSystemUploadType.MULTIPART,
                     fieldName: 'audio',
-                    mimeType: 'audio/m4a',
+                    mimeType,
                     parameters: {
                         usuario_id: USER_ID,
                     },
