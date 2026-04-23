@@ -36,7 +36,7 @@ jobs:
             NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
             echo "$NEW_VERSION" > VERSION
             git add VERSION
-            git commit -m "SCRUM-197 chore: auto-bump version to ${NEW_VERSION}"
+            git commit -m "SCRUM-198 chore: auto-bump version to ${NEW_VERSION}"
             git push origin main
             echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
           else
@@ -83,7 +83,7 @@ jobs:
           git tag "$VERSION"
           git push origin "$VERSION"
 
-      - name: Criar GitHub Release
+      - name: Gerar notas da release
         env:
           GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
           BUILD_ID: ${{ steps.eas-build.outputs.build_id }}
@@ -91,25 +91,39 @@ jobs:
           VERSION="v${{ steps.version.outputs.version }}"
           APK_URL="https://github.com/${{ github.repository }}/releases/latest/download/mandaca-preview.apk"
           EXPO_URL="https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/${BUILD_ID}"
+          GENERATED=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            --field tag_name="$VERSION" \
+            --jq '.body')
 
+          {
+            echo "## Links"
+            echo ""
+            echo "**Frontend Web (Production):** https://mandaca-frontend-production.onrender.com"
+            echo "**APK Android (Download direto):** [mandaca-preview.apk](${APK_URL})"
+            echo "**Build no Expo:** ${EXPO_URL}"
+            echo ""
+            echo "---"
+            echo ""
+            echo "$GENERATED"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Instalacao no Android"
+            echo ""
+            echo "1. Baixe o APK pelo link acima"
+            echo "2. No celular, abra o arquivo baixado (pode ser necessario habilitar *Instalar apps de fontes desconhecidas* nas configuracoes)"
+            echo "3. Siga o assistente de instalacao"
+            echo ""
+            echo "> Build preview gerado automaticamente a partir da branch \`main\`. Compativel com Android arm64-v8a."
+          } > /tmp/release-notes.md
+
+      - name: Criar GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
           gh release create "$VERSION" \
             --title "Release ${VERSION}" \
             --latest \
-            mandaca-preview.apk \
-            --notes "## Links
-
-**Frontend Web (Production):** https://mandaca-frontend-production.onrender.com
-**APK Android (Download direto):** [mandaca-preview.apk](${APK_URL})
-**Build no Expo:** ${EXPO_URL}
-
----
-
-## Instalacao no Android
-
-1. Baixe o APK pelo link acima
-2. No celular, abra o arquivo baixado (pode ser necessario habilitar *Instalar apps de fontes desconhecidas* nas configuracoes)
-3. Siga o assistente de instalacao
-
-> Build preview gerado automaticamente a partir da branch \`main\`.
-> Aponta para o backend de producao.
-> Compativel com Android arm64-v8a."
+            --notes-file /tmp/release-notes.md \
+            mandaca-preview.apk
