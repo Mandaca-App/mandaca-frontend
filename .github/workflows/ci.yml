@@ -11,15 +11,72 @@ on:
       - develop
 
 concurrency:
-  group: ${{ github.workflow}}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  validate-commits:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Check Jira pattern (ABC-123: description)"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          PATTERN='^[A-Z]{1,10}-[0-9]+: .{3,}'
+          FAILED=0
+          CHECKED=0
+
+          echo "Validating commits from $BASE_SHA to $HEAD_SHA"
+          echo "Required pattern: ABC-123: description"
+          echo "---"
+
+          while IFS= read -r line; do
+            SHA=$(echo "$line" | cut -d' ' -f1)
+            MSG=$(echo "$line" | cut -d' ' -f2-)
+
+            if echo "$MSG" | grep -qE '^Merge (pull request|branch)'; then
+              echo "  SKIP  $SHA  →  $MSG"
+              continue
+            fi
+
+            CHECKED=$((CHECKED + 1))
+
+            if echo "$MSG" | grep -qE "$PATTERN"; then
+              echo "    OK  $SHA  →  $MSG"
+            else
+              echo "  FAIL  $SHA  →  $MSG"
+              echo "        Expected: ABC-123: your description"
+              FAILED=$((FAILED + 1))
+            fi
+          done < <(git log "$BASE_SHA..$HEAD_SHA" --pretty=format:"%h %s")
+
+          echo "---"
+          echo "Checked: $CHECKED commit(s)  |  Failed: $FAILED"
+
+          if [ "$FAILED" -gt 0 ]; then
+            echo ""
+            echo "Fix the commit messages above."
+            echo "Examples of valid messages:"
+            echo "  PROJ-42: add login endpoint"
+            echo "  AUTH-7: fix token expiration"
+            exit 1
+          fi
+
+          echo "All commits are valid."
+
   lint:
     name: Lint (Style Check)
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,9 +96,10 @@ jobs:
   build:
     name: Build (Compilation Check)
     runs-on: ubuntu-latest
-    needs: lint
+    needs: [ validate-commits, lint ]
     timeout-minutes: 15
-
+    # validate-commits só roda em PRs, então ignoramos se foi pulado
+    if: always() && !failure() && !cancelled()
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
