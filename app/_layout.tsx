@@ -22,7 +22,8 @@ export default function RootLayout() {
         <Stack.Screen name="(report)/negativePoints" />
         <Stack.Screen name="(report)/recomendations" />
         <Stack.Screen name="settings" />
-        <Stack.Screen name="help" />
+        <Stack.Screen name="(help)/help" />
+        <Stack.Screen name="(help)/helpDetail" />
         <Stack.Screen name="profile" />
         <Stack.Screen name="notifications" />
       </Stack>
