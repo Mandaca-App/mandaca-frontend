@@ -54,19 +54,29 @@ export const Fonts = Platform.select({
 });
 
 export const SENTIMENT_CONFIG = {
-  elogios: {
-    label: 'Elogio',
-    bgColor: '#F4EBE8',
-    textColor: '#AD3C00',
+  positiva: {
+    label: 'Positiva',
+    bgColor: '#E0F9F0',
+    textColor: '#00896B',
   },
-  dicas: {
-    label: 'Dicas',
-    bgColor: '#F9F3E9',
-    textColor: '#D19E49',
+  negativa: {
+    label: 'Negativa',
+    bgColor: '#FDE8E8',
+    textColor: '#C62828',
   },
-  duvidas: {
-    label: 'Dúvidas',
-    bgColor: '#DBEAFE',
-    textColor: '#004BDA',
+  neutra: {
+    label: 'Neutra',
+    bgColor: '#F5F5F5',
+    textColor: '#424242',
+  },
+  sugestao: {
+    label: 'Sugestão',
+    bgColor: '#FFF3E0',
+    textColor: '#E65100',
+  },
+  duvida: {
+    label: 'Dúvida',
+    bgColor: '#E1F5FE',
+    textColor: '#0D47A1',
   },
 };
