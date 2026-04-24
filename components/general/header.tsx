@@ -36,7 +36,7 @@ export const Header = ({
         <View className="h-10 w-10" />
       )}
 
-      <Text className="text-lg font-semibold flex-1 text-center">{title}</Text>
+      <Text className="text-xl font-semibold flex-1 text-center">{title}</Text>
 
       {showNotificationButton ? (
         <Pressable

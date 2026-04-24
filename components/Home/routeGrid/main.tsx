@@ -16,7 +16,7 @@ export const RouteGrid = () => {
         title="Relatórios"
         description="Visão geral e 
             Insights"
-        route={() => router.navigate('/report')}
+        route={() => router.navigate('/(report)/report')}
       />
       <GridBox
         icon={'settings'}

@@ -25,7 +25,7 @@ export default function ImageItem({
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'], // novo padrão
+            mediaTypes: ['images'],
             quality: 1,
         });
 
@@ -45,7 +45,6 @@ export default function ImageItem({
             />
 
             <View className="flex-row gap-3 mt-2">
-                {/* 🔄 Substituir */}
                 <Pressable
                     onPress={handlePickImage}
                     disabled={isLoading}
@@ -60,7 +59,6 @@ export default function ImageItem({
                     )}
                 </Pressable>
 
-                {/* 🗑️ Deletar */}
                 <Pressable
                     onPress={onDelete}
                     disabled={isLoading}

@@ -1,3 +1,4 @@
+import { API_URL } from '@/constants/api';
 import { User } from '@/types/user';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
@@ -23,7 +24,7 @@ export const Header = () => {
             const userId = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
 
             const responseUser = await axios.get(
-                `https://mandaca-backend.onrender.com/users/${userId}`,
+                `${API_URL}/users/${userId}`,
             );
 
             setUser(responseUser.data);
