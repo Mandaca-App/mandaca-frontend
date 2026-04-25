@@ -21,15 +21,16 @@ type Props = {
     setAudio: (s: string) => void
     setText: (s: string) => void
     setToggle: (t: 'WRITE' | 'AUDIO') => void
+    setDetectedTopics?: (topics: string[]) => void
 }
 
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041'
 
-export default function AudioBox({ audio, setAudio, setText, setToggle }: Props) {
+export default function AudioBox({ audio, setAudio, setText, setToggle, setDetectedTopics }: Props) {
 
     const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
 
-    const [loading, setLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const scale = useSharedValue(1)
 
@@ -62,7 +63,7 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
 
     const stopRecording = async () => {
         try {
-            setLoading(true)
+            setIsLoading(true)
 
             await recorder.stop()
 
@@ -104,16 +105,27 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
             }
 
             const data = JSON.parse(result.body)
-            const texto = data?.historia || ''
+            const text = data?.historia || ''
 
-            setText(texto)
-            setAudio(texto)
+            const detectedTopics: string[] = []
+            if (data?.nome) detectedTopics.push('Nome do negócio')
+            if (data?.especialidade) detectedTopics.push('Sua especialidade (produtos/serviços)')
+            if (data?.endereco) detectedTopics.push('Localização / Bairro')
+            if (data?.historia) detectedTopics.push('Sua história ou o diferencial')
+
+            setText(text)
+            setAudio(text)
+
+            if (setDetectedTopics) {
+                setDetectedTopics(detectedTopics)
+            }
+
             setToggle('WRITE')
 
         } catch (error: any) {
             console.error('Erro ao enviar áudio:', error?.message)
         } finally {
-            setLoading(false)
+            setIsLoading(false)
         }
     }
 
@@ -130,7 +142,7 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
                 </Pressable>
             </Animated.View>
 
-            {loading ? (
+            {isLoading ? (
                 <Text className="text-primary font-semibold">
                     Processando áudio...
                 </Text>
@@ -139,8 +151,8 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
                     {recorder.isRecording
                         ? 'Gravando... solte para enviar'
                         : audio
-                        ? 'Áudio convertido com sucesso ✅'
-                        : 'Toque e segure para gravar'}
+                            ? 'Áudio convertido com sucesso ✅'
+                            : 'Toque e segure para gravar'}
                 </Text>
             )}
         </View>

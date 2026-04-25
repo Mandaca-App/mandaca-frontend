@@ -17,9 +17,10 @@ export default function EditStory() {
     const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE');
     const [text, setText] = useState('');
     const [audio, setAudio] = useState('');
-    const [saving, setSaving] = useState(false);
+    const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
+    const [isSaving, setIsSaving] = useState(false);
 
-    const handlePress = async () => {
+    const handleSave = async () => {
         try {
             if (toggle === 'WRITE' && !text.trim()) {
                 Alert.alert('Atenção', 'Digite uma história antes de continuar.');
@@ -31,7 +32,7 @@ export default function EditStory() {
                 return;
             }
 
-            setSaving(true);
+            setIsSaving(true);
 
             await axios.put(`${API_URL}/enterprises/${ENTERPRISE_ID}`, {
                 historia: toggle === 'WRITE' ? text.trim() : audio,
@@ -39,6 +40,7 @@ export default function EditStory() {
 
             setText('');
             setAudio('');
+            setDetectedTopics([]);
 
             router.navigate('/(mybusiness)/manageImages');
 
@@ -46,7 +48,7 @@ export default function EditStory() {
             console.error(error);
             Alert.alert('Erro', 'Não foi possível salvar a história. Tente novamente.');
         } finally {
-            setSaving(false);
+            setIsSaving(false);
         }
     };
 
@@ -56,7 +58,7 @@ export default function EditStory() {
                 <Header title="Editar História" showBackButton showNotificationButton />
 
                 <Text className='pt-8 text-center text-lg font-semibold'>
-                    Conte história do seu restaurante.
+                    Conte a história do seu restaurante.
                 </Text>
 
                 <ToggleWrite toggle={toggle} setToggle={setToggle} />
@@ -71,15 +73,16 @@ export default function EditStory() {
                         setAudio={setAudio}
                         setText={setText}
                         setToggle={setToggle}
+                        setDetectedTopics={setDetectedTopics}
                     />
                 )}
 
-                <Checklist />
+                <Checklist detectedTopics={detectedTopics} />
 
                 <GeneralButton
-                    text={saving ? 'Salvando...' : 'Salvar'}
-                    handlePress={handlePress}
-                    disabled={saving}
+                    text={isSaving ? 'Salvando...' : 'Salvar'}
+                    handlePress={handleSave}
+                    disabled={isSaving}
                 />
             </View>
         </Container>
