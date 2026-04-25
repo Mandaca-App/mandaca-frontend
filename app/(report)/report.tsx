@@ -7,22 +7,18 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 export default function Report() {
-    const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-    const handlePress = ()=> {
-        setLoading //to do
-    }
-  
-    return (
+  const handlePress = () => {
+    setLoading; //to do
+  };
+
+  return (
     <Container>
       <View>
         <Header title="Relatório" showBackButton showNotificationButton />
-        <ChatButton text='ChatBot' handlePress={handlePress}/>
-        {loading ? (
-            <CardListSkeleton />
-        ) : (
-            <CardList />
-        )}
+        <ChatButton text="ChatBot" handlePress={handlePress} />
+        {loading ? <CardListSkeleton /> : <CardList />}
       </View>
     </Container>
   );
