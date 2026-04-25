@@ -15,7 +15,7 @@ export const CardList = ()=> {
     return(
         <View className="mt-10 gap-8">
             <CardItem
-                icon={'checkbox'}
+                icon={'analytics'}
                 topics={[
                     {id:1, text:'a sopa está boa'}, 
                     {id: 2, text:'parabéns pela salada'}]}
@@ -23,7 +23,7 @@ export const CardList = ()=> {
                 handlePress={handlePresPositive}
             />
             <CardItem
-                icon={'remove-circle'}
+                icon={'warning'}
                 topics={[
                     {id:1, text:'o feijão está ruim'}, 
                     {id: 2, text:'suco com muito açucar'}, 
@@ -33,7 +33,7 @@ export const CardList = ()=> {
                 handlePress={handlePresNegative}
             />
             <CardItem
-                icon={'add-circle'}
+                icon={'bulb'}
                 topics={[
                     {id:1, text:'Data festiva próxima, sugiro adicionar comidas típicas'},
                 ]}

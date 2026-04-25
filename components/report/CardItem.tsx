@@ -41,7 +41,7 @@ export const CardItem = ({icon, typeCard, topics, handlePress}: Props)=> {
                 
             {topics.map(item=> (
                 <View key={item.id} className="flex-row items-center justify-start gap-4 mb-1">
-                    <View className="w-6 h-1 rounded-full bg-primary"></View>
+                    <View className="w-4 h-1 rounded-full bg-primary"></View>
                     <Text className="font-semibold px-2">{item.text}</Text>
                 </View>
             ))}
