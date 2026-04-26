@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-
 type FAQItem = {
   id: number;
   title: string;
@@ -32,7 +31,6 @@ const HelpScreen: React.FC = () => {
     { id: 3, title: 'Termos de uso', icon: 'description' },
     { id: 4, title: 'Formas de pagamento', icon: 'credit-card' },
   ];
-
 
   const handleSendEmail = async () => {
     const email = 'suporte@mandaca.com.br';
@@ -53,7 +51,8 @@ const HelpScreen: React.FC = () => {
 
   // Handle phone call
   const handleCallSupport = async () => {
-    const phoneNumber = Platform.OS === 'ios' ? 'telprompt:08001234567' : 'tel:08001234567';
+    const phoneNumber =
+      Platform.OS === 'ios' ? 'telprompt:08001234567' : 'tel:08001234567';
 
     try {
       const canOpen = await Linking.canOpenURL(phoneNumber);
@@ -79,7 +78,10 @@ const HelpScreen: React.FC = () => {
         />
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
         {/* FAQ Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Perguntas Frequentes</Text>

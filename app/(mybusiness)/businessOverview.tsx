@@ -13,54 +13,49 @@ import { API_URL } from '@/constants/api';
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Overview() {
-    const [story, setStory] = useState('');
-    const [address, setAddress] = useState('');
-    const [loading, setLoading] = useState(false);
+  const [story, setStory] = useState('');
+  const [address, setAddress] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const loadOverview = useCallback(async () => {
-        try {
-            setLoading(true);
+  const loadOverview = useCallback(async () => {
+    try {
+      setLoading(true);
 
-            const response = await axios.get(
-                `${API_URL}/enterprises/overview`,
-                {
-                    params: { enterprise_id: ENTERPRISE_ID },
-                },
-            );
+      const response = await axios.get(`${API_URL}/enterprises/overview`, {
+        params: { enterprise_id: ENTERPRISE_ID },
+      });
 
-            setStory(response.data.historia ?? '');
-            setAddress(response.data.endereco ?? '');
+      setStory(response.data.historia ?? '');
+      setAddress(response.data.endereco ?? '');
+    } catch (error) {
+      console.error('Erro ao buscar visão geral:', error);
+      Alert.alert('Erro', 'Não foi possível carregar os dados.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-        } catch (error) {
-            console.error('Erro ao buscar visão geral:', error);
-            Alert.alert('Erro', 'Não foi possível carregar os dados.');
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadOverview();
+    }, [loadOverview]),
+  );
 
-    useFocusEffect(
-        useCallback(() => {
-            loadOverview();
-        }, [loadOverview]),
-    );
+  return (
+    <Container>
+      <Header title="Visão geral" showBackButton showNotificationButton />
 
-    return (
-        <Container>
-            <Header title="Visão geral" showBackButton showNotificationButton />
-
-            {loading ? (
-                <View className="flex-1 justify-center items-center">
-                    <ActivityIndicator color={'#C34342'} />
-                </View>
-            ) : (
-                <>
-                    <Journey story={story} />
-                    <Address address={address} />
-                    <EditButton />
-                </>
-            )}
-
-        </Container>
-    );
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator color={'#C34342'} />
+        </View>
+      ) : (
+        <>
+          <Journey story={story} />
+          <Address address={address} />
+          <EditButton />
+        </>
+      )}
+    </Container>
+  );
 }
