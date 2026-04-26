@@ -1,49 +1,43 @@
-import { router } from 'expo-router';
-import { View } from 'react-native';
-import { CardItem } from './CardItem';
+import { AIReportSummary } from '@/types/Report'
+import { router } from 'expo-router'
+import { View } from 'react-native'
+import { CardItem } from './CardItem'
 
-export const CardList = () => {
-  const handlePresPositive = () => {
-    router.navigate('/(report)/positivePoints');
-  };
-  const handlePresNegative = () => {
-    router.navigate('/(report)/negativePoints');
-  };
-  const handlePresRecomendation = () => {
-    router.navigate('/(report)/recomendations');
-  };
+type Props = {
+  report: AIReportSummary
+}
+
+export const CardList = ({ report }: Props) => {
+  const handlePressPositive = () => {
+    router.navigate({ pathname: '/positivePoints' as any, params: { report_id: report.id_relatorio } })
+  }
+  const handlePressNegative = () => {
+    router.navigate({ pathname: '/negativePoints' as any, params: { report_id: report.id_relatorio } })
+  }
+  const handlePressRecomendation = () => {
+    router.navigate({ pathname: '/recomendations' as any, params: { report_id: report.id_relatorio } })
+  }
+
   return (
     <View className="mt-10 gap-8">
       <CardItem
-        icon={'checkbox'}
-        topics={[
-          { id: 1, text: 'a sopa está boa' },
-          { id: 2, text: 'parabéns pela salada' },
-        ]}
+        icon={'analytics'}
+        topics={[{ id: 1, text: report.pontos_positivos_resumo }]}
         typeCard="positive"
-        handlePress={handlePresPositive}
+        handlePress={handlePressPositive}
       />
       <CardItem
-        icon={'remove-circle'}
-        topics={[
-          { id: 1, text: 'o feijão está ruim' },
-          { id: 2, text: 'suco com muito açucar' },
-          { id: 3, text: 'café muito forte' },
-        ]}
+        icon={'warning'}
+        topics={[{ id: 2, text: report.melhorias_resumo }]}
         typeCard="negative"
-        handlePress={handlePresNegative}
+        handlePress={handlePressNegative}
       />
       <CardItem
-        icon={'add-circle'}
-        topics={[
-          {
-            id: 1,
-            text: 'Data festiva próxima, sugiro adicionar comidas típicas',
-          },
-        ]}
+        icon={'bulb'}
+        topics={[{ id: 3, text: report.recomendacoes_resumo }]}
         typeCard="recomendation"
-        handlePress={handlePresRecomendation}
+        handlePress={handlePressRecomendation}
       />
     </View>
-  );
-};
+  )
+}
