@@ -1,20 +1,44 @@
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
-import { NegativeFeedbackList } from '@/components/report/NegativeFeedbackList';
-import { View } from 'react-native';
+import { CardItemFeedback } from '@/components/report/CardItemFeedback';
+import { CardListSkeleton } from '@/components/report/cardListSkeleton';
+import { getReport } from '@/services/reports';
+import { AIReportDetail } from '@/types/Report';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
 
-export default function NegativePoints () {
-    return(
-        <Container>
-            <View>
-                <Header 
-                    title="Pontos negativos" 
-                    showBackButton 
-                    showNotificationButton 
-                />
+export default function NegativePoints() {
+  const { report_id } = useLocalSearchParams<{ report_id: string }>();
+  const [report, setReport] = useState<AIReportDetail | null>(null);
+  const [loading, setLoading] = useState(true);
 
-                <NegativeFeedbackList handlePress={() => ''} />
-            </View>
-        </Container>
-    )
+  useEffect(() => {
+    if (!report_id) return;
+    getReport(report_id)
+      .then(setReport)
+      .finally(() => setLoading(false));
+  }, [report_id]);
+
+  return (
+    <Container>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Header title="Pontos negativos" showBackButton showNotificationButton />
+        <View className="mt-10">
+          {loading ? (
+            <CardListSkeleton />
+          ) : report ? (
+            <CardItemFeedback
+              icon={'warning'}
+              typeCard="negative"
+              text={report.melhorias_detalhado}
+              chages=""
+              automaticChanges={false}
+              handlePress={() => {}}
+            />
+          ) : null}
+        </View>
+      </ScrollView>
+    </Container>
+  );
 }
