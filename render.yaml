@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: mandaca-frontend-production
+    env: static
+    branch: main
+    buildCommand: npm install && npx expo export --platform web
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: EXPO_PUBLIC_API_URL
+        value: https://mandaca-backend-production.onrender.com

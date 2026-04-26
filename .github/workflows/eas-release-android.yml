@@ -1,0 +1,189 @@
+name: EAS Release Android (Weekly)
+
+on:
+  schedule:
+    - cron: "0 8 * * 0"
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    name: Criar Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      build_id: ${{ steps.eas-build.outputs.build_id }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_RELEASE_TOKEN }}
+
+      - name: Configurar git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Auto-bump patch se necessario
+        id: version
+        run: |
+          git fetch --tags origin
+          CURRENT=$(cat VERSION)
+          if git tag --list | grep -q "^v${CURRENT}$"; then
+            MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+            MINOR=$(echo "$CURRENT" | cut -d. -f2)
+            PATCH=$(echo "$CURRENT" | cut -d. -f3)
+            NEW_PATCH=$((PATCH + 1))
+            NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+            echo "$NEW_VERSION" > VERSION
+            git add VERSION
+            git commit -m "SCRUM-198 chore: auto-bump version to ${NEW_VERSION}"
+            git push origin main
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "version=$CURRENT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Disparar build Android no EAS
+        id: eas-build
+        run: |
+          OUTPUT=$(npx eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --no-wait \
+            --json 2>/dev/null)
+          echo "build_id=$(echo "$OUTPUT" | jq -r '.[0].id')" >> $GITHUB_OUTPUT
+
+      - name: Criar tag git
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          git tag "$VERSION"
+          git push origin "$VERSION"
+
+      - name: Gerar notas da release
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+          BUILD_ID: ${{ steps.eas-build.outputs.build_id }}
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          APK_URL="https://github.com/${{ github.repository }}/releases/latest/download/mandaca-preview.apk"
+          EXPO_URL="https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/${BUILD_ID}"
+          GENERATED=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            --field tag_name="$VERSION" \
+            --jq '.body')
+
+          {
+            echo "## Links"
+            echo ""
+            echo "**Frontend Web (Production):** https://mandaca-frontend-production.onrender.com"
+            echo "**APK Android:** [mandaca-preview.apk](${APK_URL}) — o build leva alguns minutos. Acompanhe em tempo real: [Ver build no Expo](${EXPO_URL})"
+            echo ""
+            echo "---"
+            echo ""
+            echo "$GENERATED"
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Instalacao no Android"
+            echo ""
+            echo "1. Aguarde o build concluir no Expo (link acima) e entao baixe o APK"
+            echo "2. No celular, abra o arquivo baixado (pode ser necessario habilitar *Instalar apps de fontes desconhecidas* nas configuracoes)"
+            echo "3. Siga o assistente de instalacao"
+            echo ""
+            echo "> Build preview gerado automaticamente a partir da branch \`main\`. Compativel com Android arm64-v8a."
+          } > /tmp/release-notes.md
+
+      - name: Criar GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          gh release create "$VERSION" \
+            --title "Release ${VERSION}" \
+            --latest \
+            --notes-file /tmp/release-notes.md
+
+  attach-apk:
+    name: Anexar APK ao Release
+    runs-on: ubuntu-latest
+    needs: create-release
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Aguardar build e baixar APK
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          BUILD_ID: ${{ needs.create-release.outputs.build_id }}
+        run: |
+          set +e
+          echo "Aguardando conclusao do build ${BUILD_ID}..."
+          QUERY='{"query":"query($id:ID!){builds{byId(buildId:$id){id status artifacts{applicationArchiveUrl}}}}","variables":{"id":"'"${BUILD_ID}"'"}}'
+
+          for attempt in $(seq 1 60); do
+            RESPONSE=$(curl -s -X POST \
+              -H "Authorization: Bearer ${EXPO_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${QUERY}" \
+              https://api.expo.dev/graphql)
+            STATUS=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.status // empty' 2>/dev/null)
+
+            if [ -z "${STATUS}" ]; then
+              echo "Tentativa ${attempt}: resposta inesperada. Preview: $(echo "${RESPONSE}" | head -c 300)"
+              sleep 30
+              continue
+            fi
+
+            case "${STATUS}" in
+              FINISHED)
+                APK_URL=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.artifacts.applicationArchiveUrl')
+                echo "Build concluido. Baixando APK de ${APK_URL}..."
+                curl -L -o mandaca-preview.apk "${APK_URL}"
+                ls -lh mandaca-preview.apk
+                exit 0
+                ;;
+              ERRORED|CANCELED|CANCELLED)
+                echo "Build falhou com status: ${STATUS}"
+                exit 1
+                ;;
+              *)
+                echo "Status: ${STATUS}. Aguardando 30s (tentativa ${attempt}/60)..."
+                sleep 30
+                ;;
+            esac
+          done
+
+          echo "Timeout apos 30 minutos aguardando o build"
+          exit 1
+
+      - name: Anexar APK ao release existente
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+          VERSION: ${{ needs.create-release.outputs.version }}
+        run: |
+          gh release upload "v${VERSION}" mandaca-preview.apk --clobber
+          echo "APK anexado ao release v${VERSION}."

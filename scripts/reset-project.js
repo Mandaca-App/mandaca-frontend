@@ -2,8 +2,11 @@
 
 /**
  * This script is used to reset the project to a blank state.
- * It deletes or moves the /app, /components, /hooks, /scripts, and /constants directories to /app-example based on user input and creates a new /app directory with an index.tsx and _layout.tsx file.
- * You can remove the `reset-project` script from package.json and safely delete this file after running it.
+ * It deletes or moves the /app, /components, /hooks, /scripts,
+ * and /constants directories to /app-example based on user inpu
+ * and creates a new /app directory with an index.tsx and _layout.tsx file.
+ * You can remove the `reset-project` script from package.json
+ * and safely delete this file after running it.
  */
 
 const fs = require('fs');
@@ -87,7 +90,8 @@ const moveDirectories = async (userInput) => {
 
     console.log('\n✅ Project reset complete. Next steps:');
     console.log(
-      `1. Run \`npx expo start\` to start a development server.\n2. Edit app/index.tsx to edit the main screen.${
+      `1. Run \`npx expo start\` to start a development server.\n2. 
+      Edit app/index.tsx to edit the main screen.${
         userInput === 'y'
           ? `\n3. Delete the /${exampleDir} directory when you're done referencing it.`
           : ''
