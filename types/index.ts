@@ -1,1 +1,1 @@
-export type ReviewSentiment = 'elogios' | 'dicas' | 'duvidas';
+export type ReviewSentiment = 'positiva' | 'negativa' | 'neutra' | 'sugestao' | 'duvida';

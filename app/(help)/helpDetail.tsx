@@ -3,13 +3,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
@@ -23,16 +17,16 @@ const FaqDetailScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       {/* Standard Header with standard back button logic */}
       <View style={styles.headerWrapper}>
-        <Header 
-          title="Dúvida" 
-          showBackButton 
+        <Header
+          title="Dúvida"
+          showBackButton
           showNotificationButton={false}
           onBackPress={() => router.back()}
         />
       </View>
 
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         {/* Visual Hierarchy: Icon and Centered Title */}
@@ -46,20 +40,24 @@ const FaqDetailScreen: React.FC = () => {
         {/* Content Section: Focused on Readability (lineHeight: 26) */}
         <View style={styles.contentSection}>
           <Text style={styles.bodyText}>
-            Para cadastrar seu negócio no Mandacá e começar a atrair turistas da região,
-            siga este guia passo a passo:{'\n\n'}
-            1. Na sua tela inicial, navegue até a seção de ferramentas e clique no card{' '}
-            <Text style={styles.boldText}>&quot;Minha Empresa&quot;</Text>.{'\n\n'}
-            2. Toque no botão de adição ou editar. Preencha todas as informações básicas:
-            nome do local, descrição detalhada e o tipo de serviço que você oferece
-            (ex: Gastronomia, Artesanato).{'\n\n'}
-            3. <Text style={styles.boldText}>Fotos são fundamentais!</Text> Adicione imagens
-            bem iluminadas da fachada e do interior para gerar confiança nos visitantes.{'\n\n'}
-            4. Localização: Verifique se o ponto no mapa está correto para que o GPS leve
-            os turistas exatamente até a sua porta.{'\n\n'}
-            5. Finalize clicando em <Text style={styles.boldText}>&quot;Salvar&quot;</Text>.
-            Nossa equipe analisará os dados em no máximo 24 horas para garantir
-            a qualidade da plataforma.
+            Para cadastrar seu negócio no Mandacá e começar a atrair turistas da
+            região, siga este guia passo a passo:{'\n\n'}
+            1. Na sua tela inicial, navegue até a seção de ferramentas e clique
+            no card{' '}
+            <Text style={styles.boldText}>&quot;Minha Empresa&quot;</Text>.
+            {'\n\n'}
+            2. Toque no botão de adição ou editar. Preencha todas as informações
+            básicas: nome do local, descrição detalhada e o tipo de serviço que
+            você oferece (ex: Gastronomia, Artesanato).{'\n\n'}
+            3. <Text style={styles.boldText}>Fotos são fundamentais!</Text>{' '}
+            Adicione imagens bem iluminadas da fachada e do interior para gerar
+            confiança nos visitantes.{'\n\n'}
+            4. Localização: Verifique se o ponto no mapa está correto para que o
+            GPS leve os turistas exatamente até a sua porta.{'\n\n'}
+            5. Finalize clicando em{' '}
+            <Text style={styles.boldText}>&quot;Salvar&quot;</Text>. Nossa
+            equipe analisará os dados em no máximo 24 horas para garantir a
+            qualidade da plataforma.
           </Text>
         </View>
 
@@ -70,8 +68,8 @@ const FaqDetailScreen: React.FC = () => {
             <Text style={styles.tipTitle}>Dica de Especialista</Text>
           </View>
           <Text style={styles.tipText}>
-            Negócios com descrições ricas em detalhes e que respondem rápido
-            às avaliações tendem a aparecer no topo das buscas dos turistas!
+            Negócios com descrições ricas em detalhes e que respondem rápido às
+            avaliações tendem a aparecer no topo das buscas dos turistas!
           </Text>
         </View>
       </ScrollView>
