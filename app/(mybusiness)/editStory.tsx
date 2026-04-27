@@ -29,8 +29,8 @@ export default function EditStory() {
 
     const mapEnterpriseToTopics = (enterprise: Enterprise): string[] => {
         const topics: string[] = [];
-
-        if (enterprise.nome) {
+        
+        if (enterprise) {
             topics.push('Nome do negócio');
         }
 
@@ -66,8 +66,8 @@ export default function EditStory() {
         } catch (error) {
             console.error(error);
         }
-        };
-
+    };
+        console.log(enterprise)
         fetchEnterprise();
     }, []);
 
@@ -96,7 +96,7 @@ export default function EditStory() {
 
         await updateEnterpriseStory(
             ENTERPRISE_ID,
-            toggle === 'WRITE' ? text.trim() : audio
+            toggle === 'WRITE' ? text.trim() : audio,
         );
 
         const updatedData = await getEnterprise(ENTERPRISE_ID);

@@ -8,7 +8,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
-  View
+  View,
 } from 'react-native';
 
 import Animated, {

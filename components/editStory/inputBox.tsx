@@ -40,7 +40,6 @@ export default function InputBox({ text, setText, error }: Props) {
         />
       </View>
 
-      {/* 🔥 mensagem de erro */}
       {error && (
         <Text className="text-red-500 text-xs">{error}</Text>
       )}

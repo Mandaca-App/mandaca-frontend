@@ -3,10 +3,10 @@ import { Enterprise } from '@/types/enterprise';
 import axios from 'axios';
 
 export const getEnterprise = async (
-    enterpriseId: string
+    enterpriseId: string,
 ): Promise<Enterprise> => {
     const response = await axios.get(
-        `${API_URL}/enterprises/${enterpriseId}`
+        `${API_URL}/enterprises/${enterpriseId}`,
     );
 
     return response.data;
@@ -14,10 +14,10 @@ export const getEnterprise = async (
 
 export const updateEnterpriseStory = async (
     enterpriseId: string,
-    historia: string
+    historia: string,
 ): Promise<void> => {
     await axios.put(
         `${API_URL}/enterprises/${enterpriseId}`,
-        { historia }
+        { historia },
     );
 };

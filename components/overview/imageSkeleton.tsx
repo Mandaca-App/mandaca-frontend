@@ -15,7 +15,7 @@ export const ImageSkeleton = () => {
     shimmer.value = withRepeat(
       withTiming(1, { duration: 1200 }),
       -1,
-      true
+      true,
     );
   }, []);
 
