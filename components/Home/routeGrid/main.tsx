@@ -14,8 +14,7 @@ export const RouteGrid = () => {
       <GridBox
         icon={'analytics-sharp'}
         title="Relatórios"
-        description="Visão geral e 
-            Insights"
+        description="Visão geral e Insights"
         route={() => router.navigate('/(report)/report')}
       />
       <GridBox
