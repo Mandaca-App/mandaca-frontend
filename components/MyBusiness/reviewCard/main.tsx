@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { SENTIMENT_CONFIG } from '../../../constants/theme';
+import { sentimentConfig } from '../../../constants/theme';
 import { ReviewSentiment } from '../../../types/reviewSentiment';
 
 interface ReviewCardProps {
@@ -34,7 +34,7 @@ const getSimpleName = (fullName: string): string => {
 };
 
 export const ReviewCard = ({ name, sentiment, comment }: ReviewCardProps) => {
-  const config = SENTIMENT_CONFIG[sentiment];
+  const config = sentimentConfig[sentiment];
   const displayName = getSimpleName(name);
 
   return (
