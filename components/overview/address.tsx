@@ -1,12 +1,18 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Alert, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 type Props = {
   address: string;
 };
 
 export default function Address({ address }: Props) {
-
   const handleMapsbutton = async () => {
     if (!address) {
       Alert.alert('Erro', 'Endereço não disponível.');

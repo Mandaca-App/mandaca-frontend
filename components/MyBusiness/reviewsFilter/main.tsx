@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export type ReviewFilterType = 'todos' | 'elogios' | 'dicas' | 'duvidas';
+export type ReviewFilterType = 'todos' | 'positiva' | 'negativa' | 'neutra' | 'sugestao' | 'duvida';
 
 interface ReviewsFilterNavProps {
   onFilterChange: (filter: ReviewFilterType) => void;
@@ -10,9 +10,11 @@ interface ReviewsFilterNavProps {
 
 const FILTER_OPTIONS: { id: ReviewFilterType; label: string }[] = [
   { id: 'todos', label: 'Todos' },
-  { id: 'elogios', label: 'Elogios' },
-  { id: 'dicas', label: 'Dicas' },
-  { id: 'duvidas', label: 'Dúvidas' },
+  { id: 'positiva', label: 'Positiva' },
+  { id: 'negativa', label: 'Negativa' },
+  { id: 'neutra', label: 'Neutra' },
+  { id: 'sugestao', label: 'Sugestão' },
+  { id: 'duvida', label: 'Dúvida' },
 ];
 
 export const ReviewsFilterNav = ({
@@ -28,16 +30,15 @@ export const ReviewsFilterNav = ({
   };
 
   return (
-    <View className="flex-row gap-3">
+    <View className="flex-row flex-wrap justify-center items-center gap-3 px-4 py-4">
       {FILTER_OPTIONS.map((filter) => (
         <Pressable
           key={filter.id}
           onPress={() => handleFilterPress(filter.id)}
-          className={`flex-1 h-10 rounded-lg justify-center items-center ${
-            activeFilter === filter.id
-              ? 'bg-primary'
-              : 'bg-light border border-secondary'
-          }`}
+          className={`h-10 rounded-lg justify-center items-center px-4 ${activeFilter === filter.id
+            ? 'bg-primary'
+            : 'bg-light border border-secondary'
+            }`}
           style={[
             styles.filterButton,
             activeFilter === filter.id
@@ -46,9 +47,8 @@ export const ReviewsFilterNav = ({
           ]}
         >
           <Text
-            className={`text-base font-bold leading-6 ${
-              activeFilter === filter.id ? 'text-light' : 'text-dark'
-            }`}
+            className={`text-base font-bold leading-6 ${activeFilter === filter.id ? 'text-light' : 'text-dark'
+              }`}
           >
             {filter.label}
           </Text>

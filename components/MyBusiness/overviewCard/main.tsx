@@ -7,7 +7,6 @@ type Props = {
 };
 
 export const OverviewCard = ({ imageUrl, onPress }: Props) => {
-
   return (
     <Pressable
       className="p-4 bg-light rounded-3xl flex-row gap-6"

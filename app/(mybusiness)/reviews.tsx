@@ -1,19 +1,35 @@
-import { useState } from 'react';
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
+import { ReviewCard } from '@/components/MyBusiness/reviewCard/main';
 import {
   ReviewsFilterNav,
   type ReviewFilterType,
 } from '@/components/MyBusiness/reviewsFilter/main';
-import { ReviewCard } from '@/components/MyBusiness/reviewCard/main';
-import { MOCK_REVIEWS } from '@/components/MyBusiness/reviewCard/mock';
-import { View, Text } from 'react-native';
+import { useAssessments } from '@/hooks/useAssessments';
+import { Assessment } from '@/services/assessmentService';
+import { ReviewSentiment } from '@/types';
+import { useState } from 'react';
+import { ActivityIndicator, Text, View } from 'react-native';
+
+const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
+
+interface ReviewItem {
+  id: string;
+  name: string;
+  sentiment: ReviewSentiment;
+  comment: string;
+}
 
 export default function Reviews() {
   const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
+  const { assessments, loading, error } = useAssessments(ENTERPRISE_ID);
 
-  // requisicao do backend para pegar as reviews, por enquanto usando mock
-  const reviews = MOCK_REVIEWS;
+  const reviews: ReviewItem[] = assessments.map((assessment: Assessment) => ({
+    id: assessment.id_avaliacao,
+    name: assessment.usuario_nome || 'Anônimo',
+    sentiment: assessment.tipo_avaliacao,
+    comment: assessment.texto,
+  }));
 
   const filteredReviews =
     activeFilter === 'todos'
@@ -33,7 +49,15 @@ export default function Reviews() {
           onFilterChange={handleFilterChange}
         />
 
-        {filteredReviews.length > 0 ? (
+        {loading ? (
+          <View className="items-center justify-center py-12">
+            <ActivityIndicator size="large" />
+          </View>
+        ) : error ? (
+          <View className="items-center justify-center py-12">
+            <Text className="text-dark text-center text-sm">{error}</Text>
+          </View>
+        ) : filteredReviews.length > 0 ? (
           <View className="gap-4">
             {filteredReviews.map((review) => (
               <ReviewCard
