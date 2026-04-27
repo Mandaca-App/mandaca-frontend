@@ -11,3 +11,11 @@ export type Enterprise = {
     telefone: string | null;
     usuario_id: string;
 };
+
+export type EnterprisePercentage = {
+    id_empresa: string;
+    nome: string;
+    porcentagem: number;
+    campos_preenchidos: string[];
+    campos_faltando: string[];
+};
