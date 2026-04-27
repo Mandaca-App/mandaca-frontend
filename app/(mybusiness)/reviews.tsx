@@ -49,14 +49,14 @@ export default function Reviews() {
       name: assessment.usuario_nome || 'Anônimo',
       sentiment: mapSentiment(assessment.tipo_avaliacao),
       comment: assessment.texto,
-    })
+    }),
   );
 
   const filteredReviews =
     activeFilter === 'todos'
       ? reviews
       : reviews.filter(
-          (review) => review.sentiment === activeFilter
+          (review) => review.sentiment === activeFilter,
         );
 
   return (
