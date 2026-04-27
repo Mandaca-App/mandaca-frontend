@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants/api';
-import { ReviewSentiment } from '@/types';
+import { ReviewSentiment } from '@/types/reviewSentiment';
 import axios from 'axios';
 
 export interface Assessment {

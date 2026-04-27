@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { ReviewSentiment } from '../../../types';
+import { StyleSheet, Text, View } from 'react-native';
 import { SENTIMENT_CONFIG } from '../../../constants/theme';
+import { ReviewSentiment } from '../../../types/reviewSentiment';
 
 interface ReviewCardProps {
   name: string;

@@ -1,4 +1,4 @@
-import { ReviewSentiment } from './index';
+import { ReviewSentiment } from './reviewSentiment';
 
 export interface AssessmentDTO {
     id_avaliacao: string;

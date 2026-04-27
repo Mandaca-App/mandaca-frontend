@@ -7,7 +7,7 @@ import {
 } from '@/components/MyBusiness/reviewsFilter/main';
 import { useAssessments } from '@/hooks/useAssessments';
 import { Assessment } from '@/services/assessmentService';
-import { ReviewSentiment } from '@/types';
+import { ReviewSentiment } from '@/types/reviewSentiment';
 import { useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
