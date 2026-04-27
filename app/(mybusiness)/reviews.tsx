@@ -7,11 +7,13 @@ import {
 } from '@/components/MyBusiness/reviewsFilter/main';
 import { useAssessments } from '@/hooks/useAssessments';
 import { Assessment } from '@/services/assessmentService';
-import { ReviewSentiment } from '@/types/reviewSentiment';
 import { useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
+
+// 🔥 tipo único e consistente
+type ReviewSentiment = 'elogios' | 'dicas' | 'duvidas';
 
 interface ReviewItem {
   id: string;
@@ -20,33 +22,51 @@ interface ReviewItem {
   comment: string;
 }
 
-export default function Reviews() {
-  const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
-  const { assessments, loading, error } = useAssessments(ENTERPRISE_ID);
+// 🔥 mapper API → UI
+const mapSentiment = (tipo: string): ReviewSentiment => {
+  switch (tipo) {
+    case 'positiva':
+      return 'elogios';
+    case 'negativa':
+      return 'dicas';
+    case 'neutra':
+      return 'duvidas';
+    default:
+      return 'duvidas';
+  }
+};
 
-  const reviews: ReviewItem[] = assessments.map((assessment: Assessment) => ({
-    id: assessment.id_avaliacao,
-    name: assessment.usuario_nome || 'Anônimo',
-    sentiment: assessment.tipo_avaliacao,
-    comment: assessment.texto,
-  }));
+export default function Reviews() {
+  const [activeFilter, setActiveFilter] =
+    useState<ReviewFilterType>('todos');
+
+  const { assessments, loading, error } =
+    useAssessments(ENTERPRISE_ID);
+
+  const reviews: ReviewItem[] = assessments.map(
+    (assessment: Assessment) => ({
+      id: assessment.id_avaliacao,
+      name: assessment.usuario_nome || 'Anônimo',
+      sentiment: mapSentiment(assessment.tipo_avaliacao),
+      comment: assessment.texto,
+    })
+  );
 
   const filteredReviews =
     activeFilter === 'todos'
       ? reviews
-      : reviews.filter((review) => review.sentiment === activeFilter);
-
-  const handleFilterChange = (filter: ReviewFilterType) => {
-    setActiveFilter(filter);
-  };
+      : reviews.filter(
+          (review) => review.sentiment === activeFilter
+        );
 
   return (
     <Container>
       <Header title="Avaliações" showBackButton showNotificationButton />
+
       <View className="gap-4">
         <ReviewsFilterNav
           initialFilter="todos"
-          onFilterChange={handleFilterChange}
+          onFilterChange={setActiveFilter}
         />
 
         {loading ? (
@@ -55,7 +75,9 @@ export default function Reviews() {
           </View>
         ) : error ? (
           <View className="items-center justify-center py-12">
-            <Text className="text-dark text-center text-sm">{error}</Text>
+            <Text className="text-dark text-center text-sm">
+              {error}
+            </Text>
           </View>
         ) : filteredReviews.length > 0 ? (
           <View className="gap-4">
