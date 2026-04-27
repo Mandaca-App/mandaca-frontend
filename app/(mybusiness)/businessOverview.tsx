@@ -47,7 +47,7 @@ export default function Overview() {
 
       {loading ? (
         <View className="flex-1 justify-center items-center">
-          <ActivityIndicator color={'#C34342'} />
+          <ActivityIndicator size={60} color="#C34342" />
         </View>
       ) : (
         <>
