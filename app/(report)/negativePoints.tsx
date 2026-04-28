@@ -23,7 +23,11 @@ export default function NegativePoints() {
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Header title="Pontos negativos" showBackButton showNotificationButton />
+        <Header
+          title="Pontos negativos"
+          showBackButton
+          showNotificationButton
+        />
         <View className="mt-10">
           {loading ? (
             <CardListSkeleton />

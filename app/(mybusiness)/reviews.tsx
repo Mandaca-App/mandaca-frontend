@@ -35,27 +35,21 @@ const mapSentiment = (tipo: string): ReviewSentiment => {
 };
 
 export default function Reviews() {
-  const [activeFilter, setActiveFilter] =
-    useState<ReviewFilterType>('todos');
+  const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
 
-  const { assessments, loading, error } =
-    useAssessments(ENTERPRISE_ID);
+  const { assessments, loading, error } = useAssessments(ENTERPRISE_ID);
 
-  const reviews: ReviewItem[] = assessments.map(
-    (assessment: Assessment) => ({
-      id: assessment.id_avaliacao,
-      name: assessment.usuario_nome || 'Anônimo',
-      sentiment: mapSentiment(assessment.tipo_avaliacao),
-      comment: assessment.texto,
-    }),
-  );
+  const reviews: ReviewItem[] = assessments.map((assessment: Assessment) => ({
+    id: assessment.id_avaliacao,
+    name: assessment.usuario_nome || 'Anônimo',
+    sentiment: mapSentiment(assessment.tipo_avaliacao),
+    comment: assessment.texto,
+  }));
 
   const filteredReviews =
     activeFilter === 'todos'
       ? reviews
-      : reviews.filter(
-          (review) => review.sentiment === activeFilter,
-        );
+      : reviews.filter((review) => review.sentiment === activeFilter);
 
   return (
     <Container>
@@ -73,9 +67,7 @@ export default function Reviews() {
           </View>
         ) : error ? (
           <View className="items-center justify-center py-12">
-            <Text className="text-dark text-center text-sm">
-              {error}
-            </Text>
+            <Text className="text-dark text-center text-sm">{error}</Text>
           </View>
         ) : filteredReviews.length > 0 ? (
           <View className="gap-4">

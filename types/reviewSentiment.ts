@@ -1,4 +1,1 @@
-export type ReviewSentiment =
-    | 'elogios'
-    | 'dicas'
-    | 'duvidas';
+export type ReviewSentiment = 'elogios' | 'dicas' | 'duvidas';
