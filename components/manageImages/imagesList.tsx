@@ -18,7 +18,8 @@ export default function ImagesList() {
 
     const loadImages = async () => {
         try {
-            const data: ImageEnterprise[] = await getImagesByEnterprise(ENTERPRISE_ID);
+            const data: ImageEnterprise[] =
+                await getImagesByEnterprise(ENTERPRISE_ID);
 
             const formattedImages: ImageType[] = data.map((item) => ({
                 id: item.id_foto,
@@ -57,9 +58,7 @@ export default function ImagesList() {
         <View>
             <FileUpload onUploadSuccess={loadImages} />
 
-            <Text className='text-lg font-semibold mb-4'>
-                Imagens cadastradas
-            </Text>
+            <Text className="text-lg font-semibold mb-4">Imagens cadastradas</Text>
 
             {images.map((img) => (
                 <ImageItem

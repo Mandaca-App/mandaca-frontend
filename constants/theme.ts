@@ -3,6 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { ReviewSentiment } from '@/types/reviewSentiment';
 import { Platform } from 'react-native';
 
 const tintColorLight = '#0a7ea4';
@@ -53,21 +54,24 @@ export const Fonts = Platform.select({
   },
 });
 
-export const SENTIMENT_CONFIG = {
+export const sentimentConfig: Record<
+  ReviewSentiment,
+  { label: string; bgColor: string; textColor: string }
+> = {
   elogios: {
-    label: 'Elogio',
-    bgColor: '#F4EBE8',
-    textColor: '#AD3C00',
+    label: 'Elogios',
+    bgColor: '#E6F4EA',
+    textColor: '#2E7D32',
   },
   dicas: {
     label: 'Dicas',
-    bgColor: '#F9F3E9',
-    textColor: '#D19E49',
+    bgColor: '#FFF8E1',
+    textColor: '#F9A825',
   },
   duvidas: {
     label: 'Dúvidas',
-    bgColor: '#DBEAFE',
-    textColor: '#004BDA',
+    bgColor: '#E3F2FD',
+    textColor: '#1565C0',
   },
 };
 

@@ -1,20 +1,20 @@
-import { API_URL } from '@/constants/api'
-import Ionicons from '@expo/vector-icons/Ionicons'
-import * as FileSystem from 'expo-file-system/legacy'
-import { useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { API_URL } from '@/constants/api';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import * as FileSystem from 'expo-file-system/legacy';
+import { useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
     withTiming,
-} from 'react-native-reanimated'
+} from 'react-native-reanimated';
 
 import {
     RecordingPresets,
     requestRecordingPermissionsAsync,
     useAudioRecorder,
-} from 'expo-audio'
+} from 'expo-audio';
 
 type Props = {
     setText: (s: string) => void
@@ -33,55 +33,50 @@ export default function AudioBox({ setText, setToggle }: Props) {
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ scale: scale.value }],
-    }))
+    }));
 
     const startRecording = async () => {
         try {
-            const permission = await requestRecordingPermissionsAsync()
+            const permission = await requestRecordingPermissionsAsync();
 
             if (!permission.granted) {
-                alert('Permissão de microfone necessária!')
-                return
+                alert('Permissão de microfone necessária!');
+                return;
             }
 
-            await recorder.prepareToRecordAsync()
-            recorder.record()
+            await recorder.prepareToRecordAsync();
+            recorder.record();
 
-            scale.value = withRepeat(
-                withTiming(1.2, { duration: 600 }),
-                -1,
-                true,
-            )
-
+            scale.value = withRepeat(withTiming(1.2, { duration: 600 }), -1, true);
         } catch (error) {
-            console.error('Erro ao iniciar gravação:', error)
+            console.error('Erro ao iniciar gravação:', error);
         }
-    }
+    };
 
     const stopRecording = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
 
-            await recorder.stop()
+            await recorder.stop();
 
-            const uri = recorder.uri
+            const uri = recorder.uri;
 
-            scale.value = withTiming(1)
+            scale.value = withTiming(1);
 
-            if (!uri) return
+            if (!uri) return;
 
-            const extension = uri.split('.').pop()?.toLowerCase() ?? 'm4a'
+            const extension = uri.split('.').pop()?.toLowerCase() ?? 'm4a';
             const mimeTypeMap: Record<string, string> = {
-                'm4a': 'audio/mp4',
-                'mp4': 'audio/mp4',
-                'mp3': 'audio/mpeg',
+                m4a: 'audio/mp4',
+                mp4: 'audio/mp4',
+                mp3: 'audio/mpeg',
                 '3gp': 'audio/3gpp',
-                'aac': 'audio/aac',
-                'wav': 'audio/wav',
-            }
-            const mimeType = mimeTypeMap[extension] ?? 'audio/mp4'
+                aac: 'audio/aac',
+                wav: 'audio/wav',
+            };
+            const mimeType = mimeTypeMap[extension] ?? 'audio/mp4';
 
-            console.log('[AudioBox] URI gravada:', uri, '| MIME:', mimeType)
+            console.log('[AudioBox] URI gravada:', uri, '| MIME:', mimeType);
 
             const result = await FileSystem.uploadAsync(
                 `${API_URL}/transcriptions/`,
@@ -95,10 +90,10 @@ export default function AudioBox({ setText, setToggle }: Props) {
                         usuario_id: USER_ID,
                     },
                 },
-            )
+            );
 
             if (result.status < 200 || result.status >= 300) {
-                throw new Error(`HTTP ${result.status}: ${result.body}`)
+                throw new Error(`HTTP ${result.status}: ${result.body}`);
             }
 
             const data = JSON.parse(result.body)

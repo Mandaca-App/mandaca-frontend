@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export type ReviewFilterType = 'todos' | 'elogios' | 'dicas' | 'duvidas';
+export type ReviewFilterType =
+  | 'todos'
+  | 'elogios'
+  | 'dicas'
+  | 'duvidas';
 
 interface ReviewsFilterNavProps {
   onFilterChange: (filter: ReviewFilterType) => void;
@@ -28,12 +32,12 @@ export const ReviewsFilterNav = ({
   };
 
   return (
-    <View className="flex-row gap-3">
+    <View className="flex-row flex-wrap justify-center items-center gap-3 px-4 py-4">
       {FILTER_OPTIONS.map((filter) => (
         <Pressable
           key={filter.id}
           onPress={() => handleFilterPress(filter.id)}
-          className={`flex-1 h-10 rounded-lg justify-center items-center ${
+          className={`h-10 rounded-lg justify-center items-center px-4 ${
             activeFilter === filter.id
               ? 'bg-primary'
               : 'bg-light border border-secondary'
@@ -46,7 +50,7 @@ export const ReviewsFilterNav = ({
           ]}
         >
           <Text
-            className={`text-base font-bold leading-6 ${
+            className={`text-base font-bold ${
               activeFilter === filter.id ? 'text-light' : 'text-dark'
             }`}
           >
@@ -64,20 +68,14 @@ const styles = StyleSheet.create({
   },
   filterButtonActive: {
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3,
     elevation: 3,
   },
   filterButtonInactive: {
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
