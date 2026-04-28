@@ -3,7 +3,6 @@ import { ImageEnterprise } from '@/types/imageEnterprise';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   Image,
   NativeScrollEvent,
@@ -18,6 +17,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { ImageSkeleton } from './imageSkeleton';
 
 const { width } = Dimensions.get('window');
 
@@ -124,10 +124,9 @@ export default function Carousel() {
             style={{ width: ITEM_WIDTH, marginRight: SPACING }}
             className="h-[200px] rounded-2xl overflow-hidden"
           >
-            {/* 🔥 Placeholder */}
             {loadingImages[item.id_foto] && (
-              <View className="absolute w-full h-full justify-center items-center bg-gray-200">
-                <ActivityIndicator />
+              <View className="absolute w-full h-full">
+                <ImageSkeleton />
               </View>
             )}
 

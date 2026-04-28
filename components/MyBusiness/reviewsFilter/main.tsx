@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export type ReviewFilterType = 'todos' | 'positiva' | 'negativa' | 'neutra' | 'sugestao' | 'duvida';
+export type ReviewFilterType =
+  | 'todos'
+  | 'elogios'
+  | 'dicas'
+  | 'duvidas';
 
 interface ReviewsFilterNavProps {
   onFilterChange: (filter: ReviewFilterType) => void;
@@ -10,11 +14,9 @@ interface ReviewsFilterNavProps {
 
 const FILTER_OPTIONS: { id: ReviewFilterType; label: string }[] = [
   { id: 'todos', label: 'Todos' },
-  { id: 'positiva', label: 'Positiva' },
-  { id: 'negativa', label: 'Negativa' },
-  { id: 'neutra', label: 'Neutra' },
-  { id: 'sugestao', label: 'Sugestão' },
-  { id: 'duvida', label: 'Dúvida' },
+  { id: 'elogios', label: 'Elogios' },
+  { id: 'dicas', label: 'Dicas' },
+  { id: 'duvidas', label: 'Dúvidas' },
 ];
 
 export const ReviewsFilterNav = ({
@@ -35,10 +37,11 @@ export const ReviewsFilterNav = ({
         <Pressable
           key={filter.id}
           onPress={() => handleFilterPress(filter.id)}
-          className={`h-10 rounded-lg justify-center items-center px-4 ${activeFilter === filter.id
-            ? 'bg-primary'
-            : 'bg-light border border-secondary'
-            }`}
+          className={`h-10 rounded-lg justify-center items-center px-4 ${
+            activeFilter === filter.id
+              ? 'bg-primary'
+              : 'bg-light border border-secondary'
+          }`}
           style={[
             styles.filterButton,
             activeFilter === filter.id
@@ -47,8 +50,9 @@ export const ReviewsFilterNav = ({
           ]}
         >
           <Text
-            className={`text-base font-bold leading-6 ${activeFilter === filter.id ? 'text-light' : 'text-dark'
-              }`}
+            className={`text-base font-bold ${
+              activeFilter === filter.id ? 'text-light' : 'text-dark'
+            }`}
           >
             {filter.label}
           </Text>
@@ -64,20 +68,14 @@ const styles = StyleSheet.create({
   },
   filterButtonActive: {
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3,
     elevation: 3,
   },
   filterButtonInactive: {
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,

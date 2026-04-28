@@ -26,7 +26,7 @@ export const useAssessments = (enterpriseId: string): UseAssessmentsResult => {
                     };
                 }
                 return assessment;
-            })
+            }),
         );
         return enriched;
     };
@@ -49,7 +49,7 @@ export const useAssessments = (enterpriseId: string): UseAssessmentsResult => {
     useFocusEffect(
         useCallback(() => {
             loadAssessments();
-        }, [loadAssessments])
+        }, [loadAssessments]),
     );
 
     return {

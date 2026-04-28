@@ -1,11 +1,11 @@
 import { API_URL } from '@/constants/api';
-import { Enterprise } from '@/types/enterprise';
+import { EnterprisePercentage } from '@/types/enterprise';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 export const CompleteProfile = () => {
-  const [enterprise, setEnterprise] = useState<Enterprise | null>(null);
+  const [enterprise, setEnterprise] = useState<EnterprisePercentage | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   const getEnterprise = async () => {

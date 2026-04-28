@@ -3,6 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { ReviewSentiment } from '@/types/reviewSentiment';
 import { Platform } from 'react-native';
 
 const tintColorLight = '#0a7ea4';
@@ -53,30 +54,23 @@ export const Fonts = Platform.select({
   },
 });
 
-export const SENTIMENT_CONFIG = {
-  positiva: {
-    label: 'Positiva',
-    bgColor: '#E0F9F0',
-    textColor: '#00896B',
+export const sentimentConfig: Record<
+  ReviewSentiment,
+  { label: string; bgColor: string; textColor: string }
+> = {
+  elogios: {
+    label: 'Elogios',
+    bgColor: '#E6F4EA',
+    textColor: '#2E7D32',
   },
-  negativa: {
-    label: 'Negativa',
-    bgColor: '#FDE8E8',
-    textColor: '#C62828',
+  dicas: {
+    label: 'Dicas',
+    bgColor: '#FFF8E1',
+    textColor: '#F9A825',
   },
-  neutra: {
-    label: 'Neutra',
-    bgColor: '#F5F5F5',
-    textColor: '#424242',
-  },
-  sugestao: {
-    label: 'Sugestão',
-    bgColor: '#FFF3E0',
-    textColor: '#E65100',
-  },
-  duvida: {
-    label: 'Dúvida',
-    bgColor: '#E1F5FE',
-    textColor: '#0D47A1',
+  duvidas: {
+    label: 'Dúvidas',
+    bgColor: '#E3F2FD',
+    textColor: '#1565C0',
   },
 };

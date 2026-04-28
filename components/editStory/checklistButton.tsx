@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function ChecklistButton({ text, check }: Props) {
-  const progress = useSharedValue(check ? 1 : 0);
+  const progress = useSharedValue(0);
 
   useEffect(() => {
     progress.value = withTiming(check ? 1 : 0, { duration: 250 });
@@ -24,7 +24,7 @@ export default function ChecklistButton({ text, check }: Props) {
       backgroundColor: interpolateColor(
         progress.value,
         [0, 1],
-        ['transparent', '#C34342'], // verde
+        ['transparent', '#C34342'],
       ),
       borderColor: interpolateColor(
         progress.value,
