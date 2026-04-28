@@ -11,8 +11,8 @@ import { Alert, Text, View } from 'react-native';
 
 import { storySchema } from '@/schemas/storySchema';
 import {
-    getEnterprise,
-    updateEnterpriseStory,
+  getEnterprise,
+  updateEnterpriseStory,
 } from '@/services/enterpriseStory';
 import { Enterprise } from '@/types/enterprise';
 

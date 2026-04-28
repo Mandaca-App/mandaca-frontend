@@ -12,7 +12,6 @@ import { ActivityIndicator, Text, View } from 'react-native';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
-// 🔥 tipo único e consistente
 type ReviewSentiment = 'elogios' | 'dicas' | 'duvidas';
 
 interface ReviewItem {
@@ -22,7 +21,6 @@ interface ReviewItem {
   comment: string;
 }
 
-// 🔥 mapper API → UI
 const mapSentiment = (tipo: string): ReviewSentiment => {
   switch (tipo) {
     case 'positiva':
