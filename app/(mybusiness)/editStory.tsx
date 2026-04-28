@@ -21,7 +21,6 @@ const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 export default function EditStory() {
   const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE');
   const [text, setText] = useState('');
-  const [audio, setAudio] = useState('');
   const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [enterprise, setEnterprise] = useState<Enterprise | null>(null);
@@ -87,16 +86,11 @@ export default function EditStory() {
         setError(undefined);
       }
 
-      if (toggle === 'AUDIO' && !audio) {
-        Alert.alert('Atenção', 'Grave um áudio antes de continuar.');
-        return;
-      }
-
       setIsSaving(true);
 
       await updateEnterpriseStory(
         ENTERPRISE_ID,
-        toggle === 'WRITE' ? text.trim() : audio,
+        text.trim(),
       );
 
       const updatedData = await getEnterprise(ENTERPRISE_ID);
@@ -107,7 +101,6 @@ export default function EditStory() {
       setDetectedTopics(topics);
 
       setText(updatedData.historia || '');
-      setAudio('');
 
       router.push('/(mybusiness)/manageImages');
     } catch (error) {
