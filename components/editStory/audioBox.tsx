@@ -17,15 +17,13 @@ import {
 } from 'expo-audio'
 
 type Props = {
-    audio: string
-    setAudio: (s: string) => void
     setText: (s: string) => void
     setToggle: (t: 'WRITE' | 'AUDIO') => void
 }
 
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041'
 
-export default function AudioBox({ audio, setAudio, setText, setToggle }: Props) {
+export default function AudioBox({ setText, setToggle }: Props) {
 
     const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
 
@@ -107,7 +105,6 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
             const texto = data?.historia || ''
 
             setText(texto)
-            setAudio(texto)
             setToggle('WRITE')
 
         } catch (error: any) {
@@ -138,8 +135,6 @@ export default function AudioBox({ audio, setAudio, setText, setToggle }: Props)
                 <Text className="text-black/60 text-center">
                     {recorder.isRecording
                         ? 'Gravando... solte para enviar'
-                        : audio
-                        ? 'Áudio convertido com sucesso ✅'
                         : 'Toque e segure para gravar'}
                 </Text>
             )}
