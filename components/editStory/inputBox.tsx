@@ -15,8 +15,8 @@ export default function InputBox({ text, setText, error }: Props) {
   const borderColor = error
     ? 'border-red-500'
     : isFocused
-    ? 'border-black'
-    : 'border-black/15';
+      ? 'border-black'
+      : 'border-black/15';
 
   return (
     <View className="gap-1">
@@ -40,9 +40,7 @@ export default function InputBox({ text, setText, error }: Props) {
         />
       </View>
 
-      {error && (
-        <Text className="text-red-500 text-xs">{error}</Text>
-      )}
+      {error && <Text className="text-red-500 text-xs">{error}</Text>}
 
       <Text className="text-right text-xs text-black/40">
         {text.length}/{MAX_LENGTH}

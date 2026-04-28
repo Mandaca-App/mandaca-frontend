@@ -1,22 +1,22 @@
 import { ReviewSentiment } from './index';
 
 export interface AssessmentDTO {
-    id_avaliacao: string;
-    texto: string;
-    tipo_avaliacao: ReviewSentiment;
-    usuario_id: string;
-    empresa_id: string;
+  id_avaliacao: string;
+  texto: string;
+  tipo_avaliacao: ReviewSentiment;
+  usuario_id: string;
+  empresa_id: string;
 }
 
 export interface UserDTO {
-    id_usuario: string;
-    nome: string;
-    email: string;
+  id_usuario: string;
+  nome: string;
+  email: string;
 }
 
 export interface EnterpriseDTO {
-    id_empresa: string;
-    nome: string;
+  id_empresa: string;
+  nome: string;
 }
 
 /**
@@ -24,8 +24,8 @@ export interface EnterpriseDTO {
  * Útil quando backend retorna dados relacionados
  */
 export interface AssessmentEnrichedDTO extends AssessmentDTO {
-    usuario?: UserDTO;
-    empresa?: EnterpriseDTO;
+  usuario?: UserDTO;
+  empresa?: EnterpriseDTO;
 }
 
 /**
@@ -33,12 +33,12 @@ export interface AssessmentEnrichedDTO extends AssessmentDTO {
  * Possível endpoint futuro: GET /assessments/stats/enterprise/{id}
  */
 export interface AssessmentStatsDTO {
-    total: number;
-    positiva: number;
-    negativa: number;
-    neutra: number;
-    sugestao: number;
-    duvida: number;
-    avgSentiment?: number; // -1 a 1 ou percentual
-    recentCount: number; // últimos 7 dias
+  total: number;
+  positiva: number;
+  negativa: number;
+  neutra: number;
+  sugestao: number;
+  duvida: number;
+  avgSentiment?: number; // -1 a 1 ou percentual
+  recentCount: number; // últimos 7 dias
 }

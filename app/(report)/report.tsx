@@ -52,7 +52,8 @@ export default function Report() {
         ) : (
           <View className="mt-16 items-center gap-6 px-8">
             <Text className="text-center text-dark font-semibold text-base">
-              Nenhum relatório gerado ainda. Gere o primeiro relatório do seu negócio.
+              Nenhum relatório gerado ainda. Gere o primeiro relatório do seu
+              negócio.
             </Text>
             <GeneralButton
               text="Gerar Relatório"

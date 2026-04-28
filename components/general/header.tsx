@@ -48,7 +48,11 @@ export const Header = ({
           ]}
           onPress={handleBack}
         >
-          <Ionicons name="arrow-back" size={backButtonSize} color={backButtonColor} />
+          <Ionicons
+            name="arrow-back"
+            size={backButtonSize}
+            color={backButtonColor}
+          />
         </Pressable>
       ) : (
         <View className="h-8 w-8" />

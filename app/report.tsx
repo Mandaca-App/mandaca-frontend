@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 export default function Report() {
   const handleConsultorPress = () => {
-    router.push('/consultant');
+    router.push('/consultant' as any);
   };
 
   return (
