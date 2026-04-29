@@ -17,25 +17,16 @@ import {
 } from 'expo-audio';
 
 type Props = {
-  audio: string;
-  setAudio: (s: string) => void;
   setText: (s: string) => void;
   setToggle: (t: 'WRITE' | 'AUDIO') => void;
-  setDetectedTopics?: (topics: string[]) => void;
 };
 
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
 
-export default function AudioBox({
-  audio,
-  setAudio,
-  setText,
-  setToggle,
-  setDetectedTopics,
-}: Props) {
+export default function AudioBox({ setText, setToggle }: Props) {
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const scale = useSharedValue(1);
 
@@ -63,7 +54,7 @@ export default function AudioBox({
 
   const stopRecording = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
 
       await recorder.stop();
 
@@ -105,27 +96,14 @@ export default function AudioBox({
       }
 
       const data = JSON.parse(result.body);
-      const text = data?.historia || '';
+      const texto = data?.historia || '';
 
-      const detectedTopics: string[] = [];
-      if (data?.nome) detectedTopics.push('Nome do negócio');
-      if (data?.especialidade)
-        detectedTopics.push('Sua especialidade (produtos/serviços)');
-      if (data?.endereco) detectedTopics.push('Localização / Bairro');
-      if (data?.historia) detectedTopics.push('Sua história ou o diferencial');
-
-      setText(text);
-      setAudio(text);
-
-      if (setDetectedTopics) {
-        setDetectedTopics(detectedTopics);
-      }
-
+      setText(texto);
       setToggle('WRITE');
     } catch (error: any) {
       console.error('Erro ao enviar áudio:', error?.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -141,15 +119,13 @@ export default function AudioBox({
         </Pressable>
       </Animated.View>
 
-      {isLoading ? (
+      {loading ? (
         <Text className="text-primary font-semibold">Processando áudio...</Text>
       ) : (
         <Text className="text-black/60 text-center">
           {recorder.isRecording
             ? 'Gravando... solte para enviar'
-            : audio
-              ? 'Áudio convertido com sucesso ✅'
-              : 'Toque e segure para gravar'}
+            : 'Toque e segure para gravar'}
         </Text>
       )}
     </View>

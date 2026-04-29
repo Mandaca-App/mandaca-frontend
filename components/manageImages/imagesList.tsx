@@ -6,6 +6,7 @@ import ImageItem from './imageItem';
 import {
   deleteImage,
   getImagesByEnterprise,
+  uploadImage,
 } from '@/services/imagesEnterprise';
 import { ImageEnterprise } from '@/types/imageEnterprise';
 
@@ -48,6 +49,15 @@ export default function ImagesList() {
     }
   }
 
+  async function handleReplace(newUri: string) {
+    try {
+      await uploadImage(newUri, ENTERPRISE_ID);
+      loadImages();
+    } catch (error) {
+      console.error('Erro ao substituir imagem:', error);
+    }
+  }
+
   return (
     <View>
       <FileUpload onUploadSuccess={loadImages} />
@@ -60,7 +70,7 @@ export default function ImagesList() {
           id={img.id}
           uri={img.uri}
           onDelete={() => handleDelete(img.id)}
-          onReplace={() => {}}
+          onReplace={handleReplace}
         />
       ))}
     </View>

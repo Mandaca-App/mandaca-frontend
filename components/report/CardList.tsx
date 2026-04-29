@@ -1,22 +1,31 @@
-import { AIReportSummary } from '@/types/Report'
-import { router } from 'expo-router'
-import { View } from 'react-native'
-import { CardItem } from './CardItem'
+import { AIReportSummary } from '@/types/Report';
+import { router } from 'expo-router';
+import { View } from 'react-native';
+import { CardItem } from './CardItem';
 
 type Props = {
-  report: AIReportSummary
-}
+  report: AIReportSummary;
+};
 
 export const CardList = ({ report }: Props) => {
   const handlePressPositive = () => {
-    router.navigate({ pathname: '/positivePoints' as any, params: { report_id: report.id_relatorio } })
-  }
+    router.navigate({
+      pathname: '/positivePoints' as any,
+      params: { report_id: report.id_relatorio },
+    });
+  };
   const handlePressNegative = () => {
-    router.navigate({ pathname: '/negativePoints' as any, params: { report_id: report.id_relatorio } })
-  }
+    router.navigate({
+      pathname: '/negativePoints' as any,
+      params: { report_id: report.id_relatorio },
+    });
+  };
   const handlePressRecomendation = () => {
-    router.navigate({ pathname: '/recomendations' as any, params: { report_id: report.id_relatorio } })
-  }
+    router.navigate({
+      pathname: '/recomendations' as any,
+      params: { report_id: report.id_relatorio },
+    });
+  };
 
   return (
     <View className="mt-10 gap-8">
@@ -39,5 +48,5 @@ export const CardList = ({ report }: Props) => {
         handlePress={handlePressRecomendation}
       />
     </View>
-  )
-}
+  );
+};

@@ -1,22 +1,18 @@
 import React, { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
 } from 'react-native-reanimated';
 
 export const ImageSkeleton = () => {
   const shimmer = useSharedValue(0);
 
   useEffect(() => {
-    shimmer.value = withRepeat(
-      withTiming(1, { duration: 1200 }),
-      -1,
-      true,
-    );
+    shimmer.value = withRepeat(withTiming(1, { duration: 1200 }), -1, true);
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -27,11 +23,7 @@ export const ImageSkeleton = () => {
     };
   });
 
-  return (
-    <Animated.View
-      style={[styles.skeleton, animatedStyle]}
-    />
-  );
+  return <Animated.View style={[styles.skeleton, animatedStyle]} />;
 };
 
 const styles = StyleSheet.create({

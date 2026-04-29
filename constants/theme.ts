@@ -74,3 +74,25 @@ export const sentimentConfig: Record<
     textColor: '#1565C0',
   },
 };
+
+export const CHATBOT_THEME = {
+  bot: {
+    bgColor: '#EAEAEA',
+    textColor: '#000000',
+    labelColor: '#816F6A',
+  },
+  user: {
+    bgColor: '#C34342',
+    textColor: '#FFFFFF',
+  },
+  input: {
+    bgColor: '#EAEAEA',
+    textColor: '#6B7280',
+    placeholderColor: '#6B7280',
+  },
+  sendButton: {
+    bgColor: '#C34342',
+    iconColor: '#FFFFFF',
+  },
+  divider: '#D1D5DB',
+};
