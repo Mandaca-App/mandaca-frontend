@@ -1,6 +1,7 @@
 import { ChatBubble } from '@/components/consultant/ChatBubble';
 import { ChatInput } from '@/components/consultant/ChatInput';
 import { CHATBOT_THEME } from '@/constants/theme';
+import { getChatHistory, sendChatMessage } from '@/services/chatService';
 import { ChatMessage } from '@/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
@@ -15,6 +16,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
+const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
 
 const INITIAL_BOT_MESSAGE = `Olá! Sou seu consultor virtual.
 Como posso ajudar com a gestão
@@ -31,18 +35,27 @@ export default function Consultant() {
     },
   ]);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  // Carrega dados do usuário sem bloquear a renderização inicial do chat
   useEffect(() => {
-    const loadUser = async () => {
+    const loadInitialData = async () => {
       try {
-        const userId = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
+        const history = await getChatHistory(ENTERPRISE_ID);
+        if (history.length > 0) {
+          setMessages((prev) => [...prev, ...history]);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+      } finally {
+        setIsLoadingHistory(false);
+      }
 
+      try {
         const responseUser = await axios.get(
-          `https://mandaca-backend.onrender.com/users/${userId}`,
+          `https://mandaca-backend.onrender.com/users/${USER_ID}`,
           { timeout: 4000 },
         );
 
@@ -52,10 +65,9 @@ export default function Consultant() {
       }
     };
 
-    loadUser();
+    loadInitialData();
   }, []);
 
-  // Scroll automático para a última mensagem quando nova mensagem chega
   useEffect(() => {
     if (messages.length > 1) {
       setTimeout(() => {
@@ -65,9 +77,8 @@ export default function Consultant() {
   }, [messages]);
 
   const handleSendMessage = async (content: string) => {
-    // Adiciona mensagem do usuário
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       type: 'user',
       content: content,
       timestamp: new Date(),
@@ -78,26 +89,22 @@ export default function Consultant() {
     setIsAwaitingResponse(true);
 
     try {
-      // Requisição para buscar resposta do backend:
-
-      // Simulando delay de resposta (temporario)
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const reply = await sendChatMessage(content, ENTERPRISE_ID);
 
       const botResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: `bot-${Date.now()}`,
         type: 'bot',
-        content:
-          'Entendo. Este é um exemplo de resposta do bot. Em produção, isso virá do backend com orientações específicas para seu restaurante.',
+        content: reply,
         timestamp: new Date(),
         contentType: 'text',
       };
 
       setMessages((prev) => [...prev, botResponse]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao enviar mensagem:', error);
 
       const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: `error-${Date.now()}`,
         type: 'bot',
         content:
           'Desculpe, houve um erro ao processar sua mensagem. Tente novamente.',
@@ -162,7 +169,7 @@ export default function Consultant() {
           onScroll={handleScroll}
           scrollEventThrottle={16}
           ListFooterComponent={
-            isAwaitingResponse ? (
+            isAwaitingResponse || isLoadingHistory ? (
               <View className="px-4 py-2">
                 <ActivityIndicator size="small" color="#C34342" />
               </View>
