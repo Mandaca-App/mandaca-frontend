@@ -2,7 +2,6 @@ import { CHATBOT_THEME } from '@/constants/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
   onSendMessage: (message: string) => void;
@@ -11,7 +10,6 @@ type Props = {
 
 export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
   const [message, setMessage] = useState('');
-  const insets = useSafeAreaInsets();
 
   const handleSend = () => {
     if (message.trim()) {
@@ -25,7 +23,7 @@ export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
       className="bg-white border-t"
       style={{
         borderTopColor: CHATBOT_THEME.divider,
-        paddingBottom: Math.max(insets.bottom, 8),
+        paddingBottom: 8,
       }}
     >
       <View className="flex flex-row items-center justify-center gap-2.5 px-4 pt-3">

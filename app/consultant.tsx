@@ -6,26 +6,29 @@ import { getChatHistory, sendChatMessage } from '@/services/chatService';
 import { ChatMessage } from '@/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from 'axios';
+import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  KeyboardAvoidingView,
+  Keyboard,
   Platform,
   Pressable,
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
+const KEYBOARD_EXTRA_OFFSET = Platform.OS === 'android' ? 0 : 6;
 
 const INITIAL_BOT_MESSAGE = `Olá! Sou seu consultor virtual.
 Como posso ajudar com a gestão
 do seu restaurante hoje?`;
 
 export default function Consultant() {
+  const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
@@ -40,6 +43,8 @@ export default function Consultant() {
   const [user, setUser] = useState<any>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [footerHeight, setFooterHeight] = useState(0);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -77,6 +82,29 @@ export default function Consultant() {
       }, 100);
     }
   }, [messages]);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, (event) => {
+      const safeAreaCompensation = Platform.OS === 'ios' ? insets.bottom : 0;
+      const nextHeight = Math.max(
+        event.endCoordinates.height - safeAreaCompensation + KEYBOARD_EXTRA_OFFSET,
+        0,
+      );
+      setKeyboardHeight(nextHeight);
+    });
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [insets.bottom]);
 
   const handleSendMessage = async (content: string) => {
     const userMessage: ChatMessage = {
@@ -134,17 +162,28 @@ export default function Consultant() {
     setShowScrollButton(!isAtBottom && messages.length > 3);
   };
 
+  const footerOffsetBottom = keyboardHeight;
+  const scrollButtonBottom = footerHeight + footerOffsetBottom + 16;
+
   return (
-    <SafeAreaView className="flex-1" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1" edges={['top', 'left', 'right', 'bottom']}>
       {/* Main Content Container */}
       <View className="flex-1 bg-background">
         {/* Header */}
-        <View className="px-6 py-4 border-b border-gray-200">
-          <View className="flex flex-row justify-center">
-            <Text className="text-xl font-semibold text-gray-800">
-              Consultor Virtual
-            </Text>
-          </View>
+        <View className="px-6 py-4 border-b border-gray-200 flex-row items-center justify-between">
+          <Pressable
+            className="h-8 w-8 rounded-full justify-center items-center"
+            style={{ backgroundColor: '#FFFFFF' }}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={12} color="#2C2C2C" />
+          </Pressable>
+
+          <Text className="text-xl font-semibold text-gray-800 flex-1 text-center">
+            Consultor Virtual
+          </Text>
+
+          <View className="h-8 w-8" />
         </View>
 
         {/* Messages List */}
@@ -163,6 +202,7 @@ export default function Consultant() {
             paddingVertical: 16,
             paddingHorizontal: 12,
             flexGrow: 1,
+            paddingBottom: footerHeight + footerOffsetBottom + 16,
           }}
           keyboardDismissMode={
             Platform.OS === 'ios' ? 'interactive' : 'on-drag'
@@ -180,35 +220,35 @@ export default function Consultant() {
           }
         />
 
-        {/* Scroll to Bottom Button */}
         {showScrollButton && (
           <Pressable
             className="absolute right-4 w-11 h-11 rounded-full justify-center items-center shadow-md"
             style={{
               backgroundColor: CHATBOT_THEME.input.bgColor,
               elevation: 5,
-              bottom: 130,
+              bottom: scrollButtonBottom,
             }}
             onPress={handleScrollToBottom}
           >
             <Ionicons name="arrow-down" size={16} color="#6B7280" />
           </Pressable>
         )}
-      </View>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
-      >
-        <SuggestionCards
-          onSuggestionPress={handleSendMessage}
-          isVisible={showSuggestions}
-        />
-        <ChatInput
-          onSendMessage={handleSendMessage}
-          isLoading={isAwaitingResponse}
-        />
-      </KeyboardAvoidingView>
+        <View
+          className="bg-white border-t border-gray-200 absolute left-0 right-0"
+          style={{ bottom: footerOffsetBottom }}
+          onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
+        >
+          <SuggestionCards
+            onSuggestionPress={handleSendMessage}
+            isVisible={showSuggestions}
+          />
+          <ChatInput
+            onSendMessage={handleSendMessage}
+            isLoading={isAwaitingResponse}
+          />
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
