@@ -1,5 +1,6 @@
 import { ChatBubble } from '@/components/consultant/ChatBubble';
 import { ChatInput } from '@/components/consultant/ChatInput';
+import { SuggestionCards } from '@/components/consultant/SuggestionCards';
 import { CHATBOT_THEME } from '@/constants/theme';
 import { getChatHistory, sendChatMessage } from '@/services/chatService';
 import { ChatMessage } from '@/types';
@@ -38,6 +39,7 @@ export default function Consultant() {
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -87,6 +89,7 @@ export default function Consultant() {
 
     setMessages((prev) => [...prev, userMessage]);
     setIsAwaitingResponse(true);
+    setShowSuggestions(false);
 
     try {
       const reply = await sendChatMessage(content, ENTERPRISE_ID);
@@ -180,10 +183,11 @@ export default function Consultant() {
         {/* Scroll to Bottom Button */}
         {showScrollButton && (
           <Pressable
-            className="absolute right-4 bottom-24 w-11 h-11 rounded-full justify-center items-center shadow-md"
+            className="absolute right-4 w-11 h-11 rounded-full justify-center items-center shadow-md"
             style={{
               backgroundColor: CHATBOT_THEME.input.bgColor,
               elevation: 5,
+              bottom: 130,
             }}
             onPress={handleScrollToBottom}
           >
@@ -196,6 +200,10 @@ export default function Consultant() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 8 : 0}
       >
+        <SuggestionCards
+          onSuggestionPress={handleSendMessage}
+          isVisible={showSuggestions}
+        />
         <ChatInput
           onSendMessage={handleSendMessage}
           isLoading={isAwaitingResponse}
