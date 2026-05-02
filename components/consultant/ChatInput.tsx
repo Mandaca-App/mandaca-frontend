@@ -1,7 +1,14 @@
 import { CHATBOT_THEME } from '@/constants/theme';
+import { useAudioRecording } from '@/hooks/useAudioRecording';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useState } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Alert, Pressable, TextInput, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 type Props = {
   onSendMessage: (message: string) => void;
@@ -10,6 +17,15 @@ type Props = {
 
 export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
   const [message, setMessage] = useState('');
+  const {
+    startRecording,
+    stopRecording,
+    isRecording,
+    isLoading: isAudioLoading,
+    error: audioError,
+  } = useAudioRecording();
+  const scale = useSharedValue(1);
+  const micButtonRef = useRef<View>(null);
 
   const handleSend = () => {
     if (message.trim()) {
@@ -17,6 +33,30 @@ export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
       setMessage('');
     }
   };
+
+  const handleMicPressIn = async () => {
+    const success = await startRecording();
+    if (success) {
+      scale.value = withRepeat(withTiming(1.2, { duration: 600 }), -1, true);
+    } else if (audioError) {
+      Alert.alert('Erro', audioError);
+    }
+  };
+
+  const handleMicPressOut = async () => {
+    scale.value = withTiming(1);
+    const transcribedText = await stopRecording();
+
+    if (transcribedText) {
+      setMessage(transcribedText);
+    } else if (audioError) {
+      Alert.alert('Erro', audioError || 'Falha ao transcrever áudio');
+    }
+  };
+
+  const animatedMicStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
     <View
@@ -35,13 +75,21 @@ export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
           }}
         >
           {/* Microphone Button */}
-          <Pressable className="p-1.5 mr-2" disabled={isLoading}>
-            <Ionicons
-              name="mic"
-              size={22}
-              color={CHATBOT_THEME.sendButton.bgColor}
-            />
-          </Pressable>
+          <Animated.View style={animatedMicStyle}>
+            <Pressable
+              className="p-1.5 mr-2"
+              disabled={isLoading || isAudioLoading}
+              onPressIn={handleMicPressIn}
+              onPressOut={handleMicPressOut}
+              ref={micButtonRef}
+            >
+              <Ionicons
+                name="mic"
+                size={22}
+                color={isRecording ? '#FF6B6B' : CHATBOT_THEME.sendButton.bgColor}
+              />
+            </Pressable>
+          </Animated.View>
 
           {/* Text Input */}
           <TextInput

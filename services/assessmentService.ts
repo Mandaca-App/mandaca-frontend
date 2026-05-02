@@ -9,6 +9,7 @@ export interface Assessment {
   usuario_id: string;
   usuario_nome?: string;
   empresa_id: string;
+  created_at?: string;
 }
 
 export const getAssessmentsByEnterprise = async (
