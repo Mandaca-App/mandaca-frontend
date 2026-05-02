@@ -73,7 +73,11 @@ const HelpScreen: React.FC = () => {
         <Header
           title="Central de Ajuda"
           showBackButton
-          showNotificationButton={false}
+          showNotificationButton={true}
+          rightButtonIcon="chatbubble-outline"
+          rightButtonColor="#FFFFFF"
+          rightButtonBgColor="#C34342"
+          onNotificationPress={() => router.push('/consultant')}
           onBackPress={() => router.back()}
         />
       </View>
