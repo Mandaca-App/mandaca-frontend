@@ -19,6 +19,7 @@ interface ReviewItem {
   name: string;
   sentiment: ReviewSentiment;
   comment: string;
+  createdAt?: string;
 }
 
 const mapSentiment = (tipo: string): ReviewSentiment => {
@@ -44,6 +45,7 @@ export default function Reviews() {
     name: assessment.usuario_nome || 'Anônimo',
     sentiment: mapSentiment(assessment.tipo_avaliacao),
     comment: assessment.texto,
+    createdAt: assessment.created_at,
   }));
 
   const filteredReviews =
@@ -77,6 +79,7 @@ export default function Reviews() {
                 name={review.name}
                 sentiment={review.sentiment}
                 comment={review.comment}
+                createdAt={review.createdAt}
               />
             ))}
           </View>
