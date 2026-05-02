@@ -5,6 +5,7 @@ import { CardList } from '@/components/report/CardList';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
 import { generateReport, getReportsByEnterprise } from '@/services/reports';
 import { AIReportSummary } from '@/types/Report';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -14,6 +15,10 @@ export default function Report() {
   const [report, setReport] = useState<AIReportSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+
+  const handleConsultorPress = () => {
+    router.push('/consultant' as any);
+  };
 
   useEffect(() => {
     fetchLatestReport();
@@ -44,7 +49,15 @@ export default function Report() {
   return (
     <Container>
       <View>
-        <Header title="Relatório" showBackButton showNotificationButton />
+        <Header
+          title="Relatório"
+          showBackButton
+          showNotificationButton={true}
+          rightButtonIcon="chatbubble-outline"
+          rightButtonColor="#FFFFFF"
+          rightButtonBgColor="#C34342"
+          onNotificationPress={handleConsultorPress}
+        />
         {loading ? (
           <CardListSkeleton />
         ) : report ? (
