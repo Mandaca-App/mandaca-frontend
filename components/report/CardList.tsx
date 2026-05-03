@@ -1,10 +1,10 @@
-import { AIReportSummary } from '@/types/Report';
+import { AIReport } from '@/types/Report';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 import { CardItem } from './CardItem';
 
 type Props = {
-  report: AIReportSummary;
+  report: AIReport;
 };
 
 export const CardList = ({ report }: Props) => {
@@ -31,19 +31,28 @@ export const CardList = ({ report }: Props) => {
     <View className="mt-10 gap-8">
       <CardItem
         icon={'analytics'}
-        topics={[{ id: 1, text: report.pontos_positivos_resumo }]}
+        topics={report.pontos_positivos.map((item, i) => ({
+          id: i,
+          text: item.resumo,
+        }))}
         typeCard="positive"
         handlePress={handlePressPositive}
       />
       <CardItem
         icon={'warning'}
-        topics={[{ id: 2, text: report.melhorias_resumo }]}
+        topics={report.melhorias.map((item, i) => ({
+          id: i,
+          text: item.resumo,
+        }))}
         typeCard="negative"
         handlePress={handlePressNegative}
       />
       <CardItem
         icon={'bulb'}
-        topics={[{ id: 3, text: report.recomendacoes_resumo }]}
+        topics={report.recomendacoes.map((item, i) => ({
+          id: i,
+          text: item.resumo,
+        }))}
         typeCard="recomendation"
         handlePress={handlePressRecomendation}
       />

@@ -1,21 +1,28 @@
 import { API_URL } from '@/constants/api';
-import { ReviewSentiment } from '@/types/reviewSentiment';
 import axios from 'axios';
 
 export interface Assessment {
   id_avaliacao: string;
   texto: string;
-  tipo_avaliacao: ReviewSentiment;
+  tipo_avaliacao: number;
   usuario_id: string;
   usuario_nome?: string;
   empresa_id: string;
 }
 
-export const getAssessmentsByEnterprise = async (
+export interface AssessmentPaginatedResponse {
+  page: number;
+  items: Assessment[];
+  has_more: boolean;
+}
+
+export const getAssessmentsByEnterprisePaginated = async (
   enterpriseId: string,
-): Promise<Assessment[]> => {
+  page: number = 1,
+): Promise<AssessmentPaginatedResponse> => {
   const response = await axios.get(
-    `${API_URL}/assessments/by-enterprise/${enterpriseId}`,
+    `${API_URL}/assessments/by-enterprise/${enterpriseId}/paginated`,
+    { params: { page } },
   );
   return response.data;
 };
