@@ -36,11 +36,9 @@ export const CardItemFeedback = ({
     >
       <View className="flex-row items-center justify-between">
         <Ionicons name={icon} size={28} color="#000000" />
-
         <Text className="text-xl text-dark font-semibold">
           {title[typeCard]}
         </Text>
-
         <View className="w-5 h-5"></View>
       </View>
 
