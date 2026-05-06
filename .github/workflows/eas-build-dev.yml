@@ -1,0 +1,104 @@
+name: EAS Build Dev (Android)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android APK (dev)
+    runs-on: ubuntu-latest
+    outputs:
+      build_id: ${{ steps.eas_build.outputs.build_id }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Disparar build Android no EAS
+        id: eas_build
+        run: |
+          OUTPUT=$(npx eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --no-wait \
+            --json 2>/dev/null)
+          BUILD_ID=$(echo "$OUTPUT" | jq -r '.[0].id')
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
+          echo "Build iniciado: https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/$BUILD_ID"
+
+  attach:
+    name: Publicar APK na release dev-latest
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Aguardar build e baixar APK
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          BUILD_ID: ${{ needs.build.outputs.build_id }}
+        run: |
+          set +e
+          echo "Aguardando conclusao do build ${BUILD_ID}..."
+          QUERY='{"query":"query($id:ID!){builds{byId(buildId:$id){id status artifacts{applicationArchiveUrl}}}}","variables":{"id":"'"${BUILD_ID}"'"}}'
+
+          for attempt in $(seq 1 60); do
+            RESPONSE=$(curl -s -X POST \
+              -H "Authorization: Bearer ${EXPO_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "${QUERY}" \
+              https://api.expo.dev/graphql)
+            STATUS=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.status // empty' 2>/dev/null)
+
+            if [ -z "${STATUS}" ]; then
+              echo "Tentativa ${attempt}: resposta inesperada. Preview: $(echo "${RESPONSE}" | head -c 300)"
+              sleep 30
+              continue
+            fi
+
+            case "${STATUS}" in
+              FINISHED)
+                APK_URL=$(echo "${RESPONSE}" | jq -r '.data.builds.byId.artifacts.applicationArchiveUrl')
+                echo "Build concluido. Baixando APK..."
+                curl -L -o mandaca-preview-dev.apk "${APK_URL}"
+                ls -lh mandaca-preview-dev.apk
+                exit 0
+                ;;
+              ERRORED|CANCELED|CANCELLED)
+                echo "Build falhou com status: ${STATUS}"
+                exit 1
+                ;;
+              *)
+                echo "Status: ${STATUS}. Aguardando 30s (tentativa ${attempt}/60)..."
+                sleep 30
+                ;;
+            esac
+          done
+
+          echo "Timeout apos 30 minutos aguardando o build"
+          exit 1
+
+      - name: Atualizar release dev-latest
+        env:
+          GH_TOKEN: ${{ secrets.GH_RELEASE_TOKEN }}
+        run: |
+          gh release delete dev-latest --yes 2>/dev/null || true
+          git push origin :refs/tags/dev-latest 2>/dev/null || true
+          gh release create dev-latest mandaca-preview-dev.apk \
+            --prerelease \
+            --title "Dev Build (latest)" \
+            --notes "Build automatico da branch \`dev\`. Atualizado em: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          echo "APK disponivel em: https://github.com/${{ github.repository }}/releases/download/dev-latest/mandaca-preview-dev.apk"
