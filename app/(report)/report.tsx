@@ -4,7 +4,7 @@ import { Header } from '@/components/general/header';
 import { CardList } from '@/components/report/CardList';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
 import { generateReport, getReportsByEnterprise } from '@/services/reports';
-import { AIReportSummary } from '@/types/Report';
+import { AIReport } from '@/types/Report';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -12,7 +12,7 @@ import { Text, View } from 'react-native';
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Report() {
-  const [report, setReport] = useState<AIReportSummary | null>(null);
+  const [report, setReport] = useState<AIReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 

@@ -26,12 +26,14 @@ export interface ChatMessageResponse {
 export async function sendChatMessage(
     message: string,
     enterpriseId: string,
+    usuarioId: string,
 ): Promise<string> {
     try {
         const response = await axios.post<ChatMessageResponse>(
             `${API_ENDPOINT}/message`,
             {
                 empresa_id: enterpriseId,
+                usuario_id: usuarioId,
                 mensagem: message,
             },
             { timeout: 30000 },
