@@ -1,3 +1,4 @@
+import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
 import { ReviewCard } from '@/components/MyBusiness/reviewCard/main';
 import {
@@ -7,8 +8,7 @@ import {
 import { useAssessments } from '@/hooks/useAssessments';
 import { Assessment } from '@/services/assessmentService';
 import { useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
@@ -22,26 +22,20 @@ interface ReviewItem {
   createdAt?: string;
 }
 
-const mapSentiment = (tipo: number): ReviewSentiment => {
-  switch (tipo) {
-    case 0:
-      return 'elogios'; // POSITIVA
-    case 1:
-      return 'dicas';   // NEGATIVA
-    case 3:
-      return 'dicas';   // SUGESTAO
-    case 4:
-      return 'duvidas'; // DUVIDA
-    default:
-      return 'duvidas'; // NEUTRA (2) e demais
-  }
+const mapSentiment = (tipo: string | number): ReviewSentiment => {
+  const tipoStr = String(tipo).toLowerCase();
+
+  if (tipoStr === '0' || tipoStr === 'positiva') return 'elogios';
+  if (tipoStr === '1' || tipoStr === 'negativa') return 'dicas';
+  if (tipoStr === '2' || tipoStr === 'neutra') return 'duvidas';
+
+  return 'duvidas';
 };
 
 export default function Reviews() {
   const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
 
-  const { assessments, loading, loadingMore, hasMore, error, loadMore } =
-    useAssessments(ENTERPRISE_ID);
+  const { assessments, loading, error } = useAssessments(ENTERPRISE_ID);
 
   const reviews: ReviewItem[] = assessments.map((assessment: Assessment) => ({
     id: assessment.id_avaliacao,
@@ -57,15 +51,24 @@ export default function Reviews() {
       : reviews.filter((review) => review.sentiment === activeFilter);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <FlatList
-        data={filteredReviews}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 20, gap: 16 }}
-        showsVerticalScrollIndicator={false}
-        onEndReached={hasMore ? loadMore : undefined}
-        onEndReachedThreshold={0.2}
-        ListHeaderComponent={
+    <Container>
+      <Header title="Avaliações" showBackButton showNotificationButton />
+
+      <View className="gap-4">
+        <ReviewsFilterNav
+          initialFilter="todos"
+          onFilterChange={setActiveFilter}
+        />
+
+        {loading ? (
+          <View className="items-center justify-center py-12">
+            <ActivityIndicator size="large" />
+          </View>
+        ) : error ? (
+          <View className="items-center justify-center py-12">
+            <Text className="text-dark text-center text-sm">{error}</Text>
+          </View>
+        ) : filteredReviews.length > 0 ? (
           <View className="gap-4">
             {filteredReviews.map((review) => (
               <ReviewCard
@@ -83,39 +86,8 @@ export default function Reviews() {
               Nenhuma avaliação encontrada nesta categoria.
             </Text>
           </View>
-        }
-        ListEmptyComponent={
-          loading ? (
-            <View className="items-center justify-center py-12">
-              <ActivityIndicator size="large" />
-            </View>
-          ) : error ? (
-            <View className="items-center justify-center py-12">
-              <Text className="text-dark text-center text-sm">{error}</Text>
-            </View>
-          ) : (
-            <View className="items-center justify-center py-12">
-              <Text className="text-dark text-center text-sm">
-                Nenhuma avaliação encontrada nesta categoria.
-              </Text>
-            </View>
-          )
-        }
-        ListFooterComponent={
-          loadingMore ? (
-            <View className="items-center py-4">
-              <ActivityIndicator size="small" color="#C34342" />
-            </View>
-          ) : null
-        }
-        renderItem={({ item }) => (
-          <ReviewCard
-            name={item.name}
-            sentiment={item.sentiment}
-            comment={item.comment}
-          />
         )}
-      />
-    </SafeAreaView>
+      </View>
+    </Container>
   );
 }
