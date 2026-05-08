@@ -17,7 +17,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
@@ -84,13 +87,17 @@ export default function Consultant() {
   }, [messages]);
 
   useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
     const showSubscription = Keyboard.addListener(showEvent, (event) => {
       const safeAreaCompensation = Platform.OS === 'ios' ? insets.bottom : 0;
       const nextHeight = Math.max(
-        event.endCoordinates.height - safeAreaCompensation + KEYBOARD_EXTRA_OFFSET,
+        event.endCoordinates.height -
+          safeAreaCompensation +
+          KEYBOARD_EXTRA_OFFSET,
         0,
       );
       setKeyboardHeight(nextHeight);

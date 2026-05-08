@@ -88,10 +88,7 @@ export default function EditStory() {
 
       setIsSaving(true);
 
-      await updateEnterpriseStory(
-        ENTERPRISE_ID,
-        text.trim(),
-      );
+      await updateEnterpriseStory(ENTERPRISE_ID, text.trim());
 
       const updatedData = await getEnterprise(ENTERPRISE_ID);
 
@@ -130,10 +127,7 @@ export default function EditStory() {
         )}
 
         {toggle === 'AUDIO' && (
-          <AudioBox
-            setText={setText}
-            setToggle={setToggle}
-          />
+          <AudioBox setText={setText} setToggle={setToggle} />
         )}
 
         <Checklist detectedTopics={detectedTopics} />
