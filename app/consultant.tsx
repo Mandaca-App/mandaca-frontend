@@ -120,7 +120,7 @@ export default function Consultant() {
     setShowSuggestions(false);
 
     try {
-      const reply = await sendChatMessage(content, ENTERPRISE_ID);
+      const reply = await sendChatMessage(content, ENTERPRISE_ID, USER_ID);
 
       const botResponse: ChatMessage = {
         id: `bot-${Date.now()}`,

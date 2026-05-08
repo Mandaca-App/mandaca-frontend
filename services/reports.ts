@@ -1,9 +1,7 @@
 import { API_URL } from '@/constants/api';
-import { AIReportDetail, AIReportSummary } from '@/types/Report';
+import { AIReport } from '@/types/Report';
 
-export const generateReport = async (
-  empresaId: string,
-): Promise<AIReportDetail> => {
+export const generateReport = async (empresaId: string): Promise<AIReport> => {
   const res = await fetch(`${API_URL}/reports/generate/${empresaId}`, {
     method: 'POST',
   });
@@ -12,12 +10,12 @@ export const generateReport = async (
 
 export const getReportsByEnterprise = async (
   empresaId: string,
-): Promise<AIReportSummary[]> => {
+): Promise<AIReport[]> => {
   const res = await fetch(`${API_URL}/reports/by-enterprise/${empresaId}`);
   return res.json();
 };
 
-export const getReport = async (reportId: string): Promise<AIReportDetail> => {
+export const getReport = async (reportId: string): Promise<AIReport> => {
   const res = await fetch(`${API_URL}/reports/${reportId}`);
   return res.json();
 };

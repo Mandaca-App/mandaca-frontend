@@ -1,12 +1,10 @@
 import { Header } from '@/components/general/header';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
   Alert,
   Linking,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,27 +13,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type FAQItem = {
-  id: number;
-  title: string;
-  icon: keyof typeof MaterialIcons.glyphMap;
-};
-
 const HelpScreen: React.FC = () => {
   const router = useRouter();
-
-  // Sample FAQ data
-  const faqItems: FAQItem[] = [
-    { id: 1, title: 'Como cadastrar meu negócio', icon: 'storefront' },
-    { id: 2, title: 'Dicas de fotos', icon: 'camera-alt' },
-    { id: 3, title: 'Termos de uso', icon: 'description' },
-    { id: 4, title: 'Formas de pagamento', icon: 'credit-card' },
-  ];
 
   const handleSendEmail = async () => {
     const email = 'suporte@mandaca.com.br';
     const subject = encodeURIComponent('Suporte - Central de Ajuda Mandacá');
-
     try {
       const url = `mailto:${email}?subject=${subject}`;
       const canOpen = await Linking.canOpenURL(url);
@@ -49,82 +32,81 @@ const HelpScreen: React.FC = () => {
     }
   };
 
-  // Handle phone call
-  const handleCallSupport = async () => {
-    const phoneNumber =
-      Platform.OS === 'ios' ? 'telprompt:08001234567' : 'tel:08001234567';
+  const handleStartChat = () => {
+    router.push('/consultant' as any);
+  };
 
-    try {
-      const canOpen = await Linking.canOpenURL(phoneNumber);
-      if (canOpen) {
-        await Linking.openURL(phoneNumber);
-      } else {
-        Alert.alert('Erro', 'Não foi possível realizar a chamada.');
-      }
-    } catch {
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar ligar para o suporte.');
-    }
+  const handleTutorials = () => {
+    Alert.alert('Em breve', 'A seção de tutoriais estará disponível em breve.');
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Standard Fixed Header - Adjusted padding */}
-      <View style={styles.headerWrapper}>
-        <Header
-          title="Central de Ajuda"
-          showBackButton
-          showNotificationButton={false}
-          onBackPress={() => router.back()}
-        />
-      </View>
-
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* FAQ Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Perguntas Frequentes</Text>
-
-          <View style={styles.buttonContainer}>
-            {faqItems.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                activeOpacity={0.7}
-                onPress={() => router.push('/helpDetail')} // Final route path
-                style={styles.faqCard}
-              >
-                <MaterialIcons name={item.icon} size={24} color="#C34342" />
-                <Text style={styles.faqTitle}>{item.title}</Text>
-                <Ionicons name="chevron-forward" size={20} color="#CBD5E0" />
-              </TouchableOpacity>
-            ))}
-          </View>
+        {/* Header */}
+        <View style={styles.headerWrapper}>
+          <Header
+            title="Ajuda"
+            showBackButton
+            showNotificationButton={false}
+            onBackPress={() => router.back()}
+          />
         </View>
 
-        {/* Contact Section */}
-        <View style={styles.contactSection}>
-          <Text style={styles.sectionTitle}>Contato</Text>
+        {/* Chatbot Card */}
+        <View style={styles.chatbotCard}>
+          <Ionicons name="headset-outline" size={52} color="#C34342" />
+          <Text style={styles.chatbotTitle}>Chatbot</Text>
+          <Text style={styles.chatbotDescription}>
+            Obtenha respostas rápidas e automáticas para suas dúvidas a qualquer hora
+          </Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={handleStartChat}
+            style={styles.startChatButton}
+          >
+            <Text style={styles.startChatButtonText}>Iniciar Conversa</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleSendEmail}
-              style={styles.emailButton}
-            >
-              <MaterialIcons name="email" size={24} color="#fff" />
-              <Text style={styles.contactButtonText}>Enviar E-mail</Text>
-            </TouchableOpacity>
+        {/* List Items */}
+        <View style={styles.listContainer}>
+          {/* Tutoriais */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleTutorials}
+            style={styles.listItem}
+          >
+            <View style={styles.listIconWrapper}>
+              <Ionicons name="school-outline" size={28} color="#C34342" />
+            </View>
+            <View style={styles.listTextWrapper}>
+              <Text style={styles.listTitle}>Tutoriais</Text>
+              <Text style={styles.listSubtitle}>Aprenda a usar o app</Text>
+            </View>
+            <Ionicons name="arrow-forward" size={18} color="#C34342" />
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleCallSupport}
-              style={styles.phoneButton}
-            >
-              <MaterialIcons name="phone" size={24} color="#fff" />
-              <Text style={styles.contactButtonText}>Ligar para Suporte</Text>
-            </TouchableOpacity>
-          </View>
+          <View style={styles.divider} />
+
+          {/* Fale Conosco */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={handleSendEmail}
+            style={styles.listItem}
+          >
+            <View style={styles.listIconWrapper}>
+              <Ionicons name="mail-outline" size={28} color="#C34342" />
+            </View>
+            <View style={styles.listTextWrapper}>
+              <Text style={styles.listTitle}>Fale Conosco</Text>
+              <Text style={styles.listSubtitle}>Envie-nos um e-mail</Text>
+            </View>
+            <Ionicons name="arrow-forward" size={18} color="#C34342" />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -132,109 +114,103 @@ const HelpScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  headerWrapper: {
-    paddingHorizontal: 20,
-    paddingTop: 15,
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F7FAFC',
+    backgroundColor: '#F8F7FA',
   },
   scrollContent: {
-    padding: 20,
     paddingBottom: 40,
   },
-  section: {
-    marginBottom: 30,
+  headerWrapper: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    backgroundColor: '#F8F7FA',
   },
-  sectionTitle: {
-    fontSize: 14,
+  // Chatbot card
+  chatbotCard: {
+    marginHorizontal: 24,
+    marginTop: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 32,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  chatbotTitle: {
+    fontSize: 20,
     fontWeight: '700',
-    color: '#A0AEC0',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 16,
+    color: '#1C1C1C',
+    marginTop: 12,
   },
-  faqCard: {
+  chatbotDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginTop: 8,
+  },
+  startChatButton: {
+    backgroundColor: '#C34342',
+    borderRadius: 10,
+    paddingVertical: 16,
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    marginTop: 20,
+  },
+
+  startChatButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  // List
+  listContainer: {
+    marginHorizontal: 24,
+    marginTop: 24,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  listItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#EDF2F7',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-    }),
+    paddingVertical: 18,
+    paddingHorizontal: 20,
   },
-  faqTitle: {
+  listIconWrapper: {
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listTextWrapper: {
     flex: 1,
+    marginLeft: 12,
+  },
+  listTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#2D3748',
-    marginLeft: 14,
+    color: '#1C1C1C',
   },
-  contactSection: {
-    marginTop: 10,
+  listSubtitle: {
+    fontSize: 13,
+    color: '#6B7280',
+    marginTop: 2,
   },
-  buttonContainer: {
-    gap: 12,
-  },
-  emailButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#C34342',
-    borderRadius: 16,
-    paddingVertical: 18,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#C34342',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  phoneButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#1A202C',
-    borderRadius: 16,
-    paddingVertical: 18,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  contactButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-    marginLeft: 10,
+  divider: {
+    height: 1,
+    backgroundColor: '#F0F0F0',
+    marginLeft: 76,
   },
 });
 
