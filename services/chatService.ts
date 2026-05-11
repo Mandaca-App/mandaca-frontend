@@ -58,14 +58,6 @@ export async function getChatHistory(
       { timeout: 10000 },
     );
 
-    const messages: ChatMessage[] = response.data.historico.map((item) => ({
-      id: item.id_mensagem,
-      type: 'user',
-      content: item.conteudo_usuario,
-      timestamp: new Date(item.criado_em),
-      contentType: 'text',
-    }));
-
     const messagesWithReplies: ChatMessage[] = [];
     for (const item of response.data.historico) {
       // Adiciona mensagem do usuário

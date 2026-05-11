@@ -10,10 +10,10 @@ import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
@@ -27,14 +27,19 @@ interface ReviewItem {
   createdAt?: string;
 }
 
-const mapSentiment = (tipo: string | number): ReviewSentiment => {
-  const tipoStr = String(tipo).toLowerCase();
-
-  if (tipoStr === '0' || tipoStr === 'positiva') return 'elogios';
-  if (tipoStr === '1' || tipoStr === 'negativa') return 'dicas';
-  if (tipoStr === '2' || tipoStr === 'neutra') return 'duvidas';
-
-  return 'duvidas';
+const mapSentiment = (tipo: number): ReviewSentiment => {
+  switch (tipo) {
+    case 0:
+      return 'elogios';
+    case 1:
+      return 'dicas';
+    case 3:
+      return 'dicas';
+    case 4:
+      return 'duvidas';
+    default:
+      return 'duvidas';
+  }
 };
 
 export default function Reviews() {
