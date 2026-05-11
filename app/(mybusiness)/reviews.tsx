@@ -6,8 +6,13 @@ import {
 } from '@/components/MyBusiness/reviewsFilter/main';
 import { useAssessments } from '@/hooks/useAssessments';
 import { Assessment } from '@/services/assessmentService';
-import { useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
@@ -19,91 +24,124 @@ interface ReviewItem {
   name: string;
   sentiment: ReviewSentiment;
   comment: string;
+  createdAt?: string;
 }
 
 const mapSentiment = (tipo: number): ReviewSentiment => {
   switch (tipo) {
     case 0:
-      return 'elogios'; // POSITIVA
+      return 'elogios';
     case 1:
-      return 'dicas';   // NEGATIVA
+      return 'dicas';
     case 3:
-      return 'dicas';   // SUGESTAO
+      return 'dicas';
     case 4:
-      return 'duvidas'; // DUVIDA
+      return 'duvidas';
     default:
-      return 'duvidas'; // NEUTRA (2) e demais
+      return 'duvidas';
   }
 };
 
 export default function Reviews() {
   const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
 
-  const { assessments, loading, loadingMore, hasMore, error, loadMore } =
-    useAssessments(ENTERPRISE_ID);
+  const {
+    assessments,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    loadMore,
+  } = useAssessments(ENTERPRISE_ID);
 
-  const reviews: ReviewItem[] = assessments.map((assessment: Assessment) => ({
-    id: assessment.id_avaliacao,
-    name: assessment.usuario_nome || 'Anônimo',
-    sentiment: mapSentiment(assessment.tipo_avaliacao),
-    comment: assessment.texto,
-  }));
+  const reviews: ReviewItem[] = useMemo(
+    () =>
+      assessments.map((assessment: Assessment) => ({
+        id: assessment.id_avaliacao,
+        name: assessment.usuario_nome || 'Anônimo',
+        sentiment: mapSentiment(assessment.tipo_avaliacao),
+        comment: assessment.texto,
+        createdAt: assessment.created_at,
+      })),
+    [assessments],
+  );
 
-  const filteredReviews =
-    activeFilter === 'todos'
-      ? reviews
-      : reviews.filter((review) => review.sentiment === activeFilter);
+  const filteredReviews = useMemo(
+    () =>
+      activeFilter === 'todos'
+        ? reviews
+        : reviews.filter((review) => review.sentiment === activeFilter),
+    [activeFilter, reviews],
+  );
+
+  const renderReview = ({ item }: { item: ReviewItem }) => (
+    <ReviewCard
+      name={item.name}
+      sentiment={item.sentiment}
+      comment={item.comment}
+      createdAt={item.createdAt}
+    />
+  );
+
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+    return (
+      <View className="py-4 items-center justify-center">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  };
+
+  const renderEmpty = () => {
+    if (loading) {
+      return (
+        <View className="flex-1 items-center justify-center py-12">
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    }
+    if (error) {
+      return (
+        <View className="flex-1 items-center justify-center py-12">
+          <Text className="text-dark text-center text-sm">{error}</Text>
+        </View>
+      );
+    }
+    return (
+      <View className="flex-1 items-center justify-center py-12">
+        <Text className="text-dark text-center text-sm">
+          Nenhuma avaliação encontrada nesta categoria.
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <FlatList
-        data={filteredReviews}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 20, gap: 16 }}
-        showsVerticalScrollIndicator={false}
-        onEndReached={hasMore ? loadMore : undefined}
-        onEndReachedThreshold={0.2}
-        ListHeaderComponent={
-          <View className="gap-4">
-            <Header title="Avaliações" showBackButton showNotificationButton />
-            <ReviewsFilterNav
-              initialFilter="todos"
-              onFilterChange={setActiveFilter}
-            />
-          </View>
-        }
-        ListEmptyComponent={
-          loading ? (
-            <View className="items-center justify-center py-12">
-              <ActivityIndicator size="large" />
-            </View>
-          ) : error ? (
-            <View className="items-center justify-center py-12">
-              <Text className="text-dark text-center text-sm">{error}</Text>
-            </View>
-          ) : (
-            <View className="items-center justify-center py-12">
-              <Text className="text-dark text-center text-sm">
-                Nenhuma avaliação encontrada nesta categoria.
-              </Text>
-            </View>
-          )
-        }
-        ListFooterComponent={
-          loadingMore ? (
-            <View className="items-center py-4">
-              <ActivityIndicator size="small" color="#C34342" />
-            </View>
-          ) : null
-        }
-        renderItem={({ item }) => (
-          <ReviewCard
-            name={item.name}
-            sentiment={item.sentiment}
-            comment={item.comment}
-          />
-        )}
-      />
+      <View className="px-8 py-5 gap-4 flex-1">
+        <Header title="Avaliações" showBackButton showNotificationButton />
+        <ReviewsFilterNav
+          initialFilter="todos"
+          onFilterChange={setActiveFilter}
+        />
+
+        <FlatList
+          data={filteredReviews}
+          renderItem={renderReview}
+          keyExtractor={(item) => item.id}
+          onEndReached={() => {
+            if (hasMore && !loadingMore) {
+              loadMore();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          ListEmptyComponent={renderEmpty}
+          ListFooterComponent={renderFooter}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}
+          contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

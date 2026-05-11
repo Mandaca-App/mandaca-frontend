@@ -61,7 +61,8 @@ const HelpScreen: React.FC = () => {
           <Ionicons name="headset-outline" size={52} color="#C34342" />
           <Text style={styles.chatbotTitle}>Chatbot</Text>
           <Text style={styles.chatbotDescription}>
-            Obtenha respostas rápidas e automáticas para suas dúvidas a qualquer hora
+            Obtenha respostas rápidas e automáticas para suas dúvidas a qualquer
+            hora
           </Text>
           <TouchableOpacity
             activeOpacity={0.8}
