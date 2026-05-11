@@ -3,14 +3,14 @@ import { Header } from '@/components/general/header';
 import { CardItemFeedback } from '@/components/report/CardItemFeedback';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
 import { getReport } from '@/services/reports';
-import { AIReportDetail } from '@/types/Report';
+import { AIReport } from '@/types/Report';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 export default function NegativePoints() {
   const { report_id } = useLocalSearchParams<{ report_id: string }>();
-  const [report, setReport] = useState<AIReportDetail | null>(null);
+  const [report, setReport] = useState<AIReport | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,20 +23,27 @@ export default function NegativePoints() {
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Header title="Pontos negativos" showBackButton showNotificationButton />
-        <View className="mt-10">
+        <Header
+          title="Pontos negativos"
+          showBackButton
+          showNotificationButton
+        />
+        <View className="mt-10 gap-6">
           {loading ? (
             <CardListSkeleton />
-          ) : report ? (
-            <CardItemFeedback
-              icon={'warning'}
-              typeCard="negative"
-              text={report.melhorias_detalhado}
-              chages=""
-              automaticChanges={false}
-              handlePress={() => {}}
-            />
-          ) : null}
+          ) : (
+            report?.melhorias.map((item, index) => (
+              <CardItemFeedback
+                key={index}
+                icon={'warning'}
+                typeCard="negative"
+                text={item.descricao}
+                chages=""
+                automaticChanges={false}
+                handlePress={() => {}}
+              />
+            ))
+          )}
         </View>
       </ScrollView>
     </Container>

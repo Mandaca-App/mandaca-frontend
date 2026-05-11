@@ -5,83 +5,145 @@ import ToggleWrite from '@/components/editStory/toggleWrite';
 import { Container } from '@/components/general/container';
 import GeneralButton from '@/components/general/generalButton';
 import { Header } from '@/components/general/header';
-import axios from 'axios';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-import { API_URL } from '@/constants/api';
+import { storySchema } from '@/schemas/storySchema';
+import {
+  getEnterprise,
+  updateEnterpriseStory,
+} from '@/services/enterpriseStory';
+import { Enterprise } from '@/types/enterprise';
+
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function EditStory() {
-    const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE');
-    const [text, setText] = useState('');
-    const [audio, setAudio] = useState('');
-    const [saving, setSaving] = useState(false);
+  const [toggle, setToggle] = useState<'WRITE' | 'AUDIO'>('WRITE');
+  const [text, setText] = useState('');
+  const [detectedTopics, setDetectedTopics] = useState<string[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [enterprise, setEnterprise] = useState<Enterprise | null>(null);
+  const [error, setError] = useState<string | undefined>();
 
-    const handlePress = async () => {
-        try {
-            if (toggle === 'WRITE' && !text.trim()) {
-                Alert.alert('Atenção', 'Digite uma história antes de continuar.');
-                return;
-            }
+  const mapEnterpriseToTopics = (enterprise: Enterprise): string[] => {
+    const topics: string[] = [];
 
-            if (toggle === 'AUDIO' && !audio) {
-                Alert.alert('Atenção', 'Grave um áudio antes de continuar.');
-                return;
-            }
+    if (enterprise) {
+      topics.push('Nome do negócio');
+    }
 
-            setSaving(true);
+    if (enterprise.especialidade) {
+      topics.push('Sua especialidade (produtos/serviços)');
+    }
 
-            await axios.put(`${API_URL}/enterprises/${ENTERPRISE_ID}`, {
-                historia: toggle === 'WRITE' ? text.trim() : audio,
-            });
+    if (enterprise.endereco) {
+      topics.push('Localização / Bairro');
+    }
 
-            setText('');
-            setAudio('');
+    if (enterprise.historia) {
+      topics.push('Sua história ou o diferencial');
+    }
 
-            router.navigate('/(mybusiness)/manageImages');
+    return topics;
+  };
 
-        } catch (error) {
-            console.error(error);
-            Alert.alert('Erro', 'Não foi possível salvar a história. Tente novamente.');
-        } finally {
-            setSaving(false);
+  useEffect(() => {
+    const fetchEnterprise = async () => {
+      try {
+        const data = await getEnterprise(ENTERPRISE_ID);
+
+        setEnterprise(data);
+
+        if (data.historia) {
+          setText(data.historia);
+          setToggle('WRITE');
         }
+
+        const topics = mapEnterpriseToTopics(data);
+        setDetectedTopics(topics);
+      } catch (error) {
+        console.error(error);
+      }
     };
+    console.log(enterprise);
+    fetchEnterprise();
+  }, []);
 
-    return (
-        <Container>
-            <View className='gap-6'>
-                <Header title="Editar História" showBackButton showNotificationButton />
+  const handleSave = async () => {
+    try {
+      if (toggle === 'WRITE') {
+        const result = storySchema.safeParse({
+          historia: text.trim(),
+        });
 
-                <Text className='pt-8 text-center text-lg font-semibold'>
-                    Conte história do seu restaurante.
-                </Text>
+        if (!result.success) {
+          const message = result.error.issues[0].message;
+          setError(message);
+          return;
+        }
 
-                <ToggleWrite toggle={toggle} setToggle={setToggle} />
+        setError(undefined);
+      }
 
-                {toggle === 'WRITE' && (
-                    <InputBox text={text} setText={setText} />
-                )}
+      setIsSaving(true);
 
-                {toggle === 'AUDIO' && (
-                    <AudioBox
-                        audio={audio}
-                        setAudio={setAudio}
-                        setText={setText}
-                        setToggle={setToggle}
-                    />
-                )}
+      await updateEnterpriseStory(
+        ENTERPRISE_ID,
+        text.trim(),
+      );
 
-                <Checklist />
+      const updatedData = await getEnterprise(ENTERPRISE_ID);
 
-                <GeneralButton
-                    text={saving ? 'Salvando...' : 'Salvar'}
-                    handlePress={handlePress}
-                    disabled={saving}
-                />
-            </View>
-        </Container>
-    );
+      setEnterprise(updatedData);
+
+      const topics = mapEnterpriseToTopics(updatedData);
+      setDetectedTopics(topics);
+
+      setText(updatedData.historia || '');
+
+      router.push('/(mybusiness)/manageImages');
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        'Erro',
+        'Não foi possível salvar a história. Tente novamente.',
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <Container>
+      <View className="gap-6">
+        <Header title="Editar História" showBackButton showNotificationButton />
+
+        <Text className="pt-8 text-center text-lg font-semibold">
+          Conte a história do seu restaurante.
+        </Text>
+
+        <ToggleWrite toggle={toggle} setToggle={setToggle} />
+
+        {toggle === 'WRITE' && (
+          <InputBox text={text} setText={setText} error={error} />
+        )}
+
+        {toggle === 'AUDIO' && (
+          <AudioBox
+            setText={setText}
+            setToggle={setToggle}
+          />
+        )}
+
+        <Checklist detectedTopics={detectedTopics} />
+
+        <GeneralButton
+          text={isSaving ? 'Salvando...' : 'Salvar'}
+          handlePress={handleSave}
+          disabled={isSaving}
+        />
+      </View>
+    </Container>
+  );
 }

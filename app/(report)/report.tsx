@@ -4,16 +4,21 @@ import { Header } from '@/components/general/header';
 import { CardList } from '@/components/report/CardList';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
 import { generateReport, getReportsByEnterprise } from '@/services/reports';
-import { AIReportSummary } from '@/types/Report';
+import { AIReport } from '@/types/Report';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Report() {
-  const [report, setReport] = useState<AIReportSummary | null>(null);
+  const [report, setReport] = useState<AIReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+
+  const handleConsultorPress = () => {
+    router.push('/consultant' as any);
+  };
 
   useEffect(() => {
     fetchLatestReport();
@@ -44,7 +49,15 @@ export default function Report() {
   return (
     <Container>
       <View>
-        <Header title="Relatório" showBackButton showNotificationButton />
+        <Header
+          title="Relatório"
+          showBackButton
+          showNotificationButton={true}
+          rightButtonIcon="chatbubble-outline"
+          rightButtonColor="#FFFFFF"
+          rightButtonBgColor="#C34342"
+          onNotificationPress={handleConsultorPress}
+        />
         {loading ? (
           <CardListSkeleton />
         ) : report ? (
@@ -52,7 +65,8 @@ export default function Report() {
         ) : (
           <View className="mt-16 items-center gap-6 px-8">
             <Text className="text-center text-dark font-semibold text-base">
-              Nenhum relatório gerado ainda. Gere o primeiro relatório do seu negócio.
+              Nenhum relatório gerado ainda. Gere o primeiro relatório do seu
+              negócio.
             </Text>
             <GeneralButton
               text="Gerar Relatório"

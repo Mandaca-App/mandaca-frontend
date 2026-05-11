@@ -3,7 +3,6 @@ import { ImageEnterprise } from '@/types/imageEnterprise';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   Image,
   NativeScrollEvent,
@@ -18,6 +17,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { ImageSkeleton } from './imageSkeleton';
 
 const { width } = Dimensions.get('window');
 
@@ -51,7 +51,10 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
   });
 
   return (
-    <Animated.View className="w-2.5 h-2.5 rounded-full mx-1" style={animatedStyle} />
+    <Animated.View
+      className="w-2.5 h-2.5 rounded-full mx-1"
+      style={animatedStyle}
+    />
   );
 };
 
@@ -61,7 +64,9 @@ export default function Carousel() {
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [images, setImages] = useState<ImageEnterprise[]>([]);
-  const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>({});
+  const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>(
+    {},
+  );
 
   const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
@@ -70,7 +75,7 @@ export default function Carousel() {
       const data = await getImagesByEnterprise(ENTERPRISE_ID);
 
       const initialLoadingState: Record<string, boolean> = {};
-      data.forEach(item => {
+      data.forEach((item) => {
         initialLoadingState[item.id_foto] = true;
       });
 
@@ -97,7 +102,7 @@ export default function Carousel() {
   };
 
   const handleImageLoad = (id: string) => {
-    setLoadingImages(prev => ({
+    setLoadingImages((prev) => ({
       ...prev,
       [id]: false,
     }));
@@ -119,10 +124,9 @@ export default function Carousel() {
             style={{ width: ITEM_WIDTH, marginRight: SPACING }}
             className="h-[200px] rounded-2xl overflow-hidden"
           >
-            {/* 🔥 Placeholder */}
             {loadingImages[item.id_foto] && (
-              <View className="absolute w-full h-full justify-center items-center bg-gray-200">
-                <ActivityIndicator />
+              <View className="absolute w-full h-full">
+                <ImageSkeleton />
               </View>
             )}
 
@@ -137,10 +141,7 @@ export default function Carousel() {
 
       <View className="flex-row mt-4 items-center justify-center">
         {images.map((_, index) => (
-          <PaginationDot
-            key={index}
-            active={index === activeIndex}
-          />
+          <PaginationDot key={index} active={index === activeIndex} />
         ))}
       </View>
     </View>

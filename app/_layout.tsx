@@ -9,6 +9,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="home" />
+        <Stack.Screen name="consultant" />
         <Stack.Screen name="(mybusiness)/myBusiness" />
         <Stack.Screen name="(mybusiness)/menu" />
         <Stack.Screen name="(mybusiness)/reservations" />
