@@ -88,7 +88,7 @@ jobs:
         run: |
           VERSION="v${{ steps.version.outputs.version }}"
           APK_URL="https://github.com/${{ github.repository }}/releases/latest/download/mandaca-preview.apk"
-          EXPO_URL="https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/${BUILD_ID}"
+          EXPO_URL="https://expo.dev/accounts/notsogreatdavi3/projects/mandaca-frontend/builds/${BUILD_ID}"
           GENERATED=$(gh api repos/${{ github.repository }}/releases/generate-notes \
             --field tag_name="$VERSION" \
             --jq '.body')
