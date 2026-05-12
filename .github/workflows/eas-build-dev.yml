@@ -35,7 +35,7 @@ jobs:
             --json 2>/dev/null)
           BUILD_ID=$(echo "$OUTPUT" | jq -r '.[0].id')
           echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
-          echo "Build iniciado: https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/$BUILD_ID"
+          echo "Build iniciado: https://expo.dev/accounts/notsogreatdavi3/projects/mandaca-frontend/builds/$BUILD_ID"
 
   attach:
     name: Publicar APK na release dev-latest

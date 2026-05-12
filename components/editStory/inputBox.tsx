@@ -15,7 +15,7 @@ export default function InputBox({ text, setText, error }: Props) {
   const borderColor = error
     ? 'border-red-500'
     : isFocused
-      ? 'border-black'
+      ? 'border-primary'
       : 'border-black/15';
 
   return (

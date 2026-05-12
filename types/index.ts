@@ -6,4 +6,5 @@ export type ChatMessage = {
   content: string;
   timestamp: Date;
   contentType?: 'text' | 'audio';
+  messages?: any
 };

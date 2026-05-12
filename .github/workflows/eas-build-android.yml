@@ -41,5 +41,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Android Build (Preview)\n\nBuild enviado para o EAS. Acompanhe e baixe o APK quando terminar (~5 min):\n\n**[Ver build no Expo](https://expo.dev/accounts/notgreatdavi/projects/mandaca-frontend/builds/${{ steps.eas-build.outputs.build_id }})**`
+              body: `## Android Build (Preview)\n\nBuild enviado para o EAS. Acompanhe e baixe o APK quando terminar (~5 min):\n\n**[Ver build no Expo](https://expo.dev/accounts/notsogreatdavi3/projects/mandaca-frontend/builds/${{ steps.eas-build.outputs.build_id }})**`
             })

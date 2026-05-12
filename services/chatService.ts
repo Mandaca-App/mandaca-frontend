@@ -49,14 +49,21 @@ export async function sendChatMessage(
 /**
  * Recupera o histórico de chat de uma empresa
  */
-export async function getChatHistory(
-  enterpriseId: string,
-): Promise<ChatMessage[]> {
-  try {
-    const response = await axios.get<ChatHistoryResponse>(
-      `${API_ENDPOINT}/history/${enterpriseId}`,
-      { timeout: 10000 },
-    );
+export async function getChatHistory(enterpriseId: string): Promise<ChatMessage[]> {
+    try {
+        const response = await axios.get<ChatHistoryResponse>(
+            `${API_ENDPOINT}/history/${enterpriseId}`,
+            { timeout: 10000 },
+        );
+
+        const messages: ChatMessage[] = response.data.historico.map((item) => ({
+            id: item.id_mensagem,
+            type: 'user',
+            content: item.conteudo_usuario,
+            timestamp: new Date(item.criado_em),
+            contentType: 'text',
+            messages: messages,
+        }));
 
     const messagesWithReplies: ChatMessage[] = [];
     for (const item of response.data.historico) {
