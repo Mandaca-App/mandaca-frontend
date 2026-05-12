@@ -1,6 +1,7 @@
 import { API_URL } from '@/constants/api';
 import { ChatMessage } from '@/types';
 import axios from 'axios';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const API_ENDPOINT = `${API_URL}/chat`;
 
@@ -44,6 +45,38 @@ export async function sendChatMessage(
     console.error('Erro ao enviar mensagem:', error);
     throw error;
   }
+}
+
+const AUDIO_MIME_TYPES: Record<string, string> = {
+  m4a: 'audio/mp4',
+  mp4: 'audio/mp4',
+  mp3: 'audio/mpeg',
+  '3gp': 'audio/3gpp',
+  aac: 'audio/aac',
+  wav: 'audio/wav',
+};
+
+export async function transcribeAudio(uri: string): Promise<string> {
+  const extension = uri.split('.').pop()?.toLowerCase() ?? 'm4a';
+  const mimeType = AUDIO_MIME_TYPES[extension] ?? 'audio/mp4';
+
+  const result = await FileSystem.uploadAsync(
+    `${API_URL}/transcriptions/chat`,
+    uri,
+    {
+      httpMethod: 'POST',
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      fieldName: 'audio',
+      mimeType,
+    },
+  );
+
+  if (result.status < 200 || result.status >= 300) {
+    throw new Error(`HTTP ${result.status}`);
+  }
+
+  const data = JSON.parse(result.body);
+  return data.transcription ?? '';
 }
 
 /**
