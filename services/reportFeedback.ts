@@ -20,10 +20,10 @@ export const buildSuggestionText = (
         return '';
     }
 
-    return `O campo 
-    "${suggestion.campo_para_alterar}" 
-    será alterado para 
-    "${suggestion.novo_valor}"`;
+    const field = suggestion.campo_para_alterar
+    const newValue = suggestion.novo_valor
+
+    return `O campo "${field}" será alterado para "${newValue}"`;
 };
 
 export const applyEnterpriseSuggestion = async (
