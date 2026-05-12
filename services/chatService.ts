@@ -62,6 +62,7 @@ export async function getChatHistory(enterpriseId: string): Promise<ChatMessage[
             content: item.conteudo_usuario,
             timestamp: new Date(item.criado_em),
             contentType: 'text',
+            messages: messages,
         }));
 
         const messagesWithReplies: ChatMessage[] = [];
