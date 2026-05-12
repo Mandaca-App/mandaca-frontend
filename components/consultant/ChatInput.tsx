@@ -34,15 +34,6 @@ export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
             backgroundColor: CHATBOT_THEME.input.bgColor,
           }}
         >
-          {/* Microphone Button */}
-          <Pressable className="p-1.5 mr-2" disabled={isLoading}>
-            <Ionicons
-              name="mic"
-              size={22}
-              color={CHATBOT_THEME.sendButton.bgColor}
-            />
-          </Pressable>
-
           {/* Text Input */}
           <TextInput
             value={message}

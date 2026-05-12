@@ -6,6 +6,7 @@ export interface AssessmentDTO {
   tipo_avaliacao: ReviewSentiment;
   usuario_id: string;
   empresa_id: string;
+  created_at?: string;
 }
 
 export interface UserDTO {
