@@ -6,6 +6,7 @@ interface ReviewCardProps {
   name: string;
   sentiment: ReviewSentiment;
   comment: string;
+  createdAt?: string;
 }
 
 const getSimpleName = (fullName: string): string => {
@@ -33,9 +34,28 @@ const getSimpleName = (fullName: string): string => {
   return `${firstName} ${lastName}`.trim();
 };
 
-export const ReviewCard = ({ name, sentiment, comment }: ReviewCardProps) => {
+const formatReviewDate = (value?: string): string | null => {
+  if (!value) return null;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const year = date.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
+export const ReviewCard = ({
+  name,
+  sentiment,
+  comment,
+  createdAt,
+}: ReviewCardProps) => {
   const config = sentimentConfig[sentiment];
   const displayName = getSimpleName(name);
+  const formattedDate = formatReviewDate(createdAt);
 
   return (
     <View className="bg-light rounded-2xl p-4" style={styles.cardContainer}>
@@ -67,13 +87,19 @@ export const ReviewCard = ({ name, sentiment, comment }: ReviewCardProps) => {
       >
         {`"${comment}"`}
       </Text>
+
+      {formattedDate ? (
+        <Text className="mt-3 text-dark/70 text-xs leading-4">
+          {formattedDate}
+        </Text>
+      ) : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   cardContainer: {
-    height: 152,
+    minHeight: 176,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

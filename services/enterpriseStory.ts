@@ -10,9 +10,22 @@ export const getEnterprise = async (
   return response.data;
 };
 
+type UpdateEnterprisePayload = {
+    nome: string;
+    especialidade: string;
+    endereco: string;
+    telefone: string;
+    hora_abrir: string;
+    hora_fechar: string;
+    historia: string;
+};
+
 export const updateEnterpriseStory = async (
-  enterpriseId: string,
-  historia: string,
+    enterpriseId: string,
+    data: UpdateEnterprisePayload,
 ): Promise<void> => {
-  await axios.put(`${API_URL}/enterprises/${enterpriseId}`, { historia });
+    await axios.put(
+        `${API_URL}/enterprises/${enterpriseId}`,
+        data,
+    );
 };
