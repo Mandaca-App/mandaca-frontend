@@ -81,10 +81,7 @@ export const ReviewCard = ({
         </View>
       </View>
 
-      <Text
-        className="text-dark font-normal text-sm leading-5"
-        numberOfLines={3}
-      >
+      <Text className="text-dark font-normal text-sm leading-5">
         {`"${comment}"`}
       </Text>
 
@@ -99,7 +96,6 @@ export const ReviewCard = ({
 
 const styles = StyleSheet.create({
   cardContainer: {
-    minHeight: 176,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
