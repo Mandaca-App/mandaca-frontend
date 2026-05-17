@@ -10,6 +10,7 @@ import EditButton from '@/components/overview/editButton';
 import Journey from '@/components/overview/journey';
 
 import { API_URL } from '@/constants/api';
+import { router } from 'expo-router';
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Overview() {
@@ -43,7 +44,7 @@ export default function Overview() {
 
   return (
     <Container>
-      <Header title="Visão geral" showBackButton showNotificationButton />
+      <Header title="Visão geral" showBackButton showNotificationButton onBackPress={()=> router.navigate('/(mybusiness)/myBusiness')}/>
 
       {loading ? (
         <View className="flex-1 justify-center items-center">

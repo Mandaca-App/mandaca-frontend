@@ -7,7 +7,7 @@ export default function EditButton() {
     <View style={style.cardShadow} className="w-full p-6 rounded-xl bg-light">
       <Pressable
         onPress={() => router.navigate('/(mybusiness)/editStory')}
-        className="flex-row justify-between items-center"
+        className="flex-row justify-center items-center gap-4"
       >
         <Ionicons name="brush" size={30} color="#C34342" />
         <View>
