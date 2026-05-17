@@ -37,7 +37,7 @@ export default function MyBusiness() {
 
   return (
     <Container>
-      <Header title="Minha Empresa" showBackButton showNotificationButton />
+      <Header title="Minha Empresa" showBackButton showNotificationButton onBackPress={()=> router.navigate('/home')}/>
 
       <View className="gap-6">
         <OverviewCard

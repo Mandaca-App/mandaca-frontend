@@ -298,8 +298,8 @@ export default function EditStory() {
                 updatedData.historia || '',
             );
 
-            router.push(
-                '/(mybusiness)/manageImages',
+            router.replace(
+                '/(mybusiness)/businessOverview',
             );
         } catch (error) {
             console.error(error);
@@ -483,6 +483,11 @@ export default function EditStory() {
                         detectedTopics={
                             detectedTopics
                         }
+                    />
+
+                    <GeneralButton
+                        text={"Editar imagens"}
+                        handlePress={()=> router.navigate('/(mybusiness)/manageImages')}
                     />
 
                     <GeneralButton

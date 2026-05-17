@@ -10,7 +10,7 @@ export const Container = ({ children }: Props) => {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView>
-        <View className="px-8 py-5 gap-12">{children}</View>
+        <View className="px-8 py-5 gap-8">{children}</View>
       </ScrollView>
     </SafeAreaView>
   );

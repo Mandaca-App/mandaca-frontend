@@ -9,7 +9,7 @@ export default function Journey({ story }: Props) {
   return (
     <View
       style={style.cardShadow}
-      className="bg-light rounded-xl items-center justify-center p-4 gap-8"
+      className="bg-light rounded-xl items-center justify-center px-4 py-6 gap-6"
     >
       <Text className="text-lg font-semibold">Nossa jornada gastronômica</Text>
       <Carousel />
