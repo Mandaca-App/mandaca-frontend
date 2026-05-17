@@ -486,7 +486,7 @@ export default function EditStory() {
                     />
 
                     <GeneralButton
-                        text={"Editar imagens"}
+                        text={'Editar imagens'}
                         handlePress={()=> router.navigate('/(mybusiness)/manageImages')}
                     />
 
