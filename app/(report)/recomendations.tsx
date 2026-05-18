@@ -2,14 +2,30 @@ import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
 import { CardItemFeedback } from '@/components/report/CardItemFeedback';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
-import { applyEnterpriseSuggestion, buildSuggestionText } from '@/services/reportFeedback';
-import { getReport } from '@/services/reports';
-import { AIReport, Suggestion } from '@/types/Report';
-import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
 
-const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
+import {
+    applyEnterpriseSuggestion,
+    buildSuggestionText,
+} from '@/services/reportFeedback';
+
+import { getReport } from '@/services/reports';
+
+import {
+    AIReport,
+    Suggestion,
+} from '@/types/Report';
+
+import { useLocalSearchParams } from 'expo-router';
+
+import { useEffect, useState } from 'react';
+
+import {
+    ScrollView,
+    View,
+} from 'react-native';
+
+const ENTERPRISE_ID =
+    'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Recomendations() {
     const { report_id } =
@@ -36,24 +52,10 @@ export default function Recomendations() {
     const handleApplySuggestion = async (
         suggestion?: Suggestion | null,
     ) => {
-        try {
-            await applyEnterpriseSuggestion(
-                ENTERPRISE_ID,
-                suggestion,
-            );
-
-            Alert.alert(
-                'Sucesso',
-                'Mudança aplicada com sucesso.',
-            );
-        } catch (error) {
-            console.error(error);
-
-            Alert.alert(
-                'Erro',
-                'Não foi possível aplicar a mudança.',
-            );
-        }
+        await applyEnterpriseSuggestion(
+            ENTERPRISE_ID,
+            suggestion,
+        );
     };
 
     return (
