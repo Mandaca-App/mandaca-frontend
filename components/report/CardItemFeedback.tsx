@@ -1,6 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { useEffect, useState } from 'react';
 import {
+    ActivityIndicator,
     Pressable,
     Text,
     View,
@@ -15,7 +17,7 @@ type Props = {
     text: string;
     suggestions: string;
     automaticSuggestions: boolean;
-    handlePress: () => void;
+    handlePress: () => Promise<void>;
 };
 
 export const CardItemFeedback = ({
@@ -26,6 +28,10 @@ export const CardItemFeedback = ({
     automaticSuggestions,
     handlePress,
 }: Props) => {
+    const [loading, setLoading] = useState(false);
+
+    const [applied, setApplied] = useState(false);
+
     const backgroundColor = {
         positive: 'bg-green-500/30',
         negative: 'bg-red-500/30',
@@ -37,6 +43,30 @@ export const CardItemFeedback = ({
         negative: 'Pontos negativos',
         recomendation: 'Recomendações',
     };
+
+    const handleApply = async () => {
+        try {
+            setLoading(true);
+
+            await handlePress();
+
+            setApplied(true);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (applied) {
+            const timeout = setTimeout(() => {
+                setApplied(false);
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [applied]);
 
     return (
         <View
@@ -75,12 +105,45 @@ export const CardItemFeedback = ({
                     </View>
 
                     <Pressable
-                        className="flex-row items-center bg-light border border-dark justify-center rounded-xl py-3 gap-3"
-                        onPress={handlePress}
+                        className={`
+                            flex-row items-center justify-center rounded-xl py-3 gap-3 border
+                            ${
+                                applied
+                                    ? 'bg-emerald-300 border-emerald-500'
+                                    : 'bg-light border-dark'
+                            }
+                        `}
+                        onPress={handleApply}
+                        disabled={loading || applied}
                     >
-                        <Text className="text-dark font-semibold">
-                            Aplicar mudanças
-                        </Text>
+                        {loading ? (
+                            <>
+                                <ActivityIndicator
+                                    size="small"
+                                    color="#000"
+                                />
+
+                                <Text className="text-dark font-semibold">
+                                    Aplicando...
+                                </Text>
+                            </>
+                        ) : applied ? (
+                            <>
+                                <Ionicons
+                                    name="checkmark-circle"
+                                    size={20}
+                                    color="#000000"
+                                />
+
+                                <Text className="text-dark font-semibold">
+                                    Mudança aplicada
+                                </Text>
+                            </>
+                        ) : (
+                            <Text className="text-dark font-semibold">
+                                Aplicar mudanças
+                            </Text>
+                        )}
                     </Pressable>
                 </View>
             )}
