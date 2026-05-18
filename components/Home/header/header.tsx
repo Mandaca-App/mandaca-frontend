@@ -48,9 +48,9 @@ export const Header = () => {
     const userInitial = userName.charAt(0).toUpperCase();
 
     return (
-        <View className="flex flex-row justify-between">
+        <View className="flex flex-row justify-between items-center bg-primary/95 pt-20 pb-10 px-8 rounded-b-[12vw]">
             <Pressable
-                className="h-10 w-10 bg-dark rounded-full justify-center items-center overflow-hidden"
+                className="h-12 w-12 bg-dark rounded-full justify-center items-center overflow-hidden"
                 style={style.cardShadow}
                 onPress={() => router.push('/profile')}
             >
@@ -65,17 +65,17 @@ export const Header = () => {
             </Pressable>
 
             <View className="flex-col">
-                <Text className="text-lg text-center">
-                    Bem-vindo de volta,
+                <Text className="text-lg text-light">
+                    Bem-vindo de volta 👋
                 </Text>
 
-                <Text className="font-semibold text-center text-lg">
+                <Text className="font-semibold text-center text-2xl text-light">
                     {formattedUserName}
                 </Text>
             </View>
 
             <Pressable
-                className="h-10 w-10 bg-light rounded-full justify-center items-center"
+                className="h-12 w-12 bg-light rounded-full justify-center items-center"
                 style={style.cardShadow}
                 onPress={() => router.push('/notifications')}
             >
