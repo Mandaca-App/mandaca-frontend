@@ -1,96 +1,116 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
-import type { ComponentProps } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-type IoniconName = ComponentProps<typeof Ionicons>['name'];
+import { router } from 'expo-router';
+
+import type { ComponentProps } from 'react';
+
+import {
+    Pressable,
+    Text,
+    View,
+} from 'react-native';
+
+type IoniconName =
+    ComponentProps<typeof Ionicons>['name'];
 
 type Props = {
-  title: string;
-  showBackButton?: boolean;
-  showNotificationButton?: boolean;
-  onBackPress?: () => void;
-  onNotificationPress?: () => void;
-  rightButtonIcon?: IoniconName;
-  rightButtonColor?: string;
-  rightButtonBgColor?: string;
-  backButtonColor?: string;
-  backButtonBgColor?: string;
-  backButtonSize?: number;
+    title: string;
+    showBackButton?: boolean;
+    showNotificationButton?: boolean;
+    onBackPress?: () => void;
+    onNotificationPress?: () => void;
+    rightButtonIcon?: IoniconName;
+    rightButtonColor?: string;
+    rightButtonBgColor?: string;
+    backButtonColor?: string;
+    backButtonBgColor?: string;
+    backButtonSize?: number;
 };
 
 export const Header = ({
-  title,
-  showBackButton = false,
-  showNotificationButton = true,
-  onBackPress,
-  onNotificationPress,
-  rightButtonIcon,
-  rightButtonColor = '#2C2C2C',
-  rightButtonBgColor = '#FFFFFF',
-  backButtonColor = '#2C2C2C',
-  backButtonBgColor = '#FFFFFF',
-  backButtonSize = 10,
+    title,
+    showBackButton = false,
+    showNotificationButton = true,
+    onBackPress,
+    onNotificationPress,
+    rightButtonIcon,
+    rightButtonColor = '#2C2C2C',
+    rightButtonBgColor = '#FFFFFF',
+    backButtonColor = '#2C2C2C',
+    backButtonBgColor = '#FFFFFF',
+    backButtonSize = 18,
 }: Props) => {
-  const handleBack = onBackPress ? onBackPress : () => router.back();
-  const handleNotification = onNotificationPress
-    ? onNotificationPress
-    : () => router.navigate('/notifications');
+    const handleBack = onBackPress
+        ? onBackPress
+        : () => router.back();
 
-  return (
-    <View className="flex flex-row justify-between items-center gap-2">
-      {showBackButton ? (
-        <Pressable
-          className="h-8 w-8 rounded-full justify-center items-center"
-          style={[
-            style.cardShadow,
-            { backgroundColor: backButtonBgColor, marginRight: 12 },
-          ]}
-          onPress={handleBack}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={backButtonSize}
-            color={backButtonColor}
-          />
-        </Pressable>
-      ) : (
-        <View className="h-8 w-8" />
-      )}
+    const handleNotification =
+        onNotificationPress
+            ? onNotificationPress
+            : () =>
+                  router.navigate(
+                      '/notifications',
+                  );
 
-      <Text className="text-xl font-semibold flex-1 text-center">{title}</Text>
+    return (
+        <View className="flex-row items-center justify-between mb-2">
+            <View className="w-14 items-start">
+                {showBackButton ? (
+                    <Pressable
+                        className="w-11 h-11 rounded-2xl border border-black/5 bg-light items-center justify-center"
+                        onPress={handleBack}
+                    >
+                        <Ionicons
+                            name="arrow-back"
+                            size={
+                                backButtonSize
+                            }
+                            color={
+                                backButtonColor
+                            }
+                        />
+                    </Pressable>
+                ) : (
+                    <View className="w-11 h-11" />
+                )}
+            </View>
 
-      {showNotificationButton ? (
-        <Pressable
-          className="h-10 w-10 rounded-full justify-center items-center"
-          style={[
-            style.cardShadow,
-            { backgroundColor: rightButtonBgColor || '#FFFFFF' },
-          ]}
-          onPress={handleNotification}
-        >
-          <Ionicons
-            name={rightButtonIcon || 'notifications'}
-            size={24}
-            color={rightButtonColor}
-          />
-        </Pressable>
-      ) : (
-        <View className="h-10 w-10" />
-      )}
-    </View>
-  );
+            <View className="flex-1 items-center px-3">
+                <Text
+                    numberOfLines={1}
+                    className="text-[22px] font-bold text-dark text-center"
+                >
+                    {title}
+                </Text>
+            </View>
+
+            <View className="w-14 items-end">
+                {showNotificationButton ? (
+                    <Pressable
+                        className="w-11 h-11 rounded-2xl border border-black/5 items-center justify-center bg-light"
+                        style={{
+                            backgroundColor:
+                                rightButtonBgColor,
+                        }}
+                        onPress={
+                            handleNotification
+                        }
+                    >
+                        <Ionicons
+                            name={
+                                rightButtonIcon ||
+                                'notifications'
+                            }
+                            size={22}
+                            color={
+                                rightButtonColor
+                            }
+                        />
+                    </Pressable>
+                ) : (
+                    <View className="w-11 h-11" />
+                )}
+            </View>
+        </View>
+    );
 };
-
-const style = StyleSheet.create({
-  cardShadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 3.8,
-    elevation: 5,
-  },
-});

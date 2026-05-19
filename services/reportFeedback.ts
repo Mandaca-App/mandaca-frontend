@@ -13,6 +13,16 @@ type EnterprisePayload = {
     usuario_id?: string;
 };
 
+const fieldLabels: Record<string, string> = {
+    nome: 'nome da empresa',
+    especialidade: 'especialidade',
+    endereco: 'endereço',
+    historia: 'história',
+    hora_abrir: 'hora de abertura',
+    hora_fechar: 'hora de fechamento',
+    telefone: 'telefone',
+};
+
 export const buildSuggestionText = (
     suggestion?: Suggestion | null,
 ): string => {
@@ -20,10 +30,13 @@ export const buildSuggestionText = (
         return '';
     }
 
-    const field = suggestion.campo_para_alterar
-    const newValue = suggestion.novo_valor
+    const friendlyField =
+        fieldLabels[
+            suggestion.campo_para_alterar
+        ] ||
+        suggestion.campo_para_alterar;
 
-    return `O campo "${field}" será alterado para "${newValue}"`;
+    return `Alterar ${friendlyField} para "${suggestion.novo_valor}"`;
 };
 
 export const applyEnterpriseSuggestion = async (
