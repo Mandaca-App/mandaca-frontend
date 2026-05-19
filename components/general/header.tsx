@@ -37,7 +37,6 @@ export const Header = ({
     rightButtonColor = '#2C2C2C',
     rightButtonBgColor = '#FFFFFF',
     backButtonColor = '#2C2C2C',
-    backButtonBgColor = '#FFFFFF',
     backButtonSize = 18,
 }: Props) => {
     const handleBack = onBackPress
