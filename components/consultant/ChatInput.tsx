@@ -77,7 +77,10 @@ export const ChatInput = ({ onSendMessage, isLoading = false }: Props) => {
       }
     } catch (error) {
       console.error('Erro ao transcrever áudio:', error);
-      Alert.alert('Erro', 'Não foi possível transcrever o áudio. Tente novamente.');
+      Alert.alert(
+        'Erro',
+        'Não foi possível transcrever o áudio. Tente novamente.',
+      );
     } finally {
       setIsTranscribing(false);
     }

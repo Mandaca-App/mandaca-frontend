@@ -44,7 +44,12 @@ export default function Overview() {
 
   return (
     <Container>
-      <Header title="Visão geral" showBackButton showNotificationButton onBackPress={()=> router.navigate('/(mybusiness)/myBusiness')}/>
+      <Header
+        title="Visão geral"
+        showBackButton
+        showNotificationButton
+        onBackPress={() => router.navigate('/(mybusiness)/myBusiness')}
+      />
 
       {loading ? (
         <View className="flex-1 justify-center items-center">
