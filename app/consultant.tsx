@@ -1,5 +1,5 @@
-import { ChatBubble } from '@/components/consultant/ChatBubble';
-import { ChatInput } from '@/components/consultant/ChatInput';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { ChatInputWithAudio } from '@/components/chat/ChatInputWithAudio';
 import { SuggestionCards } from '@/components/consultant/SuggestionCards';
 import { CHATBOT_THEME } from '@/constants/theme';
 import { getChatHistory, sendChatMessage } from '@/services/chatService';
@@ -96,8 +96,8 @@ export default function Consultant() {
       const safeAreaCompensation = Platform.OS === 'ios' ? insets.bottom : 0;
       const nextHeight = Math.max(
         event.endCoordinates.height -
-          safeAreaCompensation +
-          KEYBOARD_EXTRA_OFFSET,
+        safeAreaCompensation +
+        KEYBOARD_EXTRA_OFFSET,
         0,
       );
       setKeyboardHeight(nextHeight);
@@ -202,6 +202,8 @@ export default function Consultant() {
               message={item}
               userProfileUri={user?.url_foto_usuario}
               userName={user?.nome}
+              botLabel="Consultor IA"
+              theme={CHATBOT_THEME as any}
             />
           )}
           keyExtractor={(item) => item.id}
@@ -250,9 +252,11 @@ export default function Consultant() {
             onSuggestionPress={handleSendMessage}
             isVisible={showSuggestions}
           />
-          <ChatInput
+          <ChatInputWithAudio
             onSendMessage={handleSendMessage}
             isLoading={isAwaitingResponse}
+            placeholder="Digite sua mensagem..."
+            theme={CHATBOT_THEME as any}
           />
         </View>
       </View>

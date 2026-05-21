@@ -10,8 +10,6 @@ import { useState } from 'react';
 
 import { View } from 'react-native';
 
-import Toast from 'react-native-toast-message';
-
 import { CardItem } from './CardItem';
 
 import { GenerateReportButton } from './generateReportButton';
@@ -41,25 +39,11 @@ export const CardList = ({
                     );
 
                 onRefresh?.(newReport);
-
-                Toast.show({
-                    type: 'success',
-                    text1: 'Relatório atualizado',
-                    text2:
-                        'Os dados foram atualizados com sucesso.',
-                });
             } catch (error) {
                 console.log(
                     'Erro ao gerar relatório:',
                     error,
                 );
-
-                Toast.show({
-                    type: 'error',
-                    text1: 'Erro',
-                    text2:
-                        'Não foi possível atualizar o relatório.',
-                });
             } finally {
                 setLoading(false);
             }

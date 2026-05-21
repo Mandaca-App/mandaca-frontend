@@ -25,7 +25,7 @@ export const AccessGrid = ({ notifications = {} }: AccessGridProps) => {
         icon="calendar"
         title="Reservas"
         hasNotification={notifications.reservations}
-        onPress={() => router.navigate('/reservations')}
+        onPress={() => router.navigate('/(mybusiness)/(reservations)/reservations')}
       />
 
       <AccessCard
