@@ -96,8 +96,8 @@ export default function Consultant() {
       const safeAreaCompensation = Platform.OS === 'ios' ? insets.bottom : 0;
       const nextHeight = Math.max(
         event.endCoordinates.height -
-        safeAreaCompensation +
-        KEYBOARD_EXTRA_OFFSET,
+          safeAreaCompensation +
+          KEYBOARD_EXTRA_OFFSET,
         0,
       );
       setKeyboardHeight(nextHeight);
