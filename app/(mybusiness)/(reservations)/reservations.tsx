@@ -4,7 +4,7 @@ import { FlatList, Image, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Dados temporários para exemplo
-const MOCK_RESERVATIONS = [
+const MOCK_RESERVATIONS: ReservationCard[] = [
   {
     id: '1',
     clientName: 'João Silva',
