@@ -1,35 +1,60 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import {
+    Pressable,
+    Text,
+    View,
+} from 'react-native';
 
 export default function EditButton() {
-  return (
-    <View style={style.cardShadow} className="w-full p-6 rounded-xl bg-light">
-      <Pressable
-        onPress={() => router.navigate('/(mybusiness)/editStory')}
-        className="flex-row justify-center items-center gap-4"
-      >
-        <Ionicons name="brush" size={30} color="#C34342" />
-        <View>
-          <Text className="text-xl font-semibold">Editar</Text>
-          <Text>Atualize sua jornada, fotos e endereço</Text>
-        </View>
-        <Ionicons name="arrow-forward" size={25} color="#2C2C2C" />
-      </Pressable>
-    </View>
-  );
+    return (
+        <Pressable
+            onPress={() =>
+                router.navigate(
+                    '/(mybusiness)/editStory',
+                )
+            }
+            className="
+                bg-primary
+                rounded-3xl
+                px-6 py-5
+                flex-row items-center justify-between
+            "
+        >
+            <View className="flex-row items-center gap-4 flex-1">
+                <View
+                    className="
+                        w-14 h-14 rounded-2xl
+                        bg-white/15
+                        items-center justify-center
+                    "
+                >
+                    <Ionicons
+                        name="brush"
+                        size={26}
+                        color="#FFFFFF"
+                    />
+                </View>
+
+                <View className="flex-1">
+                    <Text className="text-light text-xl font-bold">
+                        Editar perfil
+                    </Text>
+
+                    <Text className="text-light/80 text-sm mt-1 leading-5">
+                        Atualize fotos, endereço e história
+                        do restaurante
+                    </Text>
+                </View>
+            </View>
+
+            <Ionicons
+                name="arrow-forward"
+                size={24}
+                color="#FFFFFF"
+            />
+        </Pressable>
+    );
 }
-
-const style = StyleSheet.create({
-  cardShadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 3.8,
-
-    elevation: 2,
-  },
-});

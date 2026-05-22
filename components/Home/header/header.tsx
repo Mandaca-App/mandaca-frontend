@@ -36,7 +36,7 @@ export const Header = () => {
     }, []);
 
     if (loading) {
-        return <ActivityIndicator color={'#C34342'} />;
+        return <View className='mt-8'><ActivityIndicator color={'#C34342'} /></View>;
     }
 
     const userName = user?.nome || 'Usuário';
