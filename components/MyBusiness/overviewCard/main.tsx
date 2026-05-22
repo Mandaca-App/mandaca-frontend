@@ -1,60 +1,137 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import {
+    Image,
+    Pressable,
+    Text,
+    View,
+} from 'react-native';
 
 type Props = {
-  imageUrl?: string;
-  onPress?: () => void;
+    imageUrl?: string;
+    onPress?: () => void;
 };
 
-export const OverviewCard = ({ imageUrl, onPress }: Props) => {
-  return (
-    <Pressable
-      className="p-4 bg-light rounded-3xl flex-row gap-6"
-      style={style.cardShadow}
-      onPress={onPress}
-    >
-      {/* Imagem */}
-      {imageUrl ? (
-        <Image
-          source={{ uri: imageUrl }}
-          className="w-[121px] h-[121px] rounded-[10px]"
-        />
-      ) : (
-        <View
-          className="w-[121px] h-[121px] rounded-[10px] bg-gray-100 
-                justify-center items-center"
+export const OverviewCard = ({
+    imageUrl,
+    onPress,
+}: Props) => {
+    return (
+        <Pressable
+            className="
+                bg-light border border-black/5
+                rounded-[32px] overflow-hidden
+            "
+            onPress={onPress}
         >
-          <Ionicons name="image-outline" size={40} color="#ccc" />
-          <Text className="text-xs text-gray-400 text-center mt-2">
-            Sem imagem
-          </Text>
-        </View>
-      )}
+            {imageUrl ? (
+                <Image
+                    source={{ uri: imageUrl }}
+                    className="w-full h-56"
+                    resizeMode="cover"
+                />
+            ) : (
+                <View
+                    className="
+                        w-full h-56
+                        bg-primary/5
+                        items-center justify-center
+                        gap-4
+                    "
+                >
+                    <View
+                        className="
+                            w-20 h-20 rounded-3xl
+                            bg-primary/10
+                            items-center justify-center
+                        "
+                    >
+                        <Ionicons
+                            name="image-outline"
+                            size={42}
+                            color="#C34342"
+                        />
+                    </View>
 
-      <View className="flex-1 justify-center gap-5">
-        <View className="justify-center items-center">
-          <Text className="text-base font-bold leading-6 text-center">
-            Visão geral
-          </Text>
-        </View>
-        <Text className="text-xs font-semibold px-5 text-center">
-          Personalize o jeito como o seu restaurante é visto; história,
-          endereço, fotos
-        </Text>
-      </View>
-    </Pressable>
-  );
+                    <Text className="text-primary font-bold text-base">
+                        Nenhuma imagem adicionada
+                    </Text>
+                </View>
+            )}
+
+            <View className="p-6 gap-6">
+                <View className="gap-4">
+                    <View className="flex-row items-center justify-between">
+                        <View className="gap-2 flex-1">
+                            <View className="flex-row items-center gap-2">
+                                <View className="w-2 h-2 rounded-full bg-primary" />
+
+                                <Text className="text-2xl font-bold text-dark">
+                                    Visão geral
+                                </Text>
+                            </View>
+
+                            <Text className="text-base text-black/60 leading-6">
+                                Personalize a forma como os turistas enxergam seu restaurante.
+                            </Text>
+                        </View>
+
+                        <View
+                            className="
+                                w-14 h-14 rounded-2xl
+                                bg-primary/10
+                                items-center justify-center
+                            "
+                        >
+                            <Ionicons
+                                name="storefront-outline"
+                                size={28}
+                                color="#C34342"
+                            />
+                        </View>
+                    </View>
+
+                    <View className="flex-row flex-wrap gap-2">
+                        <View className="bg-primary/10 px-3 py-2 rounded-full">
+                            <Text className="text-primary text-xs font-semibold">
+                                História
+                            </Text>
+                        </View>
+
+                        <View className="bg-primary/10 px-3 py-2 rounded-full">
+                            <Text className="text-primary text-xs font-semibold">
+                                Fotos
+                            </Text>
+                        </View>
+
+                        <View className="bg-primary/10 px-3 py-2 rounded-full">
+                            <Text className="text-primary text-xs font-semibold">
+                                Endereço
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                <View
+                    className="
+                        bg-primary rounded-2xl
+                        px-5 py-4
+                        flex-row items-center justify-between
+                    "
+                >
+                    <View className="flex-row items-center gap-3">
+                        <Text className="text-light font-bold text-base">
+                            Gerenciar perfil
+                        </Text>
+                    </View>
+
+                    <Ionicons
+                        name="arrow-forward"
+                        size={20}
+                        color="#FFFFFF"
+                    />
+                </View>
+            </View>
+        </Pressable>
+    );
 };
-
-const style = StyleSheet.create({
-  cardShadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 3.8,
-    elevation: 5,
-  },
-});
