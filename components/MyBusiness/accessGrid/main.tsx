@@ -18,7 +18,7 @@ export const AccessGrid = ({ notifications = {} }: AccessGridProps) => {
         icon="book"
         title="Cardápio"
         hasNotification={notifications.menu}
-        onPress={() => router.navigate('/menu')}
+        onPress={() => router.navigate('/(mybusiness)/menu/menu')}
       />
 
       <AccessCard
