@@ -1,14 +1,19 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import {
+    Pressable,
+    ScrollView,
+    Text,
+    View,
+} from 'react-native';
 
 type Category =
     | 'todos'
     | 'entrada'
-    | 'principal'
+    | 'prato_principal'
     | 'sobremesa'
-    | 'acompanhamento'
-    | 'bebida';
+    | 'bebida'
+    | 'lanche';
 
 type Props = {
     selectedCategory: Category;
@@ -29,8 +34,8 @@ const categories = [
         icon: 'restaurant-outline',
     },
     {
-        label: 'Principais',
-        value: 'principal',
+        label: 'Pratos principais',
+        value: 'prato_principal',
         icon: 'fast-food-outline',
     },
     {
@@ -39,9 +44,9 @@ const categories = [
         icon: 'ice-cream-outline',
     },
     {
-        label: 'Acompanhamentos',
-        value: 'acompanhamento',
-        icon: 'nutrition-outline',
+        label: 'Lanches',
+        value: 'lanche',
+        icon: 'pizza-outline',
     },
     {
         label: 'Bebidas',
@@ -50,7 +55,7 @@ const categories = [
     },
 ] as const;
 
-export default  function MenuCategoryFilter ({
+export default function MenuCategoryFilter({
     selectedCategory,
     onSelectCategory,
 }: Props) {
@@ -66,55 +71,63 @@ export default  function MenuCategoryFilter ({
                     paddingHorizontal: 4,
                 }}
             >
-                {categories.map((item) => {
-                    const isSelected =
-                        selectedCategory ===
-                        item.value;
+                {categories.map(
+                    (item) => {
+                        const isSelected =
+                            selectedCategory ===
+                            item.value;
 
-                    return (
-                        <Pressable
-                            key={item.value}
-                            onPress={() =>
-                                onSelectCategory(
-                                    item.value,
-                                )
-                            }
-                            className={`
-                                flex-row items-center gap-2
-                                px-5 py-3 rounded-2xl border
-                                ${
-                                    isSelected
-                                        ? 'bg-primary border-primary'
-                                        : 'bg-light border-black/10'
+                        return (
+                            <Pressable
+                                key={
+                                    item.value
                                 }
-                            `}
-                        >
-                            <Ionicons
-                                name={item.icon}
-                                size={18}
-                                color={
-                                    isSelected
-                                        ? '#FFFFFF'
-                                        : '#C34342'
+                                onPress={() =>
+                                    onSelectCategory(
+                                        item.value,
+                                    )
                                 }
-                            />
-
-                            <Text
                                 className={`
-                                    font-semibold
+                                    flex-row items-center gap-2
+                                    px-5 py-3 rounded-2xl border
                                     ${
                                         isSelected
-                                            ? 'text-light'
-                                            : 'text-dark'
+                                            ? 'bg-primary border-primary'
+                                            : 'bg-light border-black/10'
                                     }
                                 `}
                             >
-                                {item.label}
-                            </Text>
-                        </Pressable>
-                    );
-                })}
+                                <Ionicons
+                                    name={
+                                        item.icon
+                                    }
+                                    size={18}
+                                    color={
+                                        isSelected
+                                            ? '#FFFFFF'
+                                            : '#C34342'
+                                    }
+                                />
+
+                                <Text
+                                    className={`
+                                        font-semibold
+                                        ${
+                                            isSelected
+                                                ? 'text-light'
+                                                : 'text-dark'
+                                        }
+                                    `}
+                                >
+                                    {
+                                        item.label
+                                    }
+                                </Text>
+                            </Pressable>
+                        );
+                    },
+                )}
             </ScrollView>
         </View>
     );
-};
+}

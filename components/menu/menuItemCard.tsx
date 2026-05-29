@@ -36,7 +36,8 @@ export default function MenuItemCard({
         <View
             className="
                 bg-light border border-black/5
-                rounded-3xl overflow-hidden mb-5
+                rounded-3xl overflow-hidden
+                mb-6
             "
         >
             <View className="relative">
@@ -87,9 +88,16 @@ export default function MenuItemCard({
 
             <View className="p-5 gap-2">
                 <View className="self-start px-3 py-1 rounded-full bg-primary/10">
-                    <Text className="text-primary text-xs font-semibold capitalize">
-                        {category}
-                    </Text>
+                    {category === 'prato_principal' &&
+                        <Text className="text-primary text-xs font-semibold capitalize">
+                            Prato Principal
+                        </Text>
+                    }
+                    {category !== 'prato_principal' &&
+                        <Text className="text-primary text-xs font-semibold capitalize">
+                            {category}
+                        </Text>
+                    }
                 </View>
 
                 <View className="gap-2">

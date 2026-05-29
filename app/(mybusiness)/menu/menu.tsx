@@ -6,37 +6,45 @@ import {
 
 import {
     ActivityIndicator,
+    Pressable,
     Text,
     View,
 } from 'react-native';
 
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+import { router } from 'expo-router';
+
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
+
+import MenuItems from '@/components/menu/menuItens';
 
 import {
     getMenuByEnterprise,
     MenuItem,
 } from '@/services/menu';
 
-import { router } from 'expo-router';
-
-import MenuItems from '@/components/menu/menuItens';
 import MenuCategoryFilter from './categoryFilter';
 
 type Category =
     | 'todos'
     | 'entrada'
-    | 'principal'
+    | 'prato_principal'
     | 'sobremesa'
-    | 'acompanhamento'
+    | 'lanche'
     | 'bebida';
 
 export default function MenuList() {
     const [menu, setMenu] =
         useState<MenuItem[]>([]);
 
-    const [selectedCategory, setSelectedCategory] =
-        useState<Category>('todos');
+    const [
+        selectedCategory,
+        setSelectedCategory,
+    ] = useState<Category>(
+        'todos',
+    );
 
     const [loading, setLoading] =
         useState(true);
@@ -123,6 +131,34 @@ export default function MenuList() {
                     setSelectedCategory
                 }
             />
+
+            <Pressable
+                onPress={() =>
+                    router.navigate({
+                        pathname:
+                            '/(mybusiness)/menu/form',
+                        params: {
+                            mode: 'create',
+                        },
+                    })
+                }
+                className="
+                    bg-primary rounded-2xl
+                    py-4 mt-5 mb-2
+                    flex-row items-center justify-center
+                    gap-2
+                "
+            >
+                <Ionicons
+                    name="add-circle-outline"
+                    size={22}
+                    color="#FFFFFF"
+                />
+
+                <Text className="text-light font-bold text-base">
+                    Adicionar item
+                </Text>
+            </Pressable>
 
             <MenuItems
                 items={filteredMenu}

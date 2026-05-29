@@ -9,6 +9,7 @@ import {
     toggleMenuItemStatus,
 } from '@/services/menu';
 
+import { router } from 'expo-router';
 import MenuItemCard from './menuItemCard';
 
 type Props = {
@@ -42,10 +43,14 @@ export default function MenuItems({
     const handleEditItem = (
         id: string,
     ) => {
-        console.log(
-            'Editar item:',
-            id,
-        );
+        router.navigate({
+            pathname:
+                '/(mybusiness)/menu/form',
+            params: {
+                mode: 'edit',
+                id,
+            },
+        })
     };
 
     if (items.length === 0) {
@@ -64,7 +69,6 @@ export default function MenuItems({
 
     return (
         <ScrollView
-            className="mt-6"
             showsVerticalScrollIndicator={
                 false
             }
