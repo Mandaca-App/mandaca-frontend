@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <ScrollView>
       <Header />
-      <View className="px-8 py-5 mb-5 gap-8">
+      <View className='px-8 py-5 mb-5 gap-8'>
         <CompleteProfile />
         <RouteGrid />
       </View>

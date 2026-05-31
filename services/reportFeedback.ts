@@ -31,7 +31,9 @@ export const buildSuggestionText = (
     }
 
     const friendlyField =
-        fieldLabels[suggestion.campo_para_alterar] ||
+        fieldLabels[
+            suggestion.campo_para_alterar
+        ] ||
         suggestion.campo_para_alterar;
 
     return `Alterar ${friendlyField} para "${suggestion.novo_valor}"`;
@@ -46,14 +48,20 @@ export const applyEnterpriseSuggestion = async (
     }
 
     if (suggestion.target !== 'enterprise') {
-        console.log('Auto apply para cardápio ainda não implementado.');
+        console.log(
+            'Auto apply para cardápio ainda não implementado.',
+        );
 
         return;
     }
 
     const payload: EnterprisePayload = {
-        [suggestion.campo_para_alterar]: suggestion.novo_valor,
+        [suggestion.campo_para_alterar]:
+            suggestion.novo_valor,
     };
 
-    await axios.put(`${API_URL}/enterprises/${enterpriseId}`, payload);
+    await axios.put(
+        `${API_URL}/enterprises/${enterpriseId}`,
+        payload,
+    );
 };

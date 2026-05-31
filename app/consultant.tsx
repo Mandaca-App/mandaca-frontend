@@ -1,5 +1,5 @@
-import { ChatBubble } from '@/components/chat/ChatBubble';
-import { ChatInputWithAudio } from '@/components/chat/ChatInputWithAudio';
+import { ChatBubble } from '@/components/consultant/ChatBubble';
+import { ChatInput } from '@/components/consultant/ChatInput';
 import { SuggestionCards } from '@/components/consultant/SuggestionCards';
 import { CHATBOT_THEME } from '@/constants/theme';
 import { getChatHistory, sendChatMessage } from '@/services/chatService';
@@ -202,8 +202,6 @@ export default function Consultant() {
               message={item}
               userProfileUri={user?.url_foto_usuario}
               userName={user?.nome}
-              botLabel="Consultor IA"
-              theme={CHATBOT_THEME as any}
             />
           )}
           keyExtractor={(item) => item.id}
@@ -252,11 +250,9 @@ export default function Consultant() {
             onSuggestionPress={handleSendMessage}
             isVisible={showSuggestions}
           />
-          <ChatInputWithAudio
+          <ChatInput
             onSendMessage={handleSendMessage}
             isLoading={isAwaitingResponse}
-            placeholder="Digite sua mensagem..."
-            theme={CHATBOT_THEME as any}
           />
         </View>
       </View>

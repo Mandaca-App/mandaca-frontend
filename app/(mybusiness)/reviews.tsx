@@ -7,7 +7,12 @@ import {
 import { useAssessments } from '@/hooks/useAssessments';
 import { Assessment } from '@/services/assessmentService';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
@@ -40,8 +45,14 @@ const mapSentiment = (tipo: number): ReviewSentiment => {
 export default function Reviews() {
   const [activeFilter, setActiveFilter] = useState<ReviewFilterType>('todos');
 
-  const { assessments, loading, loadingMore, error, hasMore, loadMore } =
-    useAssessments(ENTERPRISE_ID);
+  const {
+    assessments,
+    loading,
+    loadingMore,
+    error,
+    hasMore,
+    loadMore,
+  } = useAssessments(ENTERPRISE_ID);
 
   const reviews: ReviewItem[] = useMemo(
     () =>
