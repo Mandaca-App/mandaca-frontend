@@ -3,7 +3,6 @@ import { ChatInputWithAudio } from '@/components/chat/ChatInputWithAudio';
 import { CHATBOT_THEME } from '@/constants/theme';
 import { ChatMessage } from '@/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import axios from 'axios';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -57,23 +56,24 @@ export default function ClientChat() {
         }
     }, [messages]);
 
-    useEffect(() => {
-        const loadEntrepreneurPhoto = async () => {
-            try {
-                const response = await axios.get(
-                    `https://mandaca-backend.onrender.com/users/${USER_ID}`,
-                    { timeout: 4000 },
-                );
-                if (response.data?.url_foto_usuario) {
-                    setEntrepreneurPhotoUri(response.data.url_foto_usuario);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar foto do empreendedor:', error);
-            }
-        };
+    // TODO: Conectar com endpoint da foto do empreendedor quando estiver disponível
+    // useEffect(() => {
+    //     const loadEntrepreneurPhoto = async () => {
+    //         try {
+    //             const response = await axios.get(
+    //                 `https://mandaca-backend.onrender.com/users/${USER_ID}`,
+    //                 { timeout: 4000 },
+    //             );
+    //             if (response.data?.url_foto_usuario) {
+    //                 setEntrepreneurPhotoUri(response.data.url_foto_usuario);
+    //             }
+    //         } catch (error) {
+    //             console.error('Erro ao carregar foto do empreendedor:', error);
+    //         }
+    //     };
 
-        loadEntrepreneurPhoto();
-    }, []);
+    //     loadEntrepreneurPhoto();
+    // }, []);
 
     useEffect(() => {
         const showEvent =
