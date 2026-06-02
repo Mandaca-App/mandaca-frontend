@@ -33,10 +33,11 @@ export const ReviewsFilterNav = ({
         <Pressable
           key={filter.id}
           onPress={() => handleFilterPress(filter.id)}
-          className={`h-10 rounded-lg justify-center items-center px-4 ${activeFilter === filter.id
-            ? 'bg-primary'
-            : 'bg-light border border-secondary'
-            }`}
+          className={`h-10 rounded-lg justify-center items-center px-4 ${
+            activeFilter === filter.id
+              ? 'bg-primary'
+              : 'bg-light border border-secondary'
+          }`}
           style={[
             styles.filterButton,
             activeFilter === filter.id
@@ -45,8 +46,9 @@ export const ReviewsFilterNav = ({
           ]}
         >
           <Text
-            className={`text-base font-bold ${activeFilter === filter.id ? 'text-light' : 'text-dark'
-              }`}
+            className={`text-base font-bold ${
+              activeFilter === filter.id ? 'text-light' : 'text-dark'
+            }`}
           >
             {filter.label}
           </Text>
