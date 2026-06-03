@@ -2,6 +2,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { MenuItem, toggleMenuItemStatus } from '@/services/menu';
 
+import { router } from 'expo-router';
 import MenuItemCard from './menuItemCard';
 
 type Props = {
@@ -20,9 +21,32 @@ export default function MenuItems({ items, reloadMenu }: Props) {
     }
   };
 
-  const handleEditItem = (id: string) => {
-    console.log('Editar item:', id);
-  };
+    const handleEditItem = (
+        id: string,
+    ) => {
+        router.navigate({
+            pathname:
+                '/(mybusiness)/menu/form',
+            params: {
+                mode: 'edit',
+                id,
+            },
+        })
+    };
+
+    if (items.length === 0) {
+        return (
+            <View className="mt-16 items-center justify-center px-6">
+                <Text className="text-lg font-semibold text-dark">
+                    Nenhum item encontrado
+                </Text>
+
+                <Text className="text-sm text-black/50 text-center mt-2">
+                    Não existem pratos nessa categoria no momento.
+                </Text>
+            </View>
+        );
+    }
 
   if (items.length === 0) {
     return (

@@ -11,12 +11,15 @@ export default function RootLayout() {
         <Stack.Screen name="home" />
         <Stack.Screen name="consultant" />
         <Stack.Screen name="(mybusiness)/myBusiness" />
-        <Stack.Screen name="(mybusiness)/menu" />
+        <Stack.Screen name="(mybusiness)/reservations/reservations" />
         <Stack.Screen name="(mybusiness)/reviews" />
         <Stack.Screen name="(mybusiness)/schedule" />
         <Stack.Screen name="(mybusiness)/businessOverview" />
         <Stack.Screen name="(mybusiness)/editStory" />
         <Stack.Screen name="(mybusiness)/manageImages" />
+        <Stack.Screen name="(mybusiness)/menu/menu" />
+        <Stack.Screen name="(mybusiness)/menu/categoryFilter" />
+        <Stack.Screen name="(mybusiness)/menu/form" />
         <Stack.Screen name="(report)/report" />
         <Stack.Screen name="(report)/positivePoints" />
         <Stack.Screen name="(report)/negativePoints" />
