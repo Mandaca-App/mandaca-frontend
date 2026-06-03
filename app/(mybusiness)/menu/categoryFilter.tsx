@@ -16,10 +16,8 @@ type Category =
     | 'lanche';
 
 type Props = {
-    selectedCategory: Category;
-    onSelectCategory: (
-        category: Category,
-    ) => void;
+  selectedCategory: Category;
+  onSelectCategory: (category: Category) => void;
 };
 
 const categories = [
