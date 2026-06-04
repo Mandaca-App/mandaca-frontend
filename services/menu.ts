@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { API_URL } from '@/constants/api';
+import { MenuScanItem } from '@/types/menu';
 
 export type MenuItem = {
   id_cardapio: string;
@@ -160,3 +161,57 @@ export const deleteMenuItem = async (
 
     return response.data;
 };
+
+export const scanMenuImage = async (
+    imageUri: string,
+) => {
+    const formData = new FormData();
+
+    formData.append(
+        'foto',
+        {
+            uri: imageUri,
+            name: 'menu.jpg',
+            type: 'image/jpeg',
+        } as any,
+    );
+
+    const response =
+        await axios.post(
+            `${API_URL}/menus/scan`,
+            formData,
+            {
+                headers: {
+                    'Content-Type':
+                        'multipart/form-data',
+                },
+            },
+        );
+
+    return response.data;
+};
+
+export const createMenuBulk =
+    async (
+        enterpriseId: string,
+        items: MenuScanItem[],
+    ) => {
+        const response =
+            await axios.post(
+                `${API_URL}/menus/bulk/${enterpriseId}`,
+                {
+                    items: items.map(
+                        (
+                            item,
+                        ) => ({
+                            ...item,
+                            status: true,
+                            url_foto_item:
+                                null,
+                        }),
+                    ),
+                },
+            );
+
+        return response.data;
+    };

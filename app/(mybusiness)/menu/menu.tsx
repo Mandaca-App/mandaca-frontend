@@ -111,59 +111,153 @@ export default function MenuList() {
     }
 
     return (
-        <Container>
-            <Header
-                title="Meu Cardápio"
-                showBackButton
-                showNotificationButton
-                onBackPress={() =>
-                    router.navigate(
-                        '/(mybusiness)/myBusiness',
-                    )
-                }
-            />
+    <Container>
+        <Header
+            title="Meu Cardápio"
+            showBackButton
+            showNotificationButton
+            onBackPress={() =>
+                router.navigate(
+                    '/(mybusiness)/myBusiness',
+                )
+            }
+        />
 
-            <MenuCategoryFilter
-                selectedCategory={
-                    selectedCategory
-                }
-                onSelectCategory={
-                    setSelectedCategory
-                }
-            />
+        {menu.length === 0 ? (
+            <View className="flex-1 items-center justify-center px-6">
+                <View
+                    className="
+                        w-28 h-28 rounded-full
+                        bg-primary/10
+                        items-center justify-center
+                        mb-6
+                    "
+                >
+                    <Ionicons
+                        name="restaurant-outline"
+                        size={50}
+                        color="#C34342"
+                    />
+                </View>
 
-            <Pressable
-                onPress={() =>
-                    router.navigate({
-                        pathname:
-                            '/(mybusiness)/menu/form',
-                        params: {
-                            mode: 'create',
-                        },
-                    })
-                }
-                className="
-                    bg-primary rounded-2xl
-                    py-4 mt-5 mb-2
-                    flex-row items-center justify-center
-                    gap-2
-                "
-            >
-                <Ionicons
-                    name="add-circle-outline"
-                    size={22}
-                    color="#FFFFFF"
+                <Text
+                    className="
+                        text-2xl font-bold text-dark
+                        text-center
+                    "
+                >
+                    Você ainda não possui um cardápio
+                </Text>
+
+                <Text
+                    className="
+                        text-black/60 text-center
+                        mt-3 mb-8 leading-6
+                    "
+                >
+                    Adicione pratos manualmente ou
+                    envie uma foto do seu cardápio
+                    para que a inteligência artificial
+                    identifique os itens automaticamente.
+                </Text>
+
+                <Pressable
+                    onPress={() =>
+                        router.navigate({
+                            pathname:
+                                '/(mybusiness)/menu/form',
+                            params: {
+                                mode: 'create',
+                            },
+                        })
+                    }
+                    className="
+                        bg-primary rounded-2xl
+                        py-4 w-full mb-4
+                        flex-row items-center justify-center
+                        gap-2
+                    "
+                >
+                    <Ionicons
+                        name="add-circle-outline"
+                        size={22}
+                        color="#FFFFFF"
+                    />
+
+                    <Text className="text-light font-bold">
+                        Adicionar item manualmente
+                    </Text>
+                </Pressable>
+
+                <Pressable
+                    onPress={() =>
+                        router.navigate(
+                            '/(mybusiness)/menu/scan',
+                        )
+                    }
+                    className="
+                        bg-light border border-primary
+                        rounded-2xl py-4 w-full
+                        flex-row items-center justify-center
+                        gap-2
+                    "
+                >
+                    <Ionicons
+                        name="scan-outline"
+                        size={22}
+                        color="#C34342"
+                    />
+
+                    <Text className="text-primary font-bold">
+                        Escanear cardápio
+                    </Text>
+                </Pressable>
+            </View>
+        ) : (
+            <>
+                <MenuCategoryFilter
+                    selectedCategory={
+                        selectedCategory
+                    }
+                    onSelectCategory={
+                        setSelectedCategory
+                    }
                 />
 
-                <Text className="text-light font-bold text-base">
-                    Adicionar item
-                </Text>
-            </Pressable>
+                <Pressable
+                    onPress={() =>
+                        router.navigate({
+                            pathname:
+                                '/(mybusiness)/menu/form',
+                            params: {
+                                mode: 'create',
+                            },
+                        })
+                    }
+                    className="
+                        bg-primary rounded-2xl
+                        py-4 mt-5 mb-2
+                        flex-row items-center justify-center
+                        gap-2
+                    "
+                >
+                    <Ionicons
+                        name="add-circle-outline"
+                        size={22}
+                        color="#FFFFFF"
+                    />
 
-            <MenuItems
-                items={filteredMenu}
-                reloadMenu={loadMenu}
-            />
-        </Container>
-    );
+                    <Text className="text-light font-bold text-base">
+                        Adicionar item
+                    </Text>
+                </Pressable>
+
+                <MenuItems
+                    items={filteredMenu}
+                    reloadMenu={loadMenu}
+                />
+            </>
+        )}
+    </Container>
+);
 }
