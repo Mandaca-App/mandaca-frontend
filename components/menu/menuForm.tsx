@@ -299,11 +299,6 @@ export default function MenuForm({
                                         menuId,
                                     );
 
-                                    Alert.alert(
-                                        'Sucesso',
-                                        'Item excluído com sucesso!',
-                                    );
-
                                     router.navigate('/(mybusiness)/menu/menu');
                                 } catch (error) {
                                     console.error(
