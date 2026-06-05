@@ -1,0 +1,266 @@
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { ChatInputWithAudio } from '@/components/chat/ChatInputWithAudio';
+import { CHATBOT_THEME } from '@/constants/theme';
+import { ChatMessage } from '@/types';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import axios from 'axios';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Keyboard,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+
+const KEYBOARD_EXTRA_OFFSET = Platform.OS === 'android' ? 0 : 6;
+const USER_ID = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
+
+const INITIAL_CLIENT_MESSAGE =
+  'Olá, gostaria de saber mais detalhes sobre minha reserva.';
+
+export default function ClientChat() {
+  const insets = useSafeAreaInsets();
+  const { clientName } = useLocalSearchParams<{
+    reservationId: string;
+    clientName: string;
+  }>();
+
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      type: 'bot',
+      content: INITIAL_CLIENT_MESSAGE,
+      timestamp: new Date(),
+      contentType: 'text',
+    },
+  ]);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
+  const [isLoadingHistory] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [footerHeight, setFooterHeight] = useState(0);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [entrepreneurPhotoUri, setEntrepreneurPhotoUri] = useState<string>();
+  const flatListRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (messages.length > 1) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const loadEntrepreneurPhoto = async () => {
+      try {
+        const response = await axios.get(
+          `https://mandaca-backend.onrender.com/users/${USER_ID}`,
+          { timeout: 4000 },
+        );
+        if (response.data?.url_foto_usuario) {
+          setEntrepreneurPhotoUri(response.data.url_foto_usuario);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar foto do empreendedor:', error);
+      }
+    };
+
+    loadEntrepreneurPhoto();
+  }, []);
+
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, (event) => {
+      const safeAreaCompensation = Platform.OS === 'ios' ? insets.bottom : 0;
+      const nextHeight = Math.max(
+        event.endCoordinates.height -
+          safeAreaCompensation +
+          KEYBOARD_EXTRA_OFFSET,
+        0,
+      );
+      setKeyboardHeight(nextHeight);
+    });
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [insets.bottom]);
+
+  const handleSendMessage = async (content: string) => {
+    const userMessage: ChatMessage = {
+      id: `user-${Date.now()}`,
+      type: 'user',
+      content: content,
+      timestamp: new Date(),
+      contentType: 'text',
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setIsAwaitingResponse(true);
+
+    try {
+      // Simula resposta do cliente
+      // TODO: Conectar com API real quando estiver disponível
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const clientResponse: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        type: 'bot',
+        content:
+          'Entendido! Vou verificar os detalhes da sua reserva e retorno em breve.',
+        timestamp: new Date(),
+        contentType: 'text',
+      };
+
+      setMessages((prev) => [...prev, clientResponse]);
+    } catch (error: any) {
+      console.error('Erro ao enviar mensagem:', error);
+
+      const errorMessage: ChatMessage = {
+        id: `error-${Date.now()}`,
+        type: 'bot',
+        content:
+          'Desculpe, houve um erro ao processar sua mensagem. Tente novamente.',
+        timestamp: new Date(),
+        contentType: 'text',
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsAwaitingResponse(false);
+    }
+  };
+
+  const handleScrollToBottom = () => {
+    flatListRef.current?.scrollToEnd({ animated: true });
+    setShowScrollButton(false);
+  };
+
+  const handleScroll = (event: any) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    // Mostra botão se o usuário não está no final da lista
+    const isAtBottom =
+      contentOffset.y + layoutMeasurement.height >= contentSize.height - 100;
+    setShowScrollButton(!isAtBottom && messages.length > 3);
+  };
+
+  const footerOffsetBottom = keyboardHeight;
+  const scrollButtonBottom = footerHeight + footerOffsetBottom + 16;
+
+  return (
+    <SafeAreaView className="flex-1" edges={['top', 'left', 'right', 'bottom']}>
+      {/* Main Content Container */}
+      <View className="flex-1 bg-background">
+        {/* Header */}
+        <View className="px-6 py-4 border-b border-gray-200 flex-row items-center justify-between">
+          <Pressable
+            className="h-8 w-8 rounded-full justify-center items-center"
+            style={{ backgroundColor: '#FFFFFF' }}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={12} color="#2C2C2C" />
+          </Pressable>
+
+          <Text className="text-xl font-semibold text-gray-800 flex-1 text-center">
+            {clientName}
+          </Text>
+
+          <View className="h-8 w-8" />
+        </View>
+
+        {/* Reservation Context Banner */}
+        <View
+          className="mx-4 mt-3 mb-2 rounded-lg border-l-4 px-3 py-2 bg-gray-50"
+          style={{
+            borderLeftColor: CHATBOT_THEME.sendButton.bgColor,
+          }}
+        >
+          <Text className="text-xs font-medium leading-5 text-gray-800">
+            Assunto: Reserva para 12/09 às 20h
+          </Text>
+        </View>
+
+        {/* Messages List */}
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={({ item }) => (
+            <ChatBubble
+              message={item}
+              userProfileUri={entrepreneurPhotoUri}
+              userName="Você"
+              botLabel={clientName}
+              useGenericBotImage={true}
+              theme={CHATBOT_THEME as any}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{
+            paddingVertical: 16,
+            paddingHorizontal: 12,
+            flexGrow: 1,
+            paddingBottom: footerHeight + footerOffsetBottom + 16,
+          }}
+          keyboardDismissMode={
+            Platform.OS === 'ios' ? 'interactive' : 'on-drag'
+          }
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          ListFooterComponent={
+            isAwaitingResponse || isLoadingHistory ? (
+              <View className="px-4 py-2">
+                <ActivityIndicator size="small" color="#C34342" />
+              </View>
+            ) : null
+          }
+        />
+
+        {showScrollButton && (
+          <Pressable
+            className="absolute right-4 w-11 h-11 rounded-full justify-center items-center shadow-md"
+            style={{
+              backgroundColor: CHATBOT_THEME.input.bgColor,
+              elevation: 5,
+              bottom: scrollButtonBottom,
+            }}
+            onPress={handleScrollToBottom}
+          >
+            <Ionicons name="arrow-down" size={16} color="#6B7280" />
+          </Pressable>
+        )}
+
+        <View
+          className="bg-white border-t border-gray-200 absolute left-0 right-0"
+          style={{ bottom: footerOffsetBottom }}
+          onLayout={(event) => setFooterHeight(event.nativeEvent.layout.height)}
+        >
+          <ChatInputWithAudio
+            onSendMessage={handleSendMessage}
+            isLoading={isAwaitingResponse}
+            placeholder="Digite sua mensagem..."
+            theme={CHATBOT_THEME as any}
+          />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}

@@ -6,29 +6,40 @@ export const RouteGrid = () => {
   return (
     <View className="gap-4">
       <GridBox
-        icon={'storefront'}
+        icon="document-text"
+        title="Relatório"
+        description="Veja análises inteligentes e melhorias automáticas."
+        route={() => router.push('/report')}
+        variant="highlight"
+      />
+
+      <GridBox
+        icon="business"
         title="Minha Empresa"
-        description="Descrição e cadastro"
-        route={() => router.navigate('/myBusiness')}
+        description="Edite informações e acompanhe seu negócio."
+        route={() => router.push('/myBusiness')}
+        variant="highlight"
       />
-      <GridBox
-        icon={'analytics-sharp'}
-        title="Relatórios"
-        description="Visão geral e Insights"
-        route={() => router.navigate('/(report)/report')}
-      />
-      <GridBox
-        icon={'settings'}
-        title="Configurações"
-        description="Personalize o aplicativo"
-        route={() => router.navigate('/settings')}
-      />
-      <GridBox
-        icon={'hand-left'}
-        title="Ajuda"
-        description="Entre em contato conosco"
-        route={() => router.navigate('/help')}
-      />
+
+      <View className="flex-row gap-4">
+        <View className="flex-1">
+          <GridBox
+            icon="help-circle"
+            title="Ajuda"
+            description="Central de suporte"
+            route={() => router.push('/help')}
+          />
+        </View>
+
+        <View className="flex-1">
+          <GridBox
+            icon="settings"
+            title="Configurações"
+            description="Preferências"
+            route={() => router.push('/settings')}
+          />
+        </View>
+      </View>
     </View>
   );
 };

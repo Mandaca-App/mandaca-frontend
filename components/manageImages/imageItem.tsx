@@ -1,4 +1,7 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import * as ImagePicker from 'expo-image-picker';
+
 import {
   ActivityIndicator,
   Alert,
@@ -30,6 +33,7 @@ export default function ImageItem({
         'Permissão necessária',
         'Você precisa permitir acesso à galeria.',
       );
+
       return;
     }
 
@@ -46,33 +50,71 @@ export default function ImageItem({
   }
 
   return (
-    <View className="mb-4">
-      <Image
-        source={{ uri }}
-        className="w-full h-52 rounded-2xl"
-        resizeMode="cover"
-      />
+    <View
+      className="
+                bg-light border border-black/5
+                rounded-[28px]
+                overflow-hidden
+                mb-5
+            "
+    >
+      <View className="relative">
+        <Image
+          source={{
+            uri,
+          }}
+          className="w-full h-60"
+          resizeMode="cover"
+        />
+      </View>
 
-      <View className="flex-row gap-3 mt-2">
-        <Pressable
-          onPress={handlePickImage}
-          disabled={isLoading}
-          className="flex-1 bg-primary py-3 rounded-xl items-center justify-center"
-        >
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <Text className="text-light font-semibold">Substituir</Text>
-          )}
-        </Pressable>
+      <View className="p-5 gap-5">
+        <View className="gap-1">
+          <Text className="text-xl font-bold text-dark">Gerenciar imagem</Text>
 
-        <Pressable
-          onPress={onDelete}
-          disabled={isLoading}
-          className="flex-1 bg-black/15 py-3 rounded-xl items-center justify-center"
-        >
-          <Text className="text-primary font-semibold">Deletar</Text>
-        </Pressable>
+          <Text className="text-sm text-black/50 leading-5">
+            Atualize ou remova a imagem exibida no perfil do restaurante.
+          </Text>
+        </View>
+
+        <View className="flex-row gap-3">
+          <Pressable
+            onPress={handlePickImage}
+            disabled={isLoading}
+            className="
+                            flex-1 bg-primary
+                            rounded-2xl
+                            py-4 px-4
+                            flex-row items-center justify-center gap-2
+                        "
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="create-outline" size={20} color="#FFFFFF" />
+
+                <Text className="text-light font-bold">Substituir</Text>
+              </>
+            )}
+          </Pressable>
+
+          <Pressable
+            onPress={onDelete}
+            disabled={isLoading}
+            className="
+                            flex-1 bg-rose-50
+                            border border-rose-200
+                            rounded-2xl
+                            py-4 px-4
+                            flex-row items-center justify-center gap-2
+                        "
+          >
+            <Ionicons name="trash-outline" size={20} color="#DC2626" />
+
+            <Text className="text-red-600 font-bold">Remover</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );

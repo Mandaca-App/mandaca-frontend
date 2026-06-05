@@ -1,49 +1,73 @@
+// app/report.tsx
+
 import { Container } from '@/components/general/container';
 import GeneralButton from '@/components/general/generalButton';
 import { Header } from '@/components/general/header';
+
 import { CardList } from '@/components/report/CardList';
 import { CardListSkeleton } from '@/components/report/cardListSkeleton';
+
 import { generateReport, getReportsByEnterprise } from '@/services/reports';
+
 import { AIReport } from '@/types/Report';
+
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+
+import { useCallback, useEffect, useState } from 'react';
+
 import { Text, View } from 'react-native';
 
 const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 export default function Report() {
   const [report, setReport] = useState<AIReport | null>(null);
+
   const [loading, setLoading] = useState(true);
+
   const [generating, setGenerating] = useState(false);
 
   const handleConsultorPress = () => {
     router.push('/consultant' as any);
   };
 
-  useEffect(() => {
-    fetchLatestReport();
-  }, []);
-
-  const fetchLatestReport = async () => {
+  const fetchLatestReport = useCallback(async () => {
     try {
       setLoading(true);
+
       const reports = await getReportsByEnterprise(ENTERPRISE_ID);
+
       if (reports.length > 0) {
         setReport(reports[reports.length - 1]);
       }
+    } catch (error) {
+      console.error('Erro ao buscar relatório:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchLatestReport();
+  }, [fetchLatestReport]);
 
   const handleGenerate = async () => {
     try {
       setGenerating(true);
+
       const newReport = await generateReport(ENTERPRISE_ID);
+
       setReport(newReport);
+
+      await fetchLatestReport();
+    } catch (error) {
+      console.error('Erro ao gerar relatório:', error);
     } finally {
       setGenerating(false);
     }
+  };
+
+  const handleRefreshReport = (newReport: AIReport) => {
+    setReport(newReport);
   };
 
   return (
@@ -52,22 +76,24 @@ export default function Report() {
         <Header
           title="Relatório"
           showBackButton
-          showNotificationButton={true}
+          showNotificationButton
           rightButtonIcon="chatbubble-outline"
           rightButtonColor="#FFFFFF"
           rightButtonBgColor="#C34342"
           onNotificationPress={handleConsultorPress}
         />
+
         {loading ? (
           <CardListSkeleton />
         ) : report ? (
-          <CardList report={report} />
+          <CardList report={report} onRefresh={handleRefreshReport} />
         ) : (
           <View className="mt-16 items-center gap-6 px-8">
             <Text className="text-center text-dark font-semibold text-base">
               Nenhum relatório gerado ainda. Gere o primeiro relatório do seu
               negócio.
             </Text>
+
             <GeneralButton
               text="Gerar Relatório"
               handlePress={handleGenerate}

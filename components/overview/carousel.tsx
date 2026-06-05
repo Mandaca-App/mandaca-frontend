@@ -1,13 +1,22 @@
+// components/enterprise/carousel.tsx
+
 import { getImagesByEnterprise } from '@/services/imagesEnterprise';
+
 import { ImageEnterprise } from '@/types/imageEnterprise';
+
 import { useFocusEffect } from '@react-navigation/native';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import React, { useCallback, useState } from 'react';
+
 import {
   Dimensions,
   Image,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  Text,
   View,
 } from 'react-native';
 
@@ -17,12 +26,14 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+
 import { ImageSkeleton } from './imageSkeleton';
 
 const { width } = Dimensions.get('window');
 
 const DOT_ACTIVE_COLOR = '#C34342';
-const DOT_INACTIVE_COLOR = '#C7C7CC';
+
+const DOT_INACTIVE_COLOR = '#E5E5E5';
 
 interface PaginationDotProps {
   active: boolean;
@@ -32,7 +43,9 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
   const animationProgress = useSharedValue(active ? 1 : 0);
 
   React.useEffect(() => {
-    animationProgress.value = withTiming(active ? 1 : 0, { duration: 300 });
+    animationProgress.value = withTiming(active ? 1 : 0, {
+      duration: 300,
+    });
   }, [active]);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -42,11 +55,15 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
       [DOT_INACTIVE_COLOR, DOT_ACTIVE_COLOR],
     );
 
-    const scale = withTiming(active ? 1.2 : 1.0, { duration: 300 });
-
     return {
       backgroundColor,
-      transform: [{ scale }],
+      transform: [
+        {
+          scale: withTiming(active ? 1.25 : 1, {
+            duration: 300,
+          }),
+        },
+      ],
     };
   });
 
@@ -59,11 +76,14 @@ const PaginationDot = ({ active }: PaginationDotProps) => {
 };
 
 export default function Carousel() {
-  const ITEM_WIDTH = width * 0.8;
-  const SPACING = 8;
+  const ITEM_WIDTH = width * 0.75;
+
+  const SPACING = 14;
 
   const [activeIndex, setActiveIndex] = useState(0);
+
   const [images, setImages] = useState<ImageEnterprise[]>([]);
+
   const [loadingImages, setLoadingImages] = useState<Record<string, boolean>>(
     {},
   );
@@ -75,11 +95,13 @@ export default function Carousel() {
       const data = await getImagesByEnterprise(ENTERPRISE_ID);
 
       const initialLoadingState: Record<string, boolean> = {};
+
       data.forEach((item) => {
         initialLoadingState[item.id_foto] = true;
       });
 
       setLoadingImages(initialLoadingState);
+
       setImages(data);
     } catch (error) {
       console.error(error);
@@ -94,6 +116,7 @@ export default function Carousel() {
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollOffset = event.nativeEvent.contentOffset.x;
+
     const index = Math.round(scrollOffset / (ITEM_WIDTH + SPACING));
 
     if (index !== activeIndex && index >= 0 && index < images.length) {
@@ -108,8 +131,44 @@ export default function Carousel() {
     }));
   };
 
+  if (images.length === 0) {
+    return (
+      <View
+        className="
+                    w-full h-[240px]
+                    rounded-[28px]
+                    bg-primary/5
+                    border border-primary/10
+                    items-center justify-center
+                    gap-4
+                "
+      >
+        <View
+          className="
+                        w-16 h-16 rounded-2xl
+                        bg-primary/10
+                        items-center justify-center
+                    "
+        >
+          <Ionicons name="images-outline" size={32} color="#C34342" />
+        </View>
+
+        <View className="items-center gap-1">
+          <Text className="text-lg font-bold text-dark">
+            Nenhuma foto encontrada
+          </Text>
+
+          <Text className="text-sm text-black/50 text-center px-10">
+            Adicione imagens do seu restaurante para deixar o perfil mais
+            atrativo.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <View className="flex-1 items-center justify-center">
+    <View className="items-center">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -117,12 +176,23 @@ export default function Carousel() {
         decelerationRate="fast"
         onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
+        contentContainerStyle={{
+          paddingRight: SPACING,
+        }}
       >
         {images.map((item) => (
           <View
             key={item.id_foto}
-            style={{ width: ITEM_WIDTH, marginRight: SPACING }}
-            className="h-[200px] rounded-2xl overflow-hidden"
+            style={{
+              width: ITEM_WIDTH,
+              marginRight: SPACING,
+            }}
+            className="
+                            h-[240px]
+                            rounded-[28px]
+                            overflow-hidden
+                            bg-black/5
+                        "
           >
             {loadingImages[item.id_foto] && (
               <View className="absolute w-full h-full">
@@ -131,15 +201,18 @@ export default function Carousel() {
             )}
 
             <Image
-              source={{ uri: item.url_foto_empresa }}
+              source={{
+                uri: item.url_foto_empresa,
+              }}
               className="w-full h-full"
+              resizeMode="cover"
               onLoad={() => handleImageLoad(item.id_foto)}
             />
           </View>
         ))}
       </ScrollView>
 
-      <View className="flex-row mt-4 items-center justify-center">
+      <View className="flex-row mt-5 items-center justify-center">
         {images.map((_, index) => (
           <PaginationDot key={index} active={index === activeIndex} />
         ))}
