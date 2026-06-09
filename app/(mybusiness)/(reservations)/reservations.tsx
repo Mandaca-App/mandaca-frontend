@@ -174,13 +174,11 @@ const ReservationCardComponent = ({
   onChatPress,
   onConfirm,
   onCancel,
-  isLoading,
 }: {
   reservation: ReservationCard;
   onChatPress: (reservationId: string, clientName: string) => void;
   onConfirm?: (reservationId: string) => Promise<void>;
   onCancel?: (reservationId: string) => Promise<void>;
-  isLoading?: boolean;
 }) => {
   const [imageError, setImageError] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -212,14 +210,14 @@ const ReservationCardComponent = ({
     if (!onConfirm) return;
 
     Alert.alert('Confirmar Reserva', 'Deseja confirmar esta reserva?', [
-      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
+      { text: 'Cancelar', onPress: () => { }, style: 'cancel' },
       {
         text: 'Confirmar',
         onPress: async () => {
           try {
             setConfirmLoading(true);
             await onConfirm(reservation.id);
-          } catch (error) {
+          } catch {
             Alert.alert('Erro', 'Não foi possível confirmar a reserva');
           } finally {
             setConfirmLoading(false);
@@ -237,14 +235,14 @@ const ReservationCardComponent = ({
       'Cancelar Reserva',
       'Tem certeza? Esta ação não pode ser desfeita.',
       [
-        { text: 'Manter', onPress: () => {}, style: 'cancel' },
+        { text: 'Manter', onPress: () => { }, style: 'cancel' },
         {
           text: 'Cancelar',
           onPress: async () => {
             try {
               setCancelLoading(true);
               await onCancel(reservation.id);
-            } catch (error) {
+            } catch {
               Alert.alert('Erro', 'Não foi possível cancelar a reserva');
             } finally {
               setCancelLoading(false);
@@ -303,16 +301,14 @@ const ReservationCardComponent = ({
       <InfoLine
         icon="people-outline"
         label="Pessoas"
-        value={`${reservation.guests} ${
-          reservation.guests > 1 ? 'pessoas' : 'pessoa'
-        }`}
+        value={`${reservation.guests} ${reservation.guests > 1 ? 'pessoas' : 'pessoa'
+          }`}
       />
       <InfoLine
         icon="square-outline"
         label="Mesas"
-        value={`${reservation.tables} ${
-          reservation.tables > 1 ? 'mesas' : 'mesa'
-        }`}
+        value={`${reservation.tables} ${reservation.tables > 1 ? 'mesas' : 'mesa'
+          }`}
       />
 
       {/* Reason/Notes Section */}
@@ -503,17 +499,17 @@ const CalendarSection = ({
           const dayReservations = reservationsByDay[dayKey] ?? [];
           const dots = getReservationStatusDots(dayReservations);
           const isSelected = selectedDate === dayKey;
-          const uniqueKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${date.getDate()}`;
+          const uniqueKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${date.getDate()
+            }`;
 
           return (
             <Pressable
               key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
-              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${
-                isSelected
+              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${isSelected
                   ? 'bg-primary border-primary'
                   : 'bg-light border-secondary'
-              }`}
+                }`}
             >
               <Text
                 className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'}`}
