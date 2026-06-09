@@ -3,7 +3,10 @@ import {
   type ReservationSectionType,
 } from '@/components/MyBusiness/reservationsNav/main';
 import { Header } from '@/components/general/header';
-import { reservationService, type Reservation } from '@/services/reservationService';
+import {
+  reservationService,
+  type Reservation,
+} from '@/services/reservationService';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
@@ -209,7 +212,7 @@ const ReservationCardComponent = ({
     if (!onConfirm) return;
 
     Alert.alert('Confirmar Reserva', 'Deseja confirmar esta reserva?', [
-      { text: 'Cancelar', onPress: () => { }, style: 'cancel' },
+      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
       {
         text: 'Confirmar',
         onPress: async () => {
@@ -234,7 +237,7 @@ const ReservationCardComponent = ({
       'Cancelar Reserva',
       'Tem certeza? Esta ação não pode ser desfeita.',
       [
-        { text: 'Manter', onPress: () => { }, style: 'cancel' },
+        { text: 'Manter', onPress: () => {}, style: 'cancel' },
         {
           text: 'Cancelar',
           onPress: async () => {
@@ -300,14 +303,16 @@ const ReservationCardComponent = ({
       <InfoLine
         icon="people-outline"
         label="Pessoas"
-        value={`${reservation.guests} ${reservation.guests > 1 ? 'pessoas' : 'pessoa'
-          }`}
+        value={`${reservation.guests} ${
+          reservation.guests > 1 ? 'pessoas' : 'pessoa'
+        }`}
       />
       <InfoLine
         icon="square-outline"
         label="Mesas"
-        value={`${reservation.tables} ${reservation.tables > 1 ? 'mesas' : 'mesa'
-          }`}
+        value={`${reservation.tables} ${
+          reservation.tables > 1 ? 'mesas' : 'mesa'
+        }`}
       />
 
       {/* Reason/Notes Section */}
@@ -504,10 +509,11 @@ const CalendarSection = ({
             <Pressable
               key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
-              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${isSelected
-                ? 'bg-primary border-primary'
-                : 'bg-light border-secondary'
-                }`}
+              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${
+                isSelected
+                  ? 'bg-primary border-primary'
+                  : 'bg-light border-secondary'
+              }`}
             >
               <Text
                 className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'}`}
@@ -736,9 +742,7 @@ export default function Reservations() {
                 : undefined
             }
             onCancel={
-              item.status === 'aguardando'
-                ? handleCancelReservation
-                : undefined
+              item.status === 'aguardando' ? handleCancelReservation : undefined
             }
           />
         )}
