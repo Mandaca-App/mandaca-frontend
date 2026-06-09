@@ -22,7 +22,7 @@ describe('HelpScreen', () => {
   it('deve abrir o modal de Fale Conosco com as opções de contato dinâmicas', async () => {
     (getContacts as jest.Mock).mockResolvedValueOnce(mockContacts);
 
-    const { getByText, queryByText } = render(<HelpScreen />);
+    const { getByText } = render(<HelpScreen />);
 
     // Espera os contatos carregarem silenciosamente
     await waitFor(() => {
