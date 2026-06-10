@@ -1,10 +1,11 @@
 import { Header } from '@/components/general/header';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Linking,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,23 +13,32 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getContacts } from '@/services/contactService';
+import { ContactResponse } from '@/types/contact';
 
 const HelpScreen: React.FC = () => {
   const router = useRouter();
+  const [contacts, setContacts] = useState<ContactResponse[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const handleSendEmail = async () => {
-    const email = 'suporte@mandaca.com.br';
-    const subject = encodeURIComponent('Suporte - Central de Ajuda Mandacá');
+  useEffect(() => {
+    const fetchContacts = async () => {
+      const data = await getContacts();
+      setContacts(data);
+    };
+    fetchContacts();
+  }, []);
+
+  const handleOpenLink = async (url: string) => {
     try {
-      const url = `mailto:${email}?subject=${subject}`;
       const canOpen = await Linking.canOpenURL(url);
       if (canOpen) {
         await Linking.openURL(url);
       } else {
-        Alert.alert('Erro', 'Não foi possível abrir o aplicativo de e-mail.');
+        await Linking.openURL(url);
       }
     } catch {
-      Alert.alert('Erro', 'Ocorreu um erro ao tentar abrir o e-mail.');
+      Alert.alert('Erro', 'Não foi possível abrir o link solicitado.');
     }
   };
 
@@ -37,8 +47,13 @@ const HelpScreen: React.FC = () => {
   };
 
   const handleTutorials = () => {
-    Alert.alert('Em breve', 'A seção de tutoriais estará disponível em breve.');
+    router.push('/(help)/tutorials' as any);
   };
+
+  const activeContact = contacts[0] || null;
+  const whatsapp = activeContact?.whatsapp;
+  const phone = activeContact?.telefone;
+  const email = activeContact?.email || 'suporte@mandaca.com.br';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -96,7 +111,7 @@ const HelpScreen: React.FC = () => {
           {/* Fale Conosco */}
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={handleSendEmail}
+            onPress={() => setModalVisible(true)}
             style={styles.listItem}
           >
             <View style={styles.listIconWrapper}>
@@ -104,12 +119,86 @@ const HelpScreen: React.FC = () => {
             </View>
             <View style={styles.listTextWrapper}>
               <Text style={styles.listTitle}>Fale Conosco</Text>
-              <Text style={styles.listSubtitle}>Envie-nos um e-mail</Text>
+              <Text style={styles.listSubtitle}>Entre em contato conosco</Text>
             </View>
             <Ionicons name="arrow-forward" size={18} color="#C34342" />
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Modal/Action Sheet for Contacts */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Fale Conosco</Text>
+              <Text style={styles.modalSubtitle}>
+                Selecione o canal de sua preferência para falar com nossa equipe:
+              </Text>
+            </View>
+
+            <View style={styles.modalButtonsContainer}>
+              {whatsapp ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[styles.modalButton, styles.whatsappButton]}
+                  onPress={() => {
+                    setModalVisible(false);
+                    handleOpenLink(`https://wa.me/${whatsapp.replace(/\D/g, '')}`);
+                  }}
+                >
+                  <Ionicons name="logo-whatsapp" size={24} color="#FFFFFF" />
+                  <Text style={styles.modalButtonText}>Conversar no WhatsApp</Text>
+                </TouchableOpacity>
+              ) : null}
+
+              {phone ? (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={[styles.modalButton, styles.phoneButton]}
+                  onPress={() => {
+                    setModalVisible(false);
+                    handleOpenLink(`tel:${phone.replace(/\D/g, '')}`);
+                  }}
+                >
+                  <Ionicons name="call-outline" size={24} color="#FFFFFF" />
+                  <Text style={styles.modalButtonText}>Ligar por Telefone</Text>
+                </TouchableOpacity>
+              ) : null}
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={[styles.modalButton, styles.emailButton]}
+                onPress={() => {
+                  setModalVisible(false);
+                  const subject = encodeURIComponent('Suporte - Central de Ajuda Mandacá');
+                  handleOpenLink(`mailto:${email}?subject=${subject}`);
+                }}
+              >
+                <Ionicons name="mail-outline" size={24} color="#FFFFFF" />
+                <Text style={styles.modalButtonText}>Enviar E-mail</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.modalCancelButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalCancelButtonText}>Voltar</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -212,6 +301,79 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F0F0F0',
     marginLeft: 76,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    paddingBottom: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1C1C1C',
+    marginBottom: 8,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  modalButtonsContainer: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 10,
+  },
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  whatsappButton: {
+    backgroundColor: '#25D366',
+  },
+  phoneButton: {
+    backgroundColor: '#007AFF',
+  },
+  emailButton: {
+    backgroundColor: '#C34342',
+  },
+  modalCancelButton: {
+    alignItems: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#FFFFFF',
+  },
+  modalCancelButtonText: {
+    color: '#374151',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 
