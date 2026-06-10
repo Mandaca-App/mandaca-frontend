@@ -97,7 +97,7 @@ describe('HelpScreen', () => {
     fireEvent.press(emailButton);
     await waitFor(() => {
       expect(Linking.openURL).toHaveBeenCalledWith(
-        expect.stringContaining('mailto:suporte-teste@mandaca.com.br')
+        expect.stringContaining('mailto:suporte-teste@mandaca.com.br'),
       );
     });
   });
