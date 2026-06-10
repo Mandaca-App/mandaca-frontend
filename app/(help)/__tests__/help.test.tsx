@@ -6,16 +6,8 @@ import HelpScreen from '../help';
 
 jest.mock('@/services/contactService');
 jest.mock('expo-router', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    back: jest.fn(),
-  }),
-}));
-
-jest.mock('expo-router', () => ({
   useRouter: jest.fn(),
 }));
-
 
 const mockContacts = [
   {
