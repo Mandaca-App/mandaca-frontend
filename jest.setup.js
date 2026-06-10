@@ -1,12 +1,16 @@
-const { useLocalSearchParams } = require("expo-router");
+const mockPush = jest.fn();
+const mockReplace = jest.fn();
+const mockBack = jest.fn();
+
+const mockUseRouter = jest.fn(() => ({
+  push: mockPush,
+  replace: mockReplace,
+  back: mockBack,
+}));
 
 jest.mock('expo-router', () => ({
-    useRouter: () => ({
-        push: jest.fn(),
-        replace: jest.fn(),
-        back: jest.fn(),
-    }),
-    useLocalSearchParams: () => ({}),
+  useRouter: mockUseRouter,
+  useLocalSearchParams: jest.fn(() => ({})),
 }));
 
 jest.mock('react-native', () => {

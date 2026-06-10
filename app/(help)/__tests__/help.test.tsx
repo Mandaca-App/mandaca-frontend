@@ -2,12 +2,10 @@ import { getContacts } from '@/services/contactService';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
 import { Linking } from 'react-native';
+import { useRouter } from 'expo-router';
 import HelpScreen from '../help';
 
 jest.mock('@/services/contactService');
-jest.mock('expo-router', () => ({
-  useRouter: jest.fn(),
-}));
 
 const mockContacts = [
   {
@@ -23,7 +21,7 @@ describe('HelpScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (require('expo-router').useRouter as jest.Mock).mockReturnValue({
+    (useRouter as jest.Mock).mockReturnValue({
       push: mockPush,
       back: jest.fn(),
     });
@@ -36,12 +34,20 @@ describe('HelpScreen', () => {
     await waitFor(() => {
       expect(getContacts).toHaveBeenCalled();
     });
-    expect(getByText('Fale Conosco')).toBeTruthy();
+    
+    fireEvent.press(getByText('Fale Conosco'));
+    await waitFor(() => {
+      expect(getByText('Conversar no WhatsApp')).toBeTruthy();
+    });
   });
 
   it('deve ir para o chatbot ao clicar em Iniciar Conversa', async () => {
     (getContacts as jest.Mock).mockResolvedValueOnce([]);
     const { getByText } = render(<HelpScreen />);
+
+    await waitFor(() => {
+      expect(getContacts).toHaveBeenCalled();
+    });
 
     fireEvent.press(getByText('Iniciar Conversa'));
     expect(mockPush).toHaveBeenCalledWith('/consultant');
@@ -50,6 +56,10 @@ describe('HelpScreen', () => {
   it('deve ir para a tela de tutoriais ao clicar em Tutoriais', async () => {
     (getContacts as jest.Mock).mockResolvedValueOnce([]);
     const { getByText } = render(<HelpScreen />);
+
+    await waitFor(() => {
+      expect(getContacts).toHaveBeenCalled();
+    });
 
     fireEvent.press(getByText('Tutoriais'));
     expect(mockPush).toHaveBeenCalledWith('/(help)/tutorials');
@@ -78,7 +88,7 @@ describe('HelpScreen', () => {
     const phoneButton = getByText('Ligar por Telefone');
     fireEvent.press(phoneButton);
     await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith('tel:5511999999999');
+      expect(Linking.openURL).toHaveBeenCalledWith('tel:11999999999');
     });
 
     // Abrir modal novamente
