@@ -1,8 +1,8 @@
-import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import HelpScreen from '../help';
 import { getContacts } from '@/services/contactService';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import React from 'react';
 import { Linking } from 'react-native';
+import HelpScreen from '../help';
 
 jest.mock('@/services/contactService');
 jest.mock('expo-router', () => ({
@@ -11,6 +11,11 @@ jest.mock('expo-router', () => ({
     back: jest.fn(),
   }),
 }));
+
+jest.mock('expo-router', () => ({
+  useRouter: jest.fn(),
+}));
+
 
 const mockContacts = [
   {
@@ -26,8 +31,7 @@ describe('HelpScreen', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    const useRouterMock = require('expo-router').useRouter;
-    useRouterMock.mockReturnValue({
+    (require('expo-router').useRouter as jest.Mock).mockReturnValue({
       push: mockPush,
       back: jest.fn(),
     });
@@ -46,7 +50,7 @@ describe('HelpScreen', () => {
   it('deve ir para o chatbot ao clicar em Iniciar Conversa', async () => {
     (getContacts as jest.Mock).mockResolvedValueOnce([]);
     const { getByText } = render(<HelpScreen />);
-    
+
     fireEvent.press(getByText('Iniciar Conversa'));
     expect(mockPush).toHaveBeenCalledWith('/consultant');
   });
@@ -54,7 +58,7 @@ describe('HelpScreen', () => {
   it('deve ir para a tela de tutoriais ao clicar em Tutoriais', async () => {
     (getContacts as jest.Mock).mockResolvedValueOnce([]);
     const { getByText } = render(<HelpScreen />);
-    
+
     fireEvent.press(getByText('Tutoriais'));
     expect(mockPush).toHaveBeenCalledWith('/(help)/tutorials');
   });
