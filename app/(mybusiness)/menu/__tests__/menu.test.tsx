@@ -1,25 +1,8 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { router } from 'expo-router';
 import MenuList from '../menu';
 import { getMenuByEnterprise, toggleMenuItemStatus, MenuItem } from '@/services/menu';
-
-const mockNavigate = jest.fn();
-const mockReplace = jest.fn();
-const mockBack = jest.fn();
-
-jest.mock('expo-router', () => ({
-  router: {
-    navigate: mockNavigate,
-    replace: mockReplace,
-    back: mockBack,
-  },
-  useRouter: () => ({
-    push: jest.fn(),
-    back: jest.fn(),
-    replace: jest.fn(),
-  }),
-  useLocalSearchParams: jest.fn(() => ({})),
-}));
 
 jest.mock('@/services/menu');
 
@@ -83,7 +66,7 @@ describe('MenuList Screen', () => {
     });
 
     fireEvent.press(getByText('Adicionar item manualmente'));
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(router.navigate).toHaveBeenCalledWith({
       pathname: '/(mybusiness)/menu/form',
       params: { mode: 'create' },
     });
@@ -98,7 +81,7 @@ describe('MenuList Screen', () => {
     });
 
     fireEvent.press(getByText('Escanear cardápio'));
-    expect(mockNavigate).toHaveBeenCalledWith('/(mybusiness)/menu/scan');
+    expect(router.navigate).toHaveBeenCalledWith('/(mybusiness)/menu/scan');
   });
 
   it('deve renderizar os itens do cardápio quando houver dados', async () => {
@@ -156,7 +139,7 @@ describe('MenuList Screen', () => {
     });
 
     fireEvent.press(getByText('Adicionar item'));
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(router.navigate).toHaveBeenCalledWith({
       pathname: '/(mybusiness)/menu/form',
       params: { mode: 'create' },
     });
@@ -174,7 +157,7 @@ describe('MenuList Screen', () => {
     const editButtons = getAllByText('Editar item');
     fireEvent.press(editButtons[0]); // primeiro card (Hambúrguer, id_cardapio: 'item-1')
 
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(router.navigate).toHaveBeenCalledWith({
       pathname: '/(mybusiness)/menu/form',
       params: { mode: 'edit', id: 'item-1' },
     });

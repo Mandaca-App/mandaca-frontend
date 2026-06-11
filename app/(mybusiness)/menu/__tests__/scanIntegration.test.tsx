@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { router, useLocalSearchParams } from 'expo-router';
 
 // Importa as telas do fluxo
 import ScanMenuScreen from '../scan';
@@ -10,22 +11,6 @@ import ReviewScanScreen from '../reviewScan';
 
 // Importa os serviços
 import { scanMenuImage, createMenuBulk } from '@/services/menu';
-
-// Mock do router e params
-const mockNavigate = jest.fn();
-const mockReplace = jest.fn();
-const mockBack = jest.fn();
-let mockSearchParams = {};
-
-jest.mock('expo-router', () => ({
-  router: {
-    navigate: mockNavigate,
-    replace: mockReplace,
-    back: mockBack,
-    push: mockNavigate,
-  },
-  useLocalSearchParams: () => mockSearchParams,
-}));
 
 // Mock dos serviços de Menu e ImagePicker
 jest.mock('@/services/menu');
@@ -50,10 +35,10 @@ const mockScannedItems = [
 describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSearchParams = {};
   });
 
   it('deve executar o fluxo completo de seleção de foto, leitura por IA, revisão e persistência', async () => {
+    (useLocalSearchParams as jest.Mock).mockReturnValue({});
     // === ETAPA 1: Seleção de Imagem na Tela de Scanner ===
     // Configura mocks para liberar permissão e retornar imagem mockada
     (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock)
@@ -75,14 +60,14 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     // Clica no botão "Continuar" para simular a navegação
     fireEvent.press(getByText('Continuar'));
 
-    expect(mockNavigate).toHaveBeenCalledWith({
+    expect(router.navigate).toHaveBeenCalledWith({
       pathname: '/(mybusiness)/menu/scanLoading',
       params: { imageUri: 'file:///fake/path/cardapio.jpg' },
     });
 
     // === ETAPA 2: Leitura pela IA na Tela de Carregamento ===
     // Configura o mock do serviço de scanner da IA
-    mockSearchParams = { imageUri: 'file:///fake/path/cardapio.jpg' };
+    (useLocalSearchParams as jest.Mock).mockReturnValue({ imageUri: 'file:///fake/path/cardapio.jpg' });
     (scanMenuImage as jest.Mock).mockResolvedValueOnce(mockScannedItems);
 
     const { unmount: unmountLoading } = render(<ScanLoadingScreen />);
@@ -90,7 +75,7 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     // Aguarda o serviço da IA ser chamado e a navegação/redirecionamento disparar
     await waitFor(() => {
       expect(scanMenuImage).toHaveBeenCalledWith('file:///fake/path/cardapio.jpg');
-      expect(mockReplace).toHaveBeenCalledWith({
+      expect(router.replace).toHaveBeenCalledWith({
         pathname: '/(mybusiness)/menu/reviewScan',
         params: { items: JSON.stringify(mockScannedItems) },
       });
@@ -99,7 +84,7 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     unmountLoading();
 
     // === ETAPA 3: Revisão e Persistência dos Itens ===
-    mockSearchParams = { items: JSON.stringify(mockScannedItems) };
+    (useLocalSearchParams as jest.Mock).mockReturnValue({ items: JSON.stringify(mockScannedItems) });
     (createMenuBulk as jest.Mock).mockResolvedValueOnce({ success: true });
 
     const { getByText: getReviewText, getAllByText } = render(<ReviewScanScreen />);
@@ -133,7 +118,7 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
         ],
       );
       expect(Alert.alert).toHaveBeenCalledWith('Sucesso', 'Cardápio criado com sucesso!');
-      expect(mockReplace).toHaveBeenCalledWith('/(mybusiness)/menu/menu');
+      expect(router.replace).toHaveBeenCalledWith('/(mybusiness)/menu/menu');
     });
   });
 });
