@@ -37,10 +37,8 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     jest.clearAllMocks();
   });
 
-  it('deve executar o fluxo completo de seleção de foto, leitura por IA, revisão e persistência', async () => {
+  it('deve simular a seleção de imagem na tela de scan e navegar para a tela de carregamento', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({});
-    // === ETAPA 1: Seleção de Imagem na Tela de Scanner ===
-    // Configura mocks para liberar permissão e retornar imagem mockada
     (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock)
       .mockResolvedValue({ granted: true });
     (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
@@ -64,15 +62,15 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
       pathname: '/(mybusiness)/menu/scanLoading',
       params: { imageUri: 'file:///fake/path/cardapio.jpg' },
     });
+  });
 
-    // === ETAPA 2: Leitura pela IA na Tela de Carregamento ===
-    // Configura o mock do serviço de scanner da IA
+  it('deve simular o processamento da imagem pela IA na tela de carregamento e navegar para a revisão', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({
       imageUri: 'file:///fake/path/cardapio.jpg',
     });
     (scanMenuImage as jest.Mock).mockResolvedValueOnce(mockScannedItems);
 
-    const { unmount: unmountLoading } = render(<ScanLoadingScreen />);
+    render(<ScanLoadingScreen />);
 
     // Aguarda o serviço da IA ser chamado e a navegação/redirecionamento disparar
     await waitFor(() => {
@@ -82,10 +80,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
         params: { items: JSON.stringify(mockScannedItems) },
       });
     });
+  });
 
-    unmountLoading();
-
-    // === ETAPA 3: Revisão e Persistência dos Itens ===
+  it('deve simular a revisão dos itens e a persistência final no cardápio', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({
       items: JSON.stringify(mockScannedItems),
     });
@@ -103,7 +100,7 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     fireEvent.press(deleteButtons[1]); // clica no botão "Excluir" do segundo item (Suco de Laranja)
 
     // O contador de itens deve atualizar para 1 item
-    expect(getReviewText('1 itens encontrados')).toBeTruthy();
+    expect(getReviewText('1 item encontrado')).toBeTruthy();
 
     // Clica em "Salvar no Cardápio"
     fireEvent.press(getReviewText('Salvar no Cardápio'));
