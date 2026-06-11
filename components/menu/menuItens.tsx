@@ -48,19 +48,6 @@ export default function MenuItems({ items, reloadMenu }: Props) {
         );
     }
 
-  if (items.length === 0) {
-    return (
-      <View className="mt-16 items-center justify-center px-6">
-        <Text className="text-lg font-semibold text-dark">
-          Nenhum item encontrado
-        </Text>
-
-        <Text className="text-sm text-black/50 text-center mt-2">
-          Não existem pratos nessa categoria no momento.
-        </Text>
-      </View>
-    );
-  }
 
   return (
     <ScrollView className="mt-6" showsVerticalScrollIndicator={false}>

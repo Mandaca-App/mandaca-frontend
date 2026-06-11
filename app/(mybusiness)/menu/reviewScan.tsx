@@ -170,7 +170,9 @@ export default function ReviewScanScreen() {
                 >
                     <Text className="font-semibold text-primary">
                         {totalItems}{' '}
-                        itens encontrados
+                        {totalItems === 1
+                            ? 'item encontrado'
+                            : 'itens encontrados'}
                     </Text>
                 </View>
 
