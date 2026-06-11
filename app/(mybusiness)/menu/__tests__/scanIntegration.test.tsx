@@ -19,10 +19,10 @@ let mockSearchParams = {};
 
 jest.mock('expo-router', () => ({
   router: {
-    navigate: (...args: any[]) => mockNavigate(...args),
-    replace: (...args: any[]) => mockReplace(...args),
-    back: (...args: any[]) => mockBack(...args),
-    push: (...args: any[]) => mockNavigate(...args),
+    navigate: mockNavigate,
+    replace: mockReplace,
+    back: mockBack,
+    push: mockNavigate,
   },
   useLocalSearchParams: () => mockSearchParams,
 }));
@@ -56,13 +56,14 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
   it('deve executar o fluxo completo de seleção de foto, leitura por IA, revisão e persistência', async () => {
     // === ETAPA 1: Seleção de Imagem na Tela de Scanner ===
     // Configura mocks para liberar permissão e retornar imagem mockada
-    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock).mockResolvedValue({ granted: true });
+    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock)
+      .mockResolvedValue({ granted: true });
     (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
       canceled: false,
       assets: [{ uri: 'file:///fake/path/cardapio.jpg' }],
     });
 
-    const { getByText, queryByText } = render(<ScanMenuScreen />);
+    const { getByText } = render(<ScanMenuScreen />);
 
     // Clica para escolher da galeria
     fireEvent.press(getByText('Escolher da galeria'));
@@ -129,7 +130,7 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
             preco: '45.00',
             categoria: 'prato_principal',
           },
-        ]
+        ],
       );
       expect(Alert.alert).toHaveBeenCalledWith('Sucesso', 'Cardápio criado com sucesso!');
       expect(mockReplace).toHaveBeenCalledWith('/(mybusiness)/menu/menu');

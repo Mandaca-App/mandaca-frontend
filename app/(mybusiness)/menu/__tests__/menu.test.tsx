@@ -9,9 +9,9 @@ const mockBack = jest.fn();
 
 jest.mock('expo-router', () => ({
   router: {
-    navigate: (...args: any[]) => mockNavigate(...args),
-    replace: (...args: any[]) => mockReplace(...args),
-    back: (...args: any[]) => mockBack(...args),
+    navigate: mockNavigate,
+    replace: mockReplace,
+    back: mockBack,
   },
   useRouter: () => ({
     push: jest.fn(),
@@ -52,7 +52,9 @@ describe('MenuList Screen', () => {
   });
 
   it('deve renderizar o estado de carregamento inicialmente', async () => {
-    (getMenuByEnterprise as jest.Mock).mockReturnValue(new Promise(() => {})); // never resolves to keep loading active
+    (getMenuByEnterprise as jest.Mock).mockReturnValue(
+      new Promise(() => {}), // never resolves to keep loading active
+    );
     const { getByText } = render(<MenuList />);
     
     expect(getByText('Carregando cardápio...')).toBeTruthy();
