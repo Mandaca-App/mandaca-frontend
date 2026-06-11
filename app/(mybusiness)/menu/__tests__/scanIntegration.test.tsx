@@ -67,7 +67,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
 
     // === ETAPA 2: Leitura pela IA na Tela de Carregamento ===
     // Configura o mock do serviço de scanner da IA
-    (useLocalSearchParams as jest.Mock).mockReturnValue({ imageUri: 'file:///fake/path/cardapio.jpg' });
+    (useLocalSearchParams as jest.Mock).mockReturnValue({
+      imageUri: 'file:///fake/path/cardapio.jpg',
+    });
     (scanMenuImage as jest.Mock).mockResolvedValueOnce(mockScannedItems);
 
     const { unmount: unmountLoading } = render(<ScanLoadingScreen />);
@@ -84,7 +86,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     unmountLoading();
 
     // === ETAPA 3: Revisão e Persistência dos Itens ===
-    (useLocalSearchParams as jest.Mock).mockReturnValue({ items: JSON.stringify(mockScannedItems) });
+    (useLocalSearchParams as jest.Mock).mockReturnValue({
+      items: JSON.stringify(mockScannedItems),
+    });
     (createMenuBulk as jest.Mock).mockResolvedValueOnce({ success: true });
 
     const { getByText: getReviewText, getAllByText } = render(<ReviewScanScreen />);
