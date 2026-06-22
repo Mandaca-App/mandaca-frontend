@@ -107,7 +107,9 @@ const formatDayLabel = (date: Date) =>
   }).format(date);
 
 const getReservationStatusDots = (reservations: ReservationCard[]) => {
-  const hasConfirmed = reservations.some((item) => item.status === 'confirmada');
+  const hasConfirmed = reservations.some(
+    (item) => item.status === 'confirmada',
+  );
   const hasPending = reservations.some((item) => item.status === 'aguardando');
   return { hasConfirmed, hasPending };
 };
@@ -195,7 +197,7 @@ const ReservationCardComponent = ({
   const handleConfirmPress = async () => {
     if (!onConfirm) return;
     Alert.alert('Confirmar Reserva', 'Deseja confirmar esta reserva?', [
-      { text: 'Cancelar', onPress: () => { }, style: 'cancel' },
+      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
       {
         text: 'Confirmar',
         onPress: async () => {
@@ -219,7 +221,7 @@ const ReservationCardComponent = ({
       'Cancelar Reserva',
       'Tem certeza? Esta ação não pode ser desfeita.',
       [
-        { text: 'Manter', onPress: () => { }, style: 'cancel' },
+        { text: 'Manter', onPress: () => {}, style: 'cancel' },
         {
           text: 'Cancelar',
           onPress: async () => {
@@ -388,11 +390,7 @@ const CalendarSection = ({
 
   const firstWeekday = useMemo(
     () =>
-      new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth(),
-        1,
-      ).getDay(),
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay(),
     [currentMonth],
   );
 
@@ -414,8 +412,9 @@ const CalendarSection = ({
   const calendarCells = useMemo(
     () => [
       ...Array.from({ length: firstWeekday }).map(() => null),
-      ...Array.from({ length: daysInMonth }).map((_, i) =>
-        new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
+      ...Array.from({ length: daysInMonth }).map(
+        (_, i) =>
+          new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
       ),
     ],
     [currentMonth, firstWeekday, daysInMonth],
@@ -495,14 +494,15 @@ const CalendarSection = ({
               key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
               className={
-                `w-[14.285%] aspect-square items-center ` +
-                `justify-center rounded-xl border ` +
+                'w-[14.285%] aspect-square items-center ' +
+                'justify-center rounded-xl border ' +
                 `${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'}`
               }
             >
               <Text
-                className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'
-                  }`}
+                className={`text-sm font-semibold ${
+                  isSelected ? 'text-light' : 'text-dark'
+                }`}
               >
                 {date.getDate()}
               </Text>
@@ -540,7 +540,9 @@ const CalendarSection = ({
               </Text>
               <Text className="text-xs text-black/60">
                 {reservation.time} • {reservation.guests} pessoas •{' '}
-                {reservation.status === 'confirmada' ? 'Confirmada' : 'Aguardando'}
+                {reservation.status === 'confirmada'
+                  ? 'Confirmada'
+                  : 'Aguardando'}
               </Text>
             </View>
           ))
