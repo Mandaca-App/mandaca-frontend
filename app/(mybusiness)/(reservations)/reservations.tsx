@@ -496,8 +496,8 @@ const CalendarSection = ({
               onPress={() => setSelectedDate(dayKey)}
               className={
                 `w-[14.285%] aspect-square items-center ` +
-                `justify-center rounded-xl border ${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'
-                }`
+                `justify-center rounded-xl border ` +
+                `${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'}`
               }
             >
               <Text
