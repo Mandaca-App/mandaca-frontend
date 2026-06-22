@@ -34,7 +34,7 @@ describe('HelpScreen', () => {
     await waitFor(() => {
       expect(getContacts).toHaveBeenCalled();
     });
-    
+
     fireEvent.press(getByText('Fale Conosco'));
     await waitFor(() => {
       expect(getByText('Conversar no WhatsApp')).toBeTruthy();
@@ -80,7 +80,9 @@ describe('HelpScreen', () => {
     const whatsappButton = getByText('Conversar no WhatsApp');
     fireEvent.press(whatsappButton);
     await waitFor(() => {
-      expect(Linking.openURL).toHaveBeenCalledWith('https://wa.me/5511999999999');
+      expect(Linking.openURL).toHaveBeenCalledWith(
+        'https://wa.me/5511999999999',
+      );
     });
 
     // Abrir modal novamente (pois fechou ao clicar)

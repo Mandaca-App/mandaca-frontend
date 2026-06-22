@@ -2,103 +2,72 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { router, useLocalSearchParams } from 'expo-router';
 
-import {
-    useEffect,
-    useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 
-import {
-    ActivityIndicator,
-    Text,
-    View,
-} from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { Container } from '@/components/general/container';
 
 import { scanMenuImage } from '@/services/menu';
 
 export default function ScanLoadingScreen() {
-    const { imageUri } =
-        useLocalSearchParams();
+  const { imageUri } = useLocalSearchParams();
 
-    const [loadingText, setLoadingText] =
-        useState(
-            'Lendo seu cardápio...',
-        );
+  const [loadingText, setLoadingText] = useState('Lendo seu cardápio...');
 
-    useEffect(() => {
-        const texts = [
-            'Lendo seu cardápio...',
-            'Identificando pratos...',
-            'Analisando descrições...',
-            'Organizando categorias...',
-            'Finalizando leitura...',
-        ];
+  useEffect(() => {
+    const texts = [
+      'Lendo seu cardápio...',
+      'Identificando pratos...',
+      'Analisando descrições...',
+      'Organizando categorias...',
+      'Finalizando leitura...',
+    ];
 
-        let index = 0;
+    let index = 0;
 
-        const interval =
-            setInterval(() => {
-                index =
-                    (index + 1) %
-                    texts.length;
+    const interval = setInterval(() => {
+      index = (index + 1) % texts.length;
 
-                setLoadingText(
-                    texts[index],
-                );
-            }, 1800);
+      setLoadingText(texts[index]);
+    }, 1800);
 
-        return () =>
-            clearInterval(
-                interval,
-            );
-    }, []);
+    return () => clearInterval(interval);
+  }, []);
 
-    useEffect(() => {
-        const processMenu =
-            async () => {
-                try {
-                    const items =
-                        await scanMenuImage(
-                            String(
-                                imageUri,
-                            ),
-                        );
+  useEffect(() => {
+    const processMenu = async () => {
+      try {
+        const items = await scanMenuImage(String(imageUri));
 
-                    router.replace({
-                        pathname:
-                            '/(mybusiness)/menu/reviewScan',
-                        params: {
-                            items:
-                                JSON.stringify(
-                                    items,
-                                ),
-                        },
-                    });
-                } catch (error) {
-                    console.error(
-                        error,
-                    );
+        router.replace({
+          pathname: '/(mybusiness)/menu/reviewScan',
+          params: {
+            items: JSON.stringify(items),
+          },
+        });
+      } catch (error) {
+        console.error(error);
 
-                    router.back();
-                }
-            };
+        router.back();
+      }
+    };
 
-        processMenu();
-    }, []);
+    processMenu();
+  }, []);
 
-    return (
-        <Container>
-            <View
-                className="
+  return (
+    <Container>
+      <View
+        className="
                     flex-1
                     items-center
                     justify-center
                     px-8
                 "
-            >
-                <View
-                    className="
+      >
+        <View
+          className="
                         w-32 h-32
                         rounded-full
                         bg-primary/10
@@ -106,46 +75,36 @@ export default function ScanLoadingScreen() {
                         justify-center
                         mb-8
                     "
-                >
-                    <Ionicons
-                        name="scan-outline"
-                        size={60}
-                        color="#C34342"
-                    />
-                </View>
+        >
+          <Ionicons name="scan-outline" size={60} color="#C34342" />
+        </View>
 
-                <ActivityIndicator
-                    size="large"
-                    color="#C34342"
-                />
+        <ActivityIndicator size="large" color="#C34342" />
 
-                <Text
-                    className="
+        <Text
+          className="
                         text-2xl
                         font-bold
                         text-dark
                         mt-8
                         text-center
                     "
-                >
-                    {loadingText}
-                </Text>
+        >
+          {loadingText}
+        </Text>
 
-                <Text
-                    className="
+        <Text
+          className="
                         text-center
                         text-black/60
                         mt-4
                         leading-6
                     "
-                >
-                    Nossa inteligência
-                    artificial está lendo
-                    os itens do seu
-                    cardápio e organizando
-                    tudo para você.
-                </Text>
-            </View>
-        </Container>
-    );
+        >
+          Nossa inteligência artificial está lendo os itens do seu cardápio e
+          organizando tudo para você.
+        </Text>
+      </View>
+    </Container>
+  );
 }

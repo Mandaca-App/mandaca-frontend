@@ -39,8 +39,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
 
   it('deve simular a seleção de imagem na tela de scan e navegar para a tela de carregamento', async () => {
     (useLocalSearchParams as jest.Mock).mockReturnValue({});
-    (ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock)
-      .mockResolvedValue({ granted: true });
+    (
+      ImagePicker.requestMediaLibraryPermissionsAsync as jest.Mock
+    ).mockResolvedValue({ granted: true });
     (ImagePicker.launchImageLibraryAsync as jest.Mock).mockResolvedValue({
       canceled: false,
       assets: [{ uri: 'file:///fake/path/cardapio.jpg' }],
@@ -74,7 +75,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
 
     // Aguarda o serviço da IA ser chamado e a navegação/redirecionamento disparar
     await waitFor(() => {
-      expect(scanMenuImage).toHaveBeenCalledWith('file:///fake/path/cardapio.jpg');
+      expect(scanMenuImage).toHaveBeenCalledWith(
+        'file:///fake/path/cardapio.jpg',
+      );
       expect(router.replace).toHaveBeenCalledWith({
         pathname: '/(mybusiness)/menu/reviewScan',
         params: { items: JSON.stringify(mockScannedItems) },
@@ -88,7 +91,9 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
     });
     (createMenuBulk as jest.Mock).mockResolvedValueOnce({ success: true });
 
-    const { getByText: getReviewText, getAllByText } = render(<ReviewScanScreen />);
+    const { getByText: getReviewText, getAllByText } = render(
+      <ReviewScanScreen />,
+    );
 
     // Verifica se os pratos lidos estão renderizados na tela de revisão
     expect(getReviewText('Pizza de Calabresa')).toBeTruthy();
@@ -118,7 +123,10 @@ describe('Integração - Fluxo de Leitura de Cardápio por Scanner', () => {
           },
         ],
       );
-      expect(Alert.alert).toHaveBeenCalledWith('Sucesso', 'Cardápio criado com sucesso!');
+      expect(Alert.alert).toHaveBeenCalledWith(
+        'Sucesso',
+        'Cardápio criado com sucesso!',
+      );
       expect(router.replace).toHaveBeenCalledWith('/(mybusiness)/menu/menu');
     });
   });

@@ -23,7 +23,9 @@ describe('menuService', () => {
       (axios.get as jest.Mock).mockResolvedValueOnce({ data: mockData });
 
       const res = await getMenuByEnterprise('empresa-123');
-      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/menus/by-enterprise/empresa-123'));
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining('/menus/by-enterprise/empresa-123'),
+      );
       expect(res).toEqual(mockData);
     });
   });
@@ -37,7 +39,7 @@ describe('menuService', () => {
       expect(axios.put).toHaveBeenCalledWith(
         expect.stringContaining('/menus/item-123?status=true'),
         expect.any(FormData),
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(res).toEqual(mockData);
     });
@@ -49,7 +51,9 @@ describe('menuService', () => {
       (axios.get as jest.Mock).mockResolvedValueOnce({ data: mockData });
 
       const res = await getMenuById('item-123');
-      expect(axios.get).toHaveBeenCalledWith(expect.stringContaining('/menus/item-123'));
+      expect(axios.get).toHaveBeenCalledWith(
+        expect.stringContaining('/menus/item-123'),
+      );
       expect(res).toEqual(mockData);
     });
   });
@@ -80,7 +84,7 @@ describe('menuService', () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        })
+        }),
       );
       expect(res).toEqual(mockData);
     });
@@ -131,7 +135,7 @@ describe('menuService', () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-        })
+        }),
       );
       expect(res).toEqual(mockData);
     });
@@ -162,7 +166,9 @@ describe('menuService', () => {
       (axios.delete as jest.Mock).mockResolvedValueOnce({ data: mockData });
 
       const res = await deleteMenuItem('item-123');
-      expect(axios.delete).toHaveBeenCalledWith(expect.stringContaining('/menus/item-123'));
+      expect(axios.delete).toHaveBeenCalledWith(
+        expect.stringContaining('/menus/item-123'),
+      );
       expect(res).toEqual(mockData);
     });
   });
@@ -176,7 +182,7 @@ describe('menuService', () => {
       expect(axios.post).toHaveBeenCalledWith(
         expect.stringContaining('/menus/scan'),
         expect.any(FormData),
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(res).toEqual(mockData);
     });
@@ -188,7 +194,16 @@ describe('menuService', () => {
       (axios.post as jest.Mock).mockResolvedValueOnce({ data: mockData });
 
       const items = [
-        { id_cardapio: '1', descricao: 'Item 1', historia: 'Hist 1', preco: '10.00', categoria: 'entrada', status: true, empresa_id: 'empresa-123', url_foto_item: null },
+        {
+          id_cardapio: '1',
+          descricao: 'Item 1',
+          historia: 'Hist 1',
+          preco: '10.00',
+          categoria: 'entrada',
+          status: true,
+          empresa_id: 'empresa-123',
+          url_foto_item: null,
+        },
       ];
 
       const res = await createMenuBulk('empresa-123', items);
@@ -207,7 +222,7 @@ describe('menuService', () => {
               url_foto_item: null,
             },
           ],
-        }
+        },
       );
       expect(res).toEqual(mockData);
     });

@@ -2,7 +2,11 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import MenuList from '../menu';
-import { getMenuByEnterprise, toggleMenuItemStatus, MenuItem } from '@/services/menu';
+import {
+  getMenuByEnterprise,
+  toggleMenuItemStatus,
+  MenuItem,
+} from '@/services/menu';
 
 jest.mock('@/services/menu');
 
@@ -39,13 +43,13 @@ describe('MenuList Screen', () => {
       new Promise(() => {}), // never resolves to keep loading active
     );
     const { getByText } = render(<MenuList />);
-    
+
     expect(getByText('Carregando cardápio...')).toBeTruthy();
   });
 
   it('deve renderizar o estado de cardápio vazio se a lista retornada for vazia', async () => {
     (getMenuByEnterprise as jest.Mock).mockResolvedValueOnce([]);
-    
+
     const { getByText, queryByText } = render(<MenuList />);
 
     await waitFor(() => {
@@ -165,7 +169,9 @@ describe('MenuList Screen', () => {
 
   it('deve alternar o status do item (disponibilidade) ao alterar o Switch', async () => {
     (getMenuByEnterprise as jest.Mock).mockResolvedValue(mockMenuItems);
-    (toggleMenuItemStatus as jest.Mock).mockResolvedValueOnce({ success: true });
+    (toggleMenuItemStatus as jest.Mock).mockResolvedValueOnce({
+      success: true,
+    });
 
     const { getAllByRole, queryByText } = render(<MenuList />);
 
