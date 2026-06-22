@@ -47,7 +47,7 @@ export default function ForgotPassword() {
       // Temporary mock
       setSubmitted(true);
       Alert.alert('Sucesso', 'Verifique seu e-mail para recuperar sua senha');
-    } catch (error) {
+    } catch {
       setError('Erro ao conectar com o servidor');
     } finally {
       setLoading(false);
