@@ -61,7 +61,7 @@ export default function Login() {
       // Temporary mock login
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
       router.push('/home');
-    } catch (error) {
+    } catch {
       Alert.alert('Erro', 'Não foi possível conectar ao servidor');
     } finally {
       setLoading(false);
