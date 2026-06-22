@@ -486,16 +486,19 @@ const CalendarSection = ({
           const dayReservations = reservationsByDay[dayKey] ?? [];
           const dots = getReservationStatusDots(dayReservations);
           const isSelected = selectedDate === dayKey;
-          const uniqueKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${date.getDate()}`;
+          const uniqueKey =
+            `${currentMonth.getFullYear()}-` +
+            `${currentMonth.getMonth()}-${date.getDate()}`;
 
           return (
             <Pressable
               key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
-              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${isSelected
-                ? 'bg-primary border-primary'
-                : 'bg-light border-secondary'
-                }`}
+              className={
+                `w-[14.285%] aspect-square items-center ` +
+                `justify-center rounded-xl border ${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'
+                }`
+              }
             >
               <Text
                 className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'
