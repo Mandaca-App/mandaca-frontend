@@ -144,7 +144,7 @@ export default function Login() {
           <View className="flex-row justify-center gap-1 mb-4">
             <Text className="text-dark/70">Não tem uma conta?</Text>
             <Pressable
-              onPress={() => router.push('/signup')}
+              onPress={() => router.push('/')}
               className="active:opacity-60"
             >
               <Text className="text-primary font-semibold">Cadastre-se</Text>
