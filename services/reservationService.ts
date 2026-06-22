@@ -3,17 +3,18 @@ import axios from 'axios';
 
 export interface Reservation {
   id_reserva: string;
-  num_mesas: number;
   num_pessoas: number;
+  horario_reserva: string;
   mensagem?: string;
   status: 'aguardando' | 'aceito';
   usuario_id?: string;
   empresa_id?: string;
+  usuario_nome?: string;
 }
 
 export interface ReservationCreate {
-  num_mesas: number;
   num_pessoas: number;
+  horario_reserva: string;
   mensagem?: string;
   usuario_id?: string;
   empresa_id: string;
@@ -31,13 +32,21 @@ const api = axios.create({
 
 export const reservationService = {
   async getByEnterprise(empresaId: string): Promise<Reservation[]> {
-    const { data } = await api.get(`/reservations/by-enterprise/${empresaId}`);
-    return data;
+    try {
+      const { data } = await api.get(`/reservations/by-enterprise/${empresaId}`);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   },
 
   async getByUser(usuarioId: string): Promise<Reservation[]> {
-    const { data } = await api.get(`/reservations/by-user/${usuarioId}`);
-    return data;
+    try {
+      const { data } = await api.get(`/reservations/by-user/${usuarioId}`);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   },
 
   async getById(reservationId: string): Promise<Reservation> {
@@ -57,15 +66,5 @@ export const reservationService = {
 
   async cancel(reservationId: string): Promise<void> {
     await api.delete(`/reservations/${reservationId}`);
-  },
-
-  async getUserById(usuarioId: string): Promise<User | null> {
-    try {
-      const { data } = await api.get(`/users/${usuarioId}`);
-      return data;
-    } catch (error) {
-      console.error(`Erro ao buscar usuário ${usuarioId}:`, error);
-      return null;
-    }
-  },
+  }
 };

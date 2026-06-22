@@ -10,7 +10,7 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -37,36 +37,41 @@ interface ReservationCard {
   calendarDate: string;
   time: string;
   guests: number;
-  tables: number;
   status: 'confirmada' | 'aguardando';
   reason: string;
 }
 
-const mapApiReservationToCard = async (
-  apiRes: Reservation,
-): Promise<ReservationCard> => {
-  let clientName = `Cliente #${apiRes.usuario_id?.slice(0, 8) || 'desconhecido'}`;
+const toCalendarKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
-  // Buscar nome do usuário se disponível
-  if (apiRes.usuario_id) {
-    const user = await reservationService.getUserById(apiRes.usuario_id);
-    if (user) {
-      clientName = user.nome;
-    }
-  }
+const mapApiReservationToCard = (apiRes: Reservation): ReservationCard => {
+  const reservationDate = new Date(apiRes.horario_reserva);
 
   return {
     id: apiRes.id_reserva,
-    clientName,
+    clientName:
+      apiRes.usuario_nome ??
+      `Cliente #${apiRes.usuario_id?.slice(0, 8) ?? 'desconhecido'}`,
     clientPhone: 'Indisponível',
     clientImage: null,
-    date: 'Sem data',
-    calendarDate: new Date().toISOString().split('T')[0],
-    time: 'Sem horário',
+    date: reservationDate.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }),
+    calendarDate: toCalendarKey(reservationDate),
+    time: reservationDate.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
     guests: apiRes.num_pessoas,
-    tables: apiRes.num_mesas,
     status: apiRes.status === 'aceito' ? 'confirmada' : 'aguardando',
-    reason: apiRes.mensagem || 'Sem motivo especificado',
+    reason: apiRes.mensagem ?? 'Sem motivo especificado',
   };
 };
 
@@ -91,14 +96,6 @@ const parseLocalDate = (value: string) => {
   return new Date(year, month - 1, day);
 };
 
-const toCalendarKey = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-};
-
 const formatCalendarTitle = (date: Date) =>
   `${MONTH_LABELS[date.getMonth()]} ${date.getFullYear()}`;
 
@@ -110,18 +107,11 @@ const formatDayLabel = (date: Date) =>
   }).format(date);
 
 const getReservationStatusDots = (reservations: ReservationCard[]) => {
-  const hasConfirmed = reservations.some(
-    (item) => item.status === 'confirmada',
-  );
+  const hasConfirmed = reservations.some((item) => item.status === 'confirmada');
   const hasPending = reservations.some((item) => item.status === 'aguardando');
-
-  return {
-    hasConfirmed,
-    hasPending,
-  };
+  return { hasConfirmed, hasPending };
 };
 
-// Componente para iniciais
 const Initials = ({ name }: { name: string }) => {
   const initials = name
     .split(' ')
@@ -137,7 +127,6 @@ const Initials = ({ name }: { name: string }) => {
   );
 };
 
-// Componente para linha de informação
 const InfoLine = ({
   icon,
   label,
@@ -187,7 +176,6 @@ const ReservationCardComponent = ({
   const handlePhonePress = async () => {
     const phoneNumber = sanitizePhoneNumber(reservation.clientPhone);
     if (!phoneNumber) return;
-
     const phoneUrl = `tel:${phoneNumber}`;
     if (await Linking.canOpenURL(phoneUrl)) {
       await Linking.openURL(phoneUrl);
@@ -197,10 +185,8 @@ const ReservationCardComponent = ({
   const handleWhatsAppPress = async () => {
     const phoneNumber = sanitizePhoneNumber(reservation.clientPhone);
     if (!phoneNumber) return;
-
     const message = buildWhatsAppMessage(reservation);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
     if (await Linking.canOpenURL(whatsappUrl)) {
       await Linking.openURL(whatsappUrl);
     }
@@ -208,7 +194,6 @@ const ReservationCardComponent = ({
 
   const handleConfirmPress = async () => {
     if (!onConfirm) return;
-
     Alert.alert('Confirmar Reserva', 'Deseja confirmar esta reserva?', [
       { text: 'Cancelar', onPress: () => { }, style: 'cancel' },
       {
@@ -230,7 +215,6 @@ const ReservationCardComponent = ({
 
   const handleCancelPress = async () => {
     if (!onCancel) return;
-
     Alert.alert(
       'Cancelar Reserva',
       'Tem certeza? Esta ação não pode ser desfeita.',
@@ -301,14 +285,7 @@ const ReservationCardComponent = ({
       <InfoLine
         icon="people-outline"
         label="Pessoas"
-        value={`${reservation.guests} ${reservation.guests > 1 ? 'pessoas' : 'pessoa'
-          }`}
-      />
-      <InfoLine
-        icon="square-outline"
-        label="Mesas"
-        value={`${reservation.tables} ${reservation.tables > 1 ? 'mesas' : 'mesa'
-          }`}
+        value={`${reservation.guests} ${reservation.guests > 1 ? 'pessoas' : 'pessoa'}`}
       />
 
       {/* Reason/Notes Section */}
@@ -399,40 +376,50 @@ const CalendarSection = ({
     reservations[0]?.calendarDate ?? null,
   );
 
-  const reservationsByDay = reservations.reduce<
-    Record<string, ReservationCard[]>
-  >((accumulator, reservation) => {
-    accumulator[reservation.calendarDate] = [
-      ...(accumulator[reservation.calendarDate] ?? []),
-      reservation,
-    ];
+  const daysInMonth = useMemo(
+    () =>
+      new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() + 1,
+        0,
+      ).getDate(),
+    [currentMonth],
+  );
 
-    return accumulator;
-  }, {});
-
-  const daysInMonth = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth() + 1,
-    0,
-  ).getDate();
-  const firstWeekday = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth(),
-    1,
-  ).getDay();
-
-  const calendarCells = [
-    ...Array.from({ length: firstWeekday }).map(() => null),
-    ...Array.from({ length: daysInMonth }).map((_, index) => {
-      const day = index + 1;
-      const calendarDate = new Date(
+  const firstWeekday = useMemo(
+    () =>
+      new Date(
         currentMonth.getFullYear(),
         currentMonth.getMonth(),
-        day,
-      );
-      return calendarDate;
-    }),
-  ];
+        1,
+      ).getDay(),
+    [currentMonth],
+  );
+
+  const reservationsByDay = useMemo(
+    () =>
+      reservations.reduce<Record<string, ReservationCard[]>>(
+        (acc, reservation) => {
+          acc[reservation.calendarDate] = [
+            ...(acc[reservation.calendarDate] ?? []),
+            reservation,
+          ];
+          return acc;
+        },
+        {},
+      ),
+    [reservations],
+  );
+
+  const calendarCells = useMemo(
+    () => [
+      ...Array.from({ length: firstWeekday }).map(() => null),
+      ...Array.from({ length: daysInMonth }).map((_, i) =>
+        new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
+      ),
+    ],
+    [currentMonth, firstWeekday, daysInMonth],
+  );
 
   const selectedReservations = selectedDate
     ? (reservationsByDay[selectedDate] ?? [])
@@ -499,19 +486,20 @@ const CalendarSection = ({
           const dayReservations = reservationsByDay[dayKey] ?? [];
           const dots = getReservationStatusDots(dayReservations);
           const isSelected = selectedDate === dayKey;
-          const uniqueKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${
-            date.getDate()
-          }`;
+          const uniqueKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${date.getDate()}`;
 
           return (
             <Pressable
               key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
-              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'
+              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${isSelected
+                ? 'bg-primary border-primary'
+                : 'bg-light border-secondary'
                 }`}
             >
               <Text
-                className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'}`}
+                className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'
+                  }`}
               >
                 {date.getDate()}
               </Text>
@@ -549,9 +537,7 @@ const CalendarSection = ({
               </Text>
               <Text className="text-xs text-black/60">
                 {reservation.time} • {reservation.guests} pessoas •{' '}
-                {reservation.status === 'confirmada'
-                  ? 'Confirmada'
-                  : 'Aguardando'}
+                {reservation.status === 'confirmada' ? 'Confirmada' : 'Aguardando'}
               </Text>
             </View>
           ))
@@ -564,6 +550,7 @@ const CalendarSection = ({
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   card: {
     shadowColor: '#000',
@@ -590,9 +577,7 @@ export default function Reservations() {
       setLoading(true);
       setError(null);
       const data = await reservationService.getByEnterprise(ENTERPRISE_ID);
-      const mapped = await Promise.all(
-        data.map((res) => mapApiReservationToCard(res)),
-      );
+      const mapped = data.map((res) => mapApiReservationToCard(res));
       setReservations(mapped);
     } catch (err: any) {
       if (err.response?.status === 404) {
