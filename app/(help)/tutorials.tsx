@@ -34,16 +34,19 @@ const TutorialsScreen: React.FC = () => {
   const router = useRouter();
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedCategory, setSelectedCategory] = useState<CategoriaTutorial | 'todos'>('todos');
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoriaTutorial | 'todos'
+  >('todos');
 
   const fetchTutorials = async () => {
     setLoading(true);
     try {
-      const catParam = selectedCategory === 'todos' ? undefined : selectedCategory;
+      const catParam =
+        selectedCategory === 'todos' ? undefined : selectedCategory;
       const data = await getTutorials(catParam);
       // Sort by the 'ordem' field
       const sorted = data.sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0));
-      setTutorials(sorted.filter(t => t.ativo));
+      setTutorials(sorted.filter((t) => t.ativo));
     } catch (error) {
       console.error('Erro ao carregar tutoriais:', error);
     } finally {
@@ -123,10 +126,7 @@ const TutorialsScreen: React.FC = () => {
                 key={tab.id}
                 activeOpacity={0.8}
                 onPress={() => setSelectedCategory(tab.id)}
-                style={[
-                  styles.tabButton,
-                  isSelected && styles.tabButtonActive,
-                ]}
+                style={[styles.tabButton, isSelected && styles.tabButtonActive]}
               >
                 <Ionicons
                   name={tab.icon as any}
@@ -135,10 +135,7 @@ const TutorialsScreen: React.FC = () => {
                   style={styles.tabIcon}
                 />
                 <Text
-                  style={[
-                    styles.tabLabel,
-                    isSelected && styles.tabLabelActive,
-                  ]}
+                  style={[styles.tabLabel, isSelected && styles.tabLabelActive]}
                 >
                   {tab.label}
                 </Text>

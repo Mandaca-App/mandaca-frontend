@@ -138,11 +138,15 @@ const HelpScreen: React.FC = () => {
           activeOpacity={1}
           onPress={() => setModalVisible(false)}
         >
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+          <View
+            style={styles.modalContent}
+            onStartShouldSetResponder={() => true}
+          >
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Fale Conosco</Text>
               <Text style={styles.modalSubtitle}>
-                Selecione o canal de sua preferência para falar com nossa equipe:
+                Selecione o canal de sua preferência para falar com nossa
+                equipe:
               </Text>
             </View>
 
@@ -153,11 +157,15 @@ const HelpScreen: React.FC = () => {
                   style={[styles.modalButton, styles.whatsappButton]}
                   onPress={() => {
                     setModalVisible(false);
-                    handleOpenLink(`https://wa.me/${whatsapp.replace(/\D/g, '')}`);
+                    handleOpenLink(
+                      `https://wa.me/${whatsapp.replace(/\D/g, '')}`,
+                    );
                   }}
                 >
                   <Ionicons name="logo-whatsapp" size={24} color="#FFFFFF" />
-                  <Text style={styles.modalButtonText}>Conversar no WhatsApp</Text>
+                  <Text style={styles.modalButtonText}>
+                    Conversar no WhatsApp
+                  </Text>
                 </TouchableOpacity>
               ) : null}
 
@@ -180,7 +188,9 @@ const HelpScreen: React.FC = () => {
                 style={[styles.modalButton, styles.emailButton]}
                 onPress={() => {
                   setModalVisible(false);
-                  const subject = encodeURIComponent('Suporte - Central de Ajuda Mandacá');
+                  const subject = encodeURIComponent(
+                    'Suporte - Central de Ajuda Mandacá',
+                  );
                   handleOpenLink(`mailto:${email}?subject=${subject}`);
                 }}
               >

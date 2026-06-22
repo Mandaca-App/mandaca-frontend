@@ -1,6 +1,6 @@
 export type MenuScanItem = {
-    descricao: string;
-    historia: string;
-    preco: string;
-    categoria: string;
+  descricao: string;
+  historia: string;
+  preco: string;
+  categoria: string;
 };
