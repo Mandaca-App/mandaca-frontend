@@ -3,14 +3,22 @@ import {
   type ReservationSectionType,
 } from '@/components/MyBusiness/reservationsNav/main';
 import { Header } from '@/components/general/header';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
-import { useState } from 'react';
 import {
+  reservationService,
+  type Reservation,
+} from '@/services/reservationService';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native';
+import { router } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   Linking,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
@@ -18,45 +26,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-// Dados temporários para exemplo
-const MOCK_RESERVATIONS: ReservationCard[] = [
-  {
-    id: '1',
-    clientName: 'Diego Clebson',
-    clientPhone: '(81) 8958-6543',
-    clientImage: 'https://via.placeholder.com/48',
-    date: 'Sáb, 12 de setembro',
-    calendarDate: '2026-09-12',
-    time: '20:00',
-    guests: 4,
-    status: 'confirmada',
-    reason: 'Aniversário da minha filha',
-  },
-  {
-    id: '2',
-    clientName: 'Hivison Santos',
-    clientPhone: '(81) 8324-1887',
-    clientImage: null,
-    date: 'Dom, 13 de setembro',
-    calendarDate: '2026-09-13',
-    time: '19:30',
-    guests: 2,
-    status: 'confirmada',
-    reason: 'Encontro em família',
-  },
-  {
-    id: '3',
-    clientName: 'Ronaldo Ribeiro',
-    clientPhone: '(81) 9124-2656',
-    clientImage: 'https://via.placeholder.com/48',
-    date: 'Seg, 14 de setembro',
-    calendarDate: '2026-09-14',
-    time: '21:00',
-    guests: 6,
-    status: 'aguardando',
-    reason: 'Festa de corporativa',
-  },
-];
+const ENTERPRISE_ID = 'caa68f64-b68e-4327-90f0-264ca1bb73e2';
 
 interface ReservationCard {
   id: string;
@@ -70,6 +40,40 @@ interface ReservationCard {
   status: 'confirmada' | 'aguardando';
   reason: string;
 }
+
+const toCalendarKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const mapApiReservationToCard = (apiRes: Reservation): ReservationCard => {
+  const reservationDate = new Date(apiRes.horario_reserva);
+
+  return {
+    id: apiRes.id_reserva,
+    clientName:
+      apiRes.usuario_nome ??
+      `Cliente #${apiRes.usuario_id?.slice(0, 8) ?? 'desconhecido'}`,
+    clientPhone: 'Indisponível',
+    clientImage: null,
+    date: reservationDate.toLocaleDateString('pt-BR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    }),
+    calendarDate: toCalendarKey(reservationDate),
+    time: reservationDate.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+    guests: apiRes.num_pessoas,
+    status: apiRes.status === 'aceito' ? 'confirmada' : 'aguardando',
+    reason: apiRes.mensagem ?? 'Sem motivo especificado',
+  };
+};
 
 const WEEKDAY_LABELS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 const MONTH_LABELS = [
@@ -92,14 +96,6 @@ const parseLocalDate = (value: string) => {
   return new Date(year, month - 1, day);
 };
 
-const toCalendarKey = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-};
-
 const formatCalendarTitle = (date: Date) =>
   `${MONTH_LABELS[date.getMonth()]} ${date.getFullYear()}`;
 
@@ -115,14 +111,9 @@ const getReservationStatusDots = (reservations: ReservationCard[]) => {
     (item) => item.status === 'confirmada',
   );
   const hasPending = reservations.some((item) => item.status === 'aguardando');
-
-  return {
-    hasConfirmed,
-    hasPending,
-  };
+  return { hasConfirmed, hasPending };
 };
 
-// Componente para iniciais
 const Initials = ({ name }: { name: string }) => {
   const initials = name
     .split(' ')
@@ -138,7 +129,6 @@ const Initials = ({ name }: { name: string }) => {
   );
 };
 
-// Componente para linha de informação
 const InfoLine = ({
   icon,
   label,
@@ -173,16 +163,21 @@ const buildWhatsAppMessage = (reservation: ReservationCard) =>
 const ReservationCardComponent = ({
   reservation,
   onChatPress,
+  onConfirm,
+  onCancel,
 }: {
   reservation: ReservationCard;
   onChatPress: (reservationId: string, clientName: string) => void;
+  onConfirm?: (reservationId: string) => Promise<void>;
+  onCancel?: (reservationId: string) => Promise<void>;
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const handlePhonePress = async () => {
     const phoneNumber = sanitizePhoneNumber(reservation.clientPhone);
     if (!phoneNumber) return;
-
     const phoneUrl = `tel:${phoneNumber}`;
     if (await Linking.canOpenURL(phoneUrl)) {
       await Linking.openURL(phoneUrl);
@@ -192,13 +187,57 @@ const ReservationCardComponent = ({
   const handleWhatsAppPress = async () => {
     const phoneNumber = sanitizePhoneNumber(reservation.clientPhone);
     if (!phoneNumber) return;
-
     const message = buildWhatsAppMessage(reservation);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-
     if (await Linking.canOpenURL(whatsappUrl)) {
       await Linking.openURL(whatsappUrl);
     }
+  };
+
+  const handleConfirmPress = async () => {
+    if (!onConfirm) return;
+    Alert.alert('Confirmar Reserva', 'Deseja confirmar esta reserva?', [
+      { text: 'Cancelar', onPress: () => {}, style: 'cancel' },
+      {
+        text: 'Confirmar',
+        onPress: async () => {
+          try {
+            setConfirmLoading(true);
+            await onConfirm(reservation.id);
+          } catch {
+            Alert.alert('Erro', 'Não foi possível confirmar a reserva');
+          } finally {
+            setConfirmLoading(false);
+          }
+        },
+        style: 'default',
+      },
+    ]);
+  };
+
+  const handleCancelPress = async () => {
+    if (!onCancel) return;
+    Alert.alert(
+      'Cancelar Reserva',
+      'Tem certeza? Esta ação não pode ser desfeita.',
+      [
+        { text: 'Manter', onPress: () => {}, style: 'cancel' },
+        {
+          text: 'Cancelar',
+          onPress: async () => {
+            try {
+              setCancelLoading(true);
+              await onCancel(reservation.id);
+            } catch {
+              Alert.alert('Erro', 'Não foi possível cancelar a reserva');
+            } finally {
+              setCancelLoading(false);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+    );
   };
 
   return (
@@ -248,9 +287,7 @@ const ReservationCardComponent = ({
       <InfoLine
         icon="people-outline"
         label="Pessoas"
-        value={`${reservation.guests} ${
-          reservation.guests > 1 ? 'pessoas' : 'pessoa'
-        }`}
+        value={`${reservation.guests} ${reservation.guests > 1 ? 'pessoas' : 'pessoa'}`}
       />
 
       {/* Reason/Notes Section */}
@@ -273,13 +310,37 @@ const ReservationCardComponent = ({
       {/* Action Buttons */}
       {reservation.status === 'aguardando' ? (
         <View className="flex-row gap-3 px-5 py-4">
-          <Pressable className="flex-1 flex-row items-center justify-center gap-2.5 py-3 rounded-lg bg-primary">
-            <Ionicons name="checkmark" size={18} color="#FFFFFF" />
-            <Text className="text-light font-semibold text-sm">Confirmar</Text>
+          <Pressable
+            onPress={handleConfirmPress}
+            disabled={confirmLoading}
+            className="flex-1 flex-row items-center justify-center gap-2.5 py-3 rounded-lg bg-primary disabled:opacity-60"
+          >
+            {confirmLoading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <>
+                <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+                <Text className="text-light font-semibold text-sm">
+                  Confirmar
+                </Text>
+              </>
+            )}
           </Pressable>
-          <Pressable className="flex-1 flex-row items-center justify-center gap-2.5 py-3 rounded-lg bg-secondary">
-            <Ionicons name="close" size={18} color="#2C2C2C" />
-            <Text className="text-dark font-semibold text-sm">Cancelar</Text>
+          <Pressable
+            onPress={handleCancelPress}
+            disabled={cancelLoading}
+            className="flex-1 flex-row items-center justify-center gap-2.5 py-3 rounded-lg bg-secondary disabled:opacity-60"
+          >
+            {cancelLoading ? (
+              <ActivityIndicator size="small" color="#2C2C2C" />
+            ) : (
+              <>
+                <Ionicons name="close" size={18} color="#2C2C2C" />
+                <Text className="text-dark font-semibold text-sm">
+                  Cancelar
+                </Text>
+              </>
+            )}
           </Pressable>
         </View>
       ) : (
@@ -317,40 +378,47 @@ const CalendarSection = ({
     reservations[0]?.calendarDate ?? null,
   );
 
-  const reservationsByDay = reservations.reduce<
-    Record<string, ReservationCard[]>
-  >((accumulator, reservation) => {
-    accumulator[reservation.calendarDate] = [
-      ...(accumulator[reservation.calendarDate] ?? []),
-      reservation,
-    ];
-
-    return accumulator;
-  }, {});
-
-  const daysInMonth = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth() + 1,
-    0,
-  ).getDate();
-  const firstWeekday = new Date(
-    currentMonth.getFullYear(),
-    currentMonth.getMonth(),
-    1,
-  ).getDay();
-
-  const calendarCells = [
-    ...Array.from({ length: firstWeekday }).map(() => null),
-    ...Array.from({ length: daysInMonth }).map((_, index) => {
-      const day = index + 1;
-      const calendarDate = new Date(
+  const daysInMonth = useMemo(
+    () =>
+      new Date(
         currentMonth.getFullYear(),
-        currentMonth.getMonth(),
-        day,
-      );
-      return calendarDate;
-    }),
-  ];
+        currentMonth.getMonth() + 1,
+        0,
+      ).getDate(),
+    [currentMonth],
+  );
+
+  const firstWeekday = useMemo(
+    () =>
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay(),
+    [currentMonth],
+  );
+
+  const reservationsByDay = useMemo(
+    () =>
+      reservations.reduce<Record<string, ReservationCard[]>>(
+        (acc, reservation) => {
+          acc[reservation.calendarDate] = [
+            ...(acc[reservation.calendarDate] ?? []),
+            reservation,
+          ];
+          return acc;
+        },
+        {},
+      ),
+    [reservations],
+  );
+
+  const calendarCells = useMemo(
+    () => [
+      ...Array.from({ length: firstWeekday }).map(() => null),
+      ...Array.from({ length: daysInMonth }).map(
+        (_, i) =>
+          new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
+      ),
+    ],
+    [currentMonth, firstWeekday, daysInMonth],
+  );
 
   const selectedReservations = selectedDate
     ? (reservationsByDay[selectedDate] ?? [])
@@ -417,19 +485,24 @@ const CalendarSection = ({
           const dayReservations = reservationsByDay[dayKey] ?? [];
           const dots = getReservationStatusDots(dayReservations);
           const isSelected = selectedDate === dayKey;
+          const uniqueKey =
+            `${currentMonth.getFullYear()}-` +
+            `${currentMonth.getMonth()}-${date.getDate()}`;
 
           return (
             <Pressable
-              key={dayKey}
+              key={uniqueKey}
               onPress={() => setSelectedDate(dayKey)}
-              className={`w-[14.285%] aspect-square items-center justify-center rounded-xl border ${
-                isSelected
-                  ? 'bg-primary border-primary'
-                  : 'bg-light border-secondary'
-              }`}
+              className={
+                'w-[14.285%] aspect-square items-center ' +
+                'justify-center rounded-xl border ' +
+                `${isSelected ? 'bg-primary border-primary' : 'bg-light border-secondary'}`
+              }
             >
               <Text
-                className={`text-sm font-semibold ${isSelected ? 'text-light' : 'text-dark'}`}
+                className={`text-sm font-semibold ${
+                  isSelected ? 'text-light' : 'text-dark'
+                }`}
               >
                 {date.getDate()}
               </Text>
@@ -482,6 +555,7 @@ const CalendarSection = ({
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   card: {
     shadowColor: '#000',
@@ -498,6 +572,62 @@ const styles = StyleSheet.create({
 export default function Reservations() {
   const [activeSection, setActiveSection] =
     useState<ReservationSectionType>('confirmadas');
+  const [reservations, setReservations] = useState<ReservationCard[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadReservations = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await reservationService.getByEnterprise(ENTERPRISE_ID);
+      const mapped = data.map((res) => mapApiReservationToCard(res));
+      setReservations(mapped);
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        setReservations([]);
+        setError(null);
+      } else {
+        setError('Erro ao carregar reservas');
+      }
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadReservations();
+    }, [loadReservations]),
+  );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadReservations();
+    setRefreshing(false);
+  };
+
+  const handleConfirmReservation = async (reservationId: string) => {
+    try {
+      await reservationService.accept(reservationId);
+      await loadReservations();
+      Alert.alert('Sucesso', 'Reserva confirmada!');
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const handleCancelReservation = async (reservationId: string) => {
+    try {
+      await reservationService.cancel(reservationId);
+      await loadReservations();
+      Alert.alert('Sucesso', 'Reserva cancelada!');
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const handleChatPress = (reservationId: string, clientName: string) => {
     router.push({
@@ -509,43 +639,110 @@ export default function Reservations() {
     });
   };
 
-  const renderSection = () => {
-    switch (activeSection) {
-      case 'confirmadas':
-        return (
-          <FlatList
-            data={MOCK_RESERVATIONS.filter((r) => r.status === 'confirmada')}
-            renderItem={({ item }) => (
-              <ReservationCardComponent
-                reservation={item}
-                onChatPress={handleChatPress}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingVertical: 16 }}
-            showsVerticalScrollIndicator={false}
-          />
-        );
-      case 'aguardando':
-        return (
-          <FlatList
-            data={MOCK_RESERVATIONS.filter((r) => r.status === 'aguardando')}
-            renderItem={({ item }) => (
-              <ReservationCardComponent
-                reservation={item}
-                onChatPress={handleChatPress}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingVertical: 16 }}
-            showsVerticalScrollIndicator={false}
-          />
-        );
-      case 'calendario':
-        return <CalendarSection reservations={MOCK_RESERVATIONS} />;
-      default:
-        return null;
+  const getFilteredReservations = () => {
+    if (activeSection === 'confirmadas') {
+      return reservations.filter((r) => r.status === 'confirmada');
+    } else if (activeSection === 'aguardando') {
+      return reservations.filter((r) => r.status === 'aguardando');
     }
+    return reservations;
+  };
+
+  const renderEmptyState = () => (
+    <View className="flex-1 items-center justify-center py-16">
+      <Ionicons name="document-outline" size={48} color="#999" />
+      <Text className="mt-4 text-base text-black/50">
+        Nenhuma reserva encontrada
+      </Text>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View className="flex-1 items-center justify-center py-16">
+      <Ionicons name="alert-circle-outline" size={48} color="#C34342" />
+      <Text className="mt-4 text-base text-red-600 text-center px-6">
+        {error}
+      </Text>
+      <Pressable
+        onPress={loadReservations}
+        className="mt-6 px-6 py-2 bg-primary rounded-lg"
+      >
+        <Text className="text-light font-semibold">Tentar Novamente</Text>
+      </Pressable>
+    </View>
+  );
+
+  const renderCalendarEmpty = () => (
+    <View className="flex-1 items-center justify-center py-16">
+      <Ionicons name="calendar-outline" size={48} color="#999" />
+      <Text className="mt-4 text-base text-black/50">
+        Nenhuma reserva agendada
+      </Text>
+    </View>
+  );
+
+  const renderSection = () => {
+    const filtered = getFilteredReservations();
+
+    if (activeSection === 'calendario') {
+      if (loading && reservations.length === 0) {
+        return (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color="#C34342" />
+          </View>
+        );
+      }
+      if (reservations.length === 0) {
+        return renderCalendarEmpty();
+      }
+      return <CalendarSection reservations={reservations} />;
+    }
+
+    if (loading && reservations.length === 0) {
+      return (
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator size="large" color="#C34342" />
+        </View>
+      );
+    }
+
+    if (error) {
+      return renderErrorState();
+    }
+
+    if (filtered.length === 0) {
+      return renderEmptyState();
+    }
+
+    return (
+      <FlatList
+        data={filtered}
+        renderItem={({ item }) => (
+          <ReservationCardComponent
+            reservation={item}
+            onChatPress={handleChatPress}
+            onConfirm={
+              item.status === 'aguardando'
+                ? handleConfirmReservation
+                : undefined
+            }
+            onCancel={
+              item.status === 'aguardando' ? handleCancelReservation : undefined
+            }
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingVertical: 16 }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor="#C34342"
+          />
+        }
+      />
+    );
   };
 
   return (
