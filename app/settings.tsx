@@ -32,7 +32,7 @@ export default function Settings() {
           <PasswordSection isDark={isDark} />
           <NotificationsSection isDark={isDark} />
           <AppearanceSection isDark={isDark} />
-          <LogoutButton isDark={isDark} />
+          <LogoutButton />
         </View>
       </Container>
     </View>

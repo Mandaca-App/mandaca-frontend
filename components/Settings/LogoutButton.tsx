@@ -2,11 +2,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuth } from '@/contexts/AuthContext';
 
-type Props = {
-  isDark?: boolean;
-};
-
-export const LogoutButton = ({ isDark = false }: Props) => {
+export const LogoutButton = () => {
   const { logout } = useAuth();
 
   const handleLogout = () => {

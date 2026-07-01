@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import GeneralButton from '@/components/general/generalButton';
-import { passwordSchema, PasswordFormData } from '@/schemas/settingsSchema';
+import { passwordSchema } from '@/schemas/settingsSchema';
 import { SectionCard } from './SectionCard';
 
 type Props = {
@@ -79,7 +79,10 @@ export const PasswordSection = ({ isDark = false }: Props) => {
       setSaving(true);
 
       // TODO: Chamar API de troca de senha (PUT /users/:id/password)
-      // await changePassword({ senhaAtual: validation.data.senhaAtual, novaSenha: validation.data.novaSenha });
+      // await changePassword({
+      //   senhaAtual: validation.data.senhaAtual,
+      //   novaSenha: validation.data.novaSenha,
+      // });
 
       // Simula resposta do servidor
       await new Promise((resolve) => setTimeout(resolve, 800));
