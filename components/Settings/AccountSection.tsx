@@ -1,20 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Alert, Text, TextInput, View } from 'react-native';
 import GeneralButton from '@/components/general/generalButton';
 import { accountSchema, AccountFormData } from '@/schemas/settingsSchema';
 import { SectionCard } from './SectionCard';
+import { useUser } from '@/contexts/UserContext';
 
 type Props = {
   isDark?: boolean;
 };
 
 export const AccountSection = ({ isDark = false }: Props) => {
-  // TODO: Carregar dados reais do usuário via API (GET /users/:id)
+  const { user, updateUser } = useUser();
+  
   const [formData, setFormData] = useState<AccountFormData>({
-    nome: '',
-    email: '',
-    telefone: '',
+    nome: user?.nome || '',
+    email: user?.email || '',
+    telefone: user?.telefone || '',
   });
+
+  // Atualiza o formulário se o usuário mudar no contexto (ex: após fetch inicial)
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        nome: user.nome || '',
+        email: user.email || '',
+        telefone: user.telefone || '',
+      });
+    }
+  }, [user]);
 
   const [errors, setErrors] = useState<Partial<Record<keyof AccountFormData, string>>>({});
   const [saving, setSaving] = useState<boolean>(false);
@@ -45,11 +58,8 @@ export const AccountSection = ({ isDark = false }: Props) => {
     try {
       setSaving(true);
 
-      // TODO: Chamar API de atualização do perfil (PUT /users/:id)
-      // await updateUser(userId, validation.data);
-
-      // Simula sucesso
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Atualiza os dados globalmente (que por sua vez chamará a API no futuro)
+      await updateUser(validation.data);
 
       Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
     } catch (error) {

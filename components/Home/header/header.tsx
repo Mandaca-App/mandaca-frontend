@@ -1,9 +1,6 @@
-import { API_URL } from '@/constants/api';
-import { User } from '@/types/user';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import axios from 'axios';
+import { useUser } from '@/contexts/UserContext';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -14,28 +11,9 @@ import {
 } from 'react-native';
 
 export const Header = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { user, isLoading } = useUser();
 
-  const getUser = async () => {
-    try {
-      const userId = '453df15b-61ce-4571-8bdb-cdbedf0ff041';
-
-      const responseUser = await axios.get(`${API_URL}/users/${userId}`);
-
-      setUser(responseUser.data);
-    } catch (error) {
-      console.error('Erro ao buscar usuário:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <View className="mt-8">
         <ActivityIndicator color={'#C34342'} />

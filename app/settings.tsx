@@ -1,11 +1,9 @@
-import { useColorScheme, View } from 'react-native';
+import { useColorScheme, ScrollView, View } from 'react-native';
 import { Container } from '@/components/general/container';
 import { Header } from '@/components/general/header';
-import { AccountSection } from '@/components/Settings/AccountSection';
 import { PasswordSection } from '@/components/Settings/PasswordSection';
 import { NotificationsSection } from '@/components/Settings/NotificationsSection';
 import { AppearanceSection } from '@/components/Settings/AppearanceSection';
-import { LogoutButton } from '@/components/Settings/LogoutButton';
 import { useSettings } from '@/contexts/SettingsContext';
 
 export default function Settings() {
@@ -27,13 +25,13 @@ export default function Settings() {
           showNotificationButton={false}
         />
 
-        <View className="gap-6">
-          <AccountSection isDark={isDark} />
-          <PasswordSection isDark={isDark} />
-          <NotificationsSection isDark={isDark} />
-          <AppearanceSection isDark={isDark} />
-          <LogoutButton />
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+          <View className="gap-6 mt-2">
+            <PasswordSection isDark={isDark} />
+            <NotificationsSection isDark={isDark} />
+            <AppearanceSection isDark={isDark} />
+          </View>
+        </ScrollView>
       </Container>
     </View>
   );
