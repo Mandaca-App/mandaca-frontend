@@ -55,7 +55,10 @@ export default function Profile() {
       <Container>
         <Header title="Perfil" showBackButton showNotificationButton={false} />
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
           
           {/* Avatar e Cabeçalho do Perfil */}
           <View className="items-center mt-6 mb-8">

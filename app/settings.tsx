@@ -25,7 +25,10 @@ export default function Settings() {
           showNotificationButton={false}
         />
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
           <View className="gap-6 mt-2">
             <PasswordSection isDark={isDark} />
             <NotificationsSection isDark={isDark} />

@@ -82,9 +82,12 @@ export default function Register() {
       });
 
       router.replace('/home');
-    } catch (error: any) {
-      const status = error?.response?.status;
-      const detail = error?.response?.data?.detail ?? '';
+    } catch (error) {
+      // Usando cast genérico seguro em vez de any explícito
+      const err = error as Record<string, unknown>;
+      const response = err?.response as Record<string, unknown> | undefined;
+      const status = response?.status;
+      const detail = (response?.data as Record<string, string>)?.detail ?? '';
 
       if (status === 400 && detail.toLowerCase().includes('email')) {
         setFieldErrors((prev) => ({
